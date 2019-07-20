@@ -9,34 +9,40 @@
 #include <string>
 #include <cwctype>
 #include <memory>
-#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics.hpp>
+#include "paragraph.h"
 
 namespace engine {
-class page {
+class page : public sf::Drawable {
 public:
-    page(const std::shared_ptr<sf::Font> &font, unsigned font_size, unsigned page_width);
+    page(const std::shared_ptr<sf::Font> &font, size_t font_size, size_t page_width);
 
-    void add_paragraph(std::wstring &paragraph);
-
-    const std::vector<std::wstring> &get_paragraphs() const;
+    void increment_character();
 
 private:
-    unsigned font_size;
-    unsigned page_width;
+    size_t font_size;
+    size_t page_width;
+    size_t current_paragraph;
+    size_t current_character;
     std::shared_ptr<sf::Font> font;
-    std::vector<std::wstring> paragraphs;
+    std::vector<paragraph> paragraphs;
+    mutable sf::VertexArray vertices;
+    mutable sf::VertexBuffer vertices_buffer;
+    bool should_flip_new;
 
-    void wrap_words(std::wstring &paragraph) const;
+    float letter_spacing_factor;
+    float line_spacing_factor;
+    float whitespace_width;
+    float letter_spacing;
+    float line_spacing;
+    float x;
+    float y;
+    float min_x;
+    float max_x;
+    float min_y;
+    float max_y;
 
-    static inline void trim_start(std::wstring &s) {
-      s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wchar_t ch) {
-        return !std::iswspace(ch);
-      }));
-    }
-
-    static inline void add_tab(std::wstring &s) {
-      s.insert(s.begin(), L'\t');
-    }
+    void draw(sf::RenderTarget &target, sf::RenderStates states) override;
 };
 }
 
