@@ -23,8 +23,8 @@ public:
     };
 
     kind kind;
-    size_t begin;
-    size_t end;
+    unsigned begin;
+    unsigned end;
     float delay;
     float pace;
 };
@@ -35,7 +35,7 @@ template<>
 class hash<engine::text_effect> {
 public :
     size_t operator()(const engine::text_effect &name) const {
-      return to_integral(name.kind);
+      return static_cast<size_t>(to_integral(name.kind));
     }
 
 private:

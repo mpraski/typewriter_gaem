@@ -2,24 +2,43 @@
 // Created by marcin on 7/20/19.
 //
 
-#include "paragraph.h"
 #include <algorithm>
+#include "paragraph.h"
 
-engine::paragraph::paragraph(std::wstring &&contents)
-    : contents{std::move(contents)},
+engine::paragraph::paragraph(std::wstring &&c)
+    : contents{std::move(c)},
       effects{},
       active_effects{} {
   trim_start(contents);
   trim_end(contents);
   add_tab(contents);
+  add_end_space(contents);
 };
 
-const size_t engine::paragraph::size() const {
-  return contents.size();
+engine::paragraph::paragraph(const char *c)
+    : contents{utils::to_wstr(c)},
+      effects{},
+      active_effects{} {
+  trim_start(contents);
+  trim_end(contents);
+  add_tab(contents);
+  add_end_space(contents);
+};
+
+const size_t engine::paragraph::length() const {
+  return contents.length();
 }
 
 wchar_t engine::paragraph::operator[](size_t idx) const {
   return contents[idx];
+}
+
+engine::paragraph::wstr_iterator engine::paragraph::begin() const {
+  return std::cbegin(contents);
+}
+
+engine::paragraph::wstr_iterator engine::paragraph::end() const {
+  return std::cend(contents);
 }
 
 const std::wstring &engine::paragraph::get_contents() const {

@@ -5,33 +5,30 @@
 
 int main() {
   sf::RenderWindow window(sf::VideoMode(200, 200), "FSML works");
-  sf::CircleShape circle(100.0f);
-  sf::Text text;
-  sf::Font font;
-  if (!font.loadFromFile("./res/arial.ttf")) {
-    std::cout << "fucking fonts..." << std::endl;
-    return 0;
-  }
 
-  text.setFont(font);
-  text.setString("Wut wut");
-  text.setCharacterSize(128);
-  text.setFillColor(sf::Color::White);
-  text.setStyle(sf::Text::Bold);
-  circle.setFillColor(sf::Color::Green);
+  auto page_config{engine::make_page_config(
+      "./res/jmh_typewriter_bold.ttf"
+  )};
 
-  while(window.isOpen()) {
+  engine::page page{page_config};
+  page.add_paragraph(engine::paragraph{L"Some few words that will overflow page width quite considerably."});
+  page.add_paragraph(engine::paragraph{
+      L"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."});
+
+  while (window.isOpen()) {
     sf::Event event;
-    while(window.pollEvent(event)) {
-      if(event.type == sf::Event::Closed) {
+    while (window.pollEvent(event)) {
+      if (event.type == sf::Event::Closed) {
         window.close();
       }
     }
 
     window.clear();
-    window.draw(circle);
-    window.draw(text);
+    window.draw(page);
     window.display();
+
+    if (!page.text_end())
+      page.advance();
   }
 
   return 0;
