@@ -9,23 +9,19 @@
 #include <string>
 #include <cwctype>
 #include <memory>
+#include <cmath>
 #include <SFML/Graphics.hpp>
 #include "paragraph.h"
 #include "page_config.h"
 
 namespace engine {
-class page : public sf::Drawable {
+class page : public sf::Drawable, public sf::Transformable {
 public:
-    explicit page(const page_config_ptr &config);
+    page(const page_config_ptr &config, std::vector<paragraph> &&ps);
 
     void add_paragraph(paragraph &&paragraph);
 
-    template<class It>
-    void add_paragraphs(It begin, It end) {
-      paragraphs.insert(paragraphs.end(),
-                        std::make_move_iterator(begin),
-                        std::make_move_iterator(end));
-    }
+    void reset_paragraphs(std::vector<paragraph> &ps);
 
     bool text_end() const;
 
@@ -36,7 +32,7 @@ public:
 private:
     page_config_ptr config;
     // Font config
-    std::shared_ptr<sf::Font> font;
+    const sf::Font *font;
     unsigned font_size;
     // Character and paragraph cursor
     unsigned current_paragraph;
@@ -48,7 +44,7 @@ private:
     mutable sf::VertexArray vertices;
     mutable sf::VertexBuffer vertices_buffer;
     mutable sf::FloatRect bounds;
-    // Control flagas
+    // Control flags
     mutable bool end_of_text;
     mutable bool needs_update;
     // Text bounds

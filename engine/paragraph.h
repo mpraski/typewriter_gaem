@@ -16,8 +16,9 @@
 
 namespace engine {
 class paragraph {
-    using wstr_iterator = std::wstring::const_iterator;
 public:
+    using iter = std::wstring::const_iterator;
+
     explicit paragraph(std::wstring &&c);
 
     explicit paragraph(const char *c);
@@ -26,22 +27,34 @@ public:
 
     wchar_t operator[](size_t idx) const;
 
-    wstr_iterator begin() const;
+    iter begin() const;
 
-    wstr_iterator end() const;
-
-    const std::wstring &get_contents() const;
+    iter end() const;
 
     const std::vector<text_effect> &get_active_effects() const;
 
-    void add_starting_effects(size_t pos);
+    void add_starting_effects(unsigned pos);
 
-    void remove_ending_effects(size_t pos);
+    void remove_ending_effects(unsigned pos);
 
 private:
     std::wstring contents;
     std::unordered_map<size_t, std::unordered_set<text_effect>> effects;
     std::vector<text_effect> active_effects;
+
+    static inline void prepare(std::wstring &s) {
+      trim_start(s);
+      trim_end(s);
+      trim_inside(s);
+      add_tab(s);
+      add_end_space(s);
+    }
+
+    static inline void trim_inside(std::wstring &s) {
+      s.erase(std::unique(s.begin(), s.end(), [](wchar_t l, wchar_t r) {
+        return (l == r) && std::iswspace(l);
+      }), s.end());
+    }
 
     static inline void trim_start(std::wstring &s) {
       s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wchar_t ch) {

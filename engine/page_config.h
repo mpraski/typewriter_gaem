@@ -11,7 +11,7 @@
 namespace engine {
 class page_config {
 public:
-    page_config(
+    explicit page_config(
         const std::string &font_path,
         unsigned font_size = 24u,
         float page_width = 400.f,
@@ -34,7 +34,7 @@ public:
     page_config &operator=(page_config &&p) = delete;
 
     sf::Font *font;
-    unsigned int font_size;
+    unsigned font_size;
     float page_width;
     float page_height;
     float margin_vertical;

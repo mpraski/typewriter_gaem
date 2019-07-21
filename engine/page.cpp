@@ -3,8 +3,6 @@
 //
 
 #include "page.h"
-#include <cmath>
-#include "SFML/Graphics.hpp"
 
 namespace {
 // Add an underline or strikethrough line to the vertex array
@@ -68,18 +66,18 @@ void addGlyphQuad(sf::VertexArray &vertices,
 }
 }
 
-engine::page::page(const page_config_ptr &config) :
+engine::page::page(const page_config_ptr &config, std::vector<paragraph> &&ps) :
     config{config},
     font{config->font},
     font_size{config->font_size},
     current_paragraph{},
     current_character{},
     checked_character{},
-    paragraphs{},
+    paragraphs{std::move(ps)},
     vertices{sf::Triangles},
     vertices_buffer{sf::Triangles, sf::VertexBuffer::Static},
     bounds{},
-    end_of_text{false},
+    end_of_text{},
     needs_update{true},
     x{config->margin_horizontal},
     y{config->margin_vertical + static_cast<float>(font_size)},
@@ -97,10 +95,20 @@ engine::page::page(const page_config_ptr &config) :
     line_spacing{font->getLineSpacing(font_size) * config->line_spacing_factor},
     typing_delay_factor{1.f} {
   whitespace_width += letter_spacing;
+  if (paragraphs.empty()) {
+    throw std::runtime_error("Paragraphs cannot be empty");
+  }
 }
 
 void engine::page::add_paragraph(paragraph &&paragraph) {
   paragraphs.emplace_back(std::move(paragraph));
+}
+
+void engine::page::reset_paragraphs(std::vector<paragraph> &ps) {
+  paragraphs.clear();
+  paragraphs.insert(paragraphs.end(),
+                    std::make_move_iterator(std::begin(ps)),
+                    std::make_move_iterator(std::end(ps)));
 }
 
 bool engine::page::text_end() const {
@@ -118,7 +126,7 @@ void engine::page::advance() {
       current_character++;
     } else {
       current_paragraph++;
-      current_character = 0;
+      checked_character = current_character = 0;
     }
     needs_update = true;
   }
@@ -128,6 +136,28 @@ sf::FloatRect engine::page::get_local_bounds() const {
   ensure_updated();
 
   return bounds;
+}
+
+void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+  ensure_updated();
+
+  states.transform *= getTransform();
+  states.texture = &font->getTexture(font_size);
+
+  // Update the vertex buffer if it is being used
+  if (sf::VertexBuffer::isAvailable()) {
+    if (vertices_buffer.getVertexCount() != vertices.getVertexCount())
+      vertices_buffer.create(vertices.getVertexCount());
+
+    if (vertices.getVertexCount() > 0)
+      vertices_buffer.update(&vertices[0]);
+  }
+
+  if (sf::VertexBuffer::isAvailable()) {
+    target.draw(vertices_buffer, states);
+  } else {
+    target.draw(vertices, states);
+  }
 }
 
 // Measure the length of the next word, if it overflows move it the next line
@@ -177,13 +207,6 @@ void engine::page::ensure_line_break(const paragraph &paragraph) const {
   }
 }
 
-void engine::page::update_bounds() const {
-  bounds.left = min_x;
-  bounds.top = min_y;
-  bounds.width = max_x - min_x;
-  bounds.height = max_y - min_y;
-}
-
 void engine::page::ensure_updated() const {
   if (!needs_update)
     return;
@@ -191,15 +214,12 @@ void engine::page::ensure_updated() const {
   needs_update = false;
 
   auto &paragraph{paragraphs[current_paragraph]};
-  wchar_t prev_char{paragraph[current_character ? current_character - 1 : 0u]};
+  wchar_t prev_char{paragraph[current_character ? current_character - 1u : 0u]};
   wchar_t curr_char{paragraph[current_character]};
 
-  // If this is the new paragraph, add a newline and reset caret
-  if (current_paragraph && !current_character) {
+  // If this is the new paragraph, add a newline
+  if (current_paragraph && !current_character)
     new_line();
-    // Reset checked character on new paragraph to avoid unwrapped lines
-    checked_character = 0;
-  }
 
   // Skip to avoid glitches
   if (curr_char == L'\r')
@@ -260,25 +280,11 @@ void engine::page::remove_text_effects(paragraph &paragraph) const {
   paragraph.remove_ending_effects(current_character);
 }
 
-void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-  ensure_updated();
-
-  states.texture = &font->getTexture(font_size);
-
-  // Update the vertex buffer if it is being used
-  if (sf::VertexBuffer::isAvailable()) {
-    if (vertices_buffer.getVertexCount() != vertices.getVertexCount())
-      vertices_buffer.create(vertices.getVertexCount());
-
-    if (vertices.getVertexCount() > 0)
-      vertices_buffer.update(&vertices[0]);
-  }
-
-  if (sf::VertexBuffer::isAvailable()) {
-    target.draw(vertices_buffer, states);
-  } else {
-    target.draw(vertices, states);
-  }
+void engine::page::update_bounds() const {
+  bounds.left = min_x;
+  bounds.top = min_y;
+  bounds.width = max_x - min_x;
+  bounds.height = max_y - min_y;
 }
 
 void engine::page::delay() const {
