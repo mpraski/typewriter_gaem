@@ -253,19 +253,14 @@ void engine::page::ensure_updated() const {
     max_x = std::max(max_x, x);
     max_y = std::max(max_y, y);
 
-    delay();
-    return;
+  } else {
+    const auto &glyph = font->getGlyph(curr_char, font_size, false);
+    addGlyphQuad(vertices, sf::Vector2f(x, y), sf::Color::White, glyph, 0.f);
+    x += glyph.advance + letter_spacing;
   }
 
-  const auto &glyph = font->getGlyph(curr_char, font_size, false);
-  addGlyphQuad(vertices, sf::Vector2f(x, y), sf::Color::White, glyph, 0.f);
-  x += glyph.advance + letter_spacing;
-
-  update_bounds();
-
-  // Remove text events ending at this position
   remove_text_effects(paragraph);
-
+  update_bounds();
   delay();
 }
 
