@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(typewriter_gaem)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(typewriter_gaem main.cpp engine/page.cpp engine/page.h engine/paragraph.cpp engine/paragraph.h engine/text_effect.cpp engine/text_effect.h engine/page_config.cpp engine/page_config.h engine/utils.cpp engine/utils.h)

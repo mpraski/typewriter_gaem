@@ -40,11 +40,12 @@ const std::vector<engine::text_effect> &engine::paragraph::get_active_effects() 
 
 void engine::paragraph::add_starting_effects(unsigned pos) {
   auto &effects_for_pos{effects[pos]};
-  active_effects.insert(
-      std::end(active_effects),
-      std::begin(effects_for_pos),
-      std::end(effects_for_pos)
-  );
+  for (const auto &e : effects_for_pos) {
+    if (std::find(std::begin(active_effects), std::end(active_effects), e)
+        == std::end(active_effects)) {
+      active_effects.push_back(e);
+    }
+  }
 }
 
 void engine::paragraph::remove_ending_effects(unsigned pos) {

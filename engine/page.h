@@ -59,6 +59,7 @@ private:
     mutable bool is_underlined;
     mutable bool is_strike_through;
     mutable bool is_uppercase;
+    mutable bool is_center;
     mutable float italic_shear;
     mutable float whitespace_width;
     mutable float letter_spacing;

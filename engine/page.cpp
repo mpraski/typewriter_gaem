@@ -89,6 +89,7 @@ engine::page::page(const page_config_ptr &config, std::vector<paragraph> &&ps) :
     is_underlined{},
     is_strike_through{},
     is_uppercase{},
+    is_center{},
     italic_shear{},
     whitespace_width{font->getGlyph(L' ', font_size, false).advance},
     letter_spacing{(whitespace_width / 3.f) * (config->letter_spacing_factor - 1.f)},

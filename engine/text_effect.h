@@ -39,6 +39,10 @@ public:
 
     text_effect &with_color(sf::Color c = sf::Color::White);
 
+    inline bool operator==(const text_effect &other) const noexcept {
+      return kind == other.kind;
+    }
+
     kind kind;
     unsigned begin;
     unsigned end;

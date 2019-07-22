@@ -7,7 +7,7 @@ int main() {
   sf::RenderWindow window(sf::VideoMode(200, 200), "FSML works");
 
   auto page_config{engine::make_page_config(
-      "./res/jmh_typewriter.ttf",
+      "./res/type_right.ttf",
       24u,
       500.f
   )};
