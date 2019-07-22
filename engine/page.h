@@ -55,15 +55,17 @@ private:
     mutable float max_x;
     mutable float max_y;
     // Text properties
-    bool is_bold;
-    bool is_italic;
-    bool is_underlined;
-    bool is_strike_through;
-    bool is_uppercase;
-    float whitespace_width;
-    float letter_spacing;
-    float line_spacing;
-    float typing_delay_factor;
+    mutable bool is_bold;
+    mutable bool is_underlined;
+    mutable bool is_strike_through;
+    mutable bool is_uppercase;
+    mutable float italic_shear;
+    mutable float whitespace_width;
+    mutable float letter_spacing;
+    mutable float line_spacing;
+    mutable float typing_delay_factor;
+    mutable float letter_spacing_factor;
+    mutable sf::Color text_color;
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
@@ -73,7 +75,7 @@ private:
 
     void apply_text_effects(paragraph &paragraph) const;
 
-    void remove_text_effects(paragraph &paragraph) const;
+    void remove_text_effects() const;
 
     void update_bounds() const;
 

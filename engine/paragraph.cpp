@@ -12,19 +12,18 @@ engine::paragraph::paragraph(std::wstring &&c)
   prepare(contents);
 };
 
-engine::paragraph::paragraph(const char *c)
-    : contents{utils::to_wstr(c)},
+engine::paragraph::paragraph(std::wstring &&c, const std::vector<text_effect> &es)
+    : contents{std::move(c)},
       effects{},
       active_effects{} {
   prepare(contents);
+  for (const auto &e : es) {
+    effects[e.begin].insert(e);
+  }
 };
 
 const size_t engine::paragraph::length() const {
   return contents.length();
-}
-
-wchar_t engine::paragraph::operator[](size_t idx) const {
-  return contents[idx];
 }
 
 engine::paragraph::iter engine::paragraph::begin() const {

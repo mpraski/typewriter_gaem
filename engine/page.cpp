@@ -86,14 +86,16 @@ engine::page::page(const page_config_ptr &config, std::vector<paragraph> &&ps) :
     max_x{},
     max_y{},
     is_bold{},
-    is_italic{},
     is_underlined{},
     is_strike_through{},
     is_uppercase{},
+    italic_shear{},
     whitespace_width{font->getGlyph(L' ', font_size, false).advance},
     letter_spacing{(whitespace_width / 3.f) * (config->letter_spacing_factor - 1.f)},
     line_spacing{font->getLineSpacing(font_size) * config->line_spacing_factor},
-    typing_delay_factor{1.f} {
+    typing_delay_factor{1.f},
+    letter_spacing_factor{1.f},
+    text_color{sf::Color::White} {
   whitespace_width += letter_spacing;
   if (paragraphs.empty()) {
     throw std::runtime_error("Paragraphs cannot be empty");
@@ -158,6 +160,8 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
   } else {
     target.draw(vertices, states);
   }
+
+  remove_text_effects();
 }
 
 // Measure the length of the next word, if it overflows move it the next line
@@ -179,14 +183,14 @@ void engine::page::ensure_line_break(const paragraph &paragraph) const {
 
     switch (paragraph[curr_char]) {
       case L' ':
-        word_width += whitespace_width;
+        word_width += whitespace_width + letter_spacing_factor;
         break;
       case L'\t':
         word_width += whitespace_width * 4;
         break;
       default:
-        const auto &glyph{font->getGlyph(paragraph[curr_char], font_size, false)};
-        word_width += glyph.advance + letter_spacing;
+        const auto &glyph{font->getGlyph(paragraph[curr_char], font_size, is_bold)};
+        word_width += glyph.advance + letter_spacing + letter_spacing_factor;
         break;
     }
 
@@ -239,7 +243,7 @@ void engine::page::ensure_updated() const {
 
     switch (curr_char) {
       case L' ':
-        x += whitespace_width;
+        x += whitespace_width + letter_spacing_factor;
         break;
       case L'\t':
         x += whitespace_width * 4;
@@ -254,12 +258,11 @@ void engine::page::ensure_updated() const {
     max_y = std::max(max_y, y);
 
   } else {
-    const auto &glyph = font->getGlyph(curr_char, font_size, false);
-    addGlyphQuad(vertices, sf::Vector2f(x, y), sf::Color::White, glyph, 0.f);
-    x += glyph.advance + letter_spacing;
+    const auto &glyph = font->getGlyph(curr_char, font_size, is_bold);
+    addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
+    x += glyph.advance + letter_spacing + letter_spacing_factor;
   }
 
-  remove_text_effects(paragraph);
   update_bounds();
   delay();
 }
@@ -267,12 +270,49 @@ void engine::page::ensure_updated() const {
 void engine::page::apply_text_effects(paragraph &paragraph) const {
   paragraph.add_starting_effects(current_character);
   // Set instance variables to ensure text effects are rendered
+  for (const auto &e : paragraph.get_active_effects()) {
+    switch (e.kind) {
+      case text_effect::kind::BOLD:
+        is_bold = true;
+        break;
+      case text_effect::kind::ITALIC:
+        italic_shear = 0.209f;
+        break;
+      case text_effect::kind::UNDERLINE:
+        is_underlined = true;
+        break;
+      case text_effect::kind::STRIKE_THROUGH:
+        is_strike_through = true;
+        break;
+      case text_effect::kind::UPPERCASE:
+        is_uppercase = true;
+      case text_effect::kind::DELAY:
+        typing_delay_factor = e.delay_factor;
+        break;
+      case text_effect::kind::SPACING:
+        letter_spacing_factor = e.letter_spacing_factor;
+        break;
+      case text_effect::kind::COLOR:
+        text_color = e.color;
+        break;
+      case text_effect::kind::CENTER:
+        break;
+    }
+  }
 }
 
-void engine::page::remove_text_effects(paragraph &paragraph) const {
+void engine::page::remove_text_effects() const {
   // Remove text effects which end at the current character
   // Reset all instance variables defining text style
-  paragraph.remove_ending_effects(current_character);
+  paragraphs[current_paragraph].remove_ending_effects(current_character);
+  is_bold = false;
+  is_underlined = false;
+  is_strike_through = false;
+  is_uppercase = false;
+  italic_shear = 0.f;
+  typing_delay_factor = 1.f;
+  letter_spacing_factor = 1.f;
+  text_color = sf::Color::White;
 }
 
 void engine::page::update_bounds() const {

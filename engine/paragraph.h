@@ -21,11 +21,13 @@ public:
 
     explicit paragraph(std::wstring &&c);
 
-    explicit paragraph(const char *c);
+    paragraph(std::wstring &&c, const std::vector<text_effect> &effects);
 
     const size_t length() const;
 
-    wchar_t operator[](size_t idx) const;
+    inline wchar_t operator[](size_t idx) const {
+      return contents[idx];
+    }
 
     iter begin() const;
 
