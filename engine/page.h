@@ -11,6 +11,7 @@
 #include <memory>
 #include <cmath>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "paragraph.h"
 #include "page_config.h"
 

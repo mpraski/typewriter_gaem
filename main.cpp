@@ -8,8 +8,9 @@ int main() {
 
   auto page_config{engine::make_page_config(
       "./res/type_right.ttf",
-      24u,
-      500.f
+      "./res/sounds",
+      32u,
+      600.f
   )};
 
   engine::page page{
@@ -19,9 +20,9 @@ int main() {
               L"Some few words that will overflow page width quite considerably.",
               {
                   engine::text_effect{engine::text_effect::kind::BOLD, 0, 4},
-                  engine::text_effect{engine::text_effect::kind::ITALIC, 5, 7},
+                  engine::text_effect{engine::text_effect::kind::ITALIC, 5, 8},
                   engine::text_effect{engine::text_effect::kind::DELAY, 10, 14}.with_delay(15.f),
-                  engine::text_effect{engine::text_effect::kind::SPACING, 15, 18}.with_letter_spacing(6.f),
+                  engine::text_effect{engine::text_effect::kind::SPACING, 15, 18}.with_letter_spacing(10.f),
                   engine::text_effect{engine::text_effect::kind::COLOR, 20, 24}.with_color(sf::Color::Red)
               }
           },
