@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
+set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_CXX_COMPILER "g++")
 project(typewriter_gaem)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -9,12 +11,25 @@ add_executable(typewriter_gaem main.cpp engine/page.cpp engine/page.h engine/par
 find_package(SFML REQUIRED system window graphics network audio)
 if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
-    target_link_libraries(
-            typewriter_gaem
-            sfml-system
-            sfml-window
-            sfml-graphics
-            sfml-network
-            sfml-audio
-    )
-endif()
+    if (APPLE)
+        target_link_libraries(
+                typewriter_gaem
+                "-framework sfml-window"
+                "-framework sfml-window"
+                "-framework sfml-graphics"
+                "-framework sfml-network"
+                "-framework sfml-audio"
+        )
+        set_target_properties(typewriter_gaem PROPERTIES LINK_FLAGS "-Wl,-F/Library/Frameworks")
+    endif ()
+    if (UNIX AND NOT APPLE)
+        target_link_libraries(
+                typewriter_gaem
+                sfml-system
+                sfml-window
+                sfml-graphics
+                sfml-network
+                sfml-audio
+        )
+    endif ()
+endif ()

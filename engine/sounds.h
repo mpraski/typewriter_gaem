@@ -20,6 +20,8 @@ private:
     const resource_pack<sf::SoundBuffer> *typewriter_clicks;
     mutable resource_pack<sf::Sound> sound_cache;
 
+    void play_with_cache(const std::string &key, const sf::SoundBuffer &buf) const;
+
     template<class It>
     static It random(It begin, It end) {
       long int sz{std::distance(begin, end)};

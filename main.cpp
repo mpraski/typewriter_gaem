@@ -11,8 +11,6 @@ int main() {
       "./res/sounds"
   )};
 
-  auto sounds{engine::sounds{resources}};
-
   engine::page page{
       resources,
       {
