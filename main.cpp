@@ -17,13 +17,10 @@ int main() {
       resources,
       {
           engine::paragraph{
-              L"Some few words that will overflow page width quite considerably.",
+              L"Through the darkness of future past, the magician longs to see, one chance out between two worlds, fire walk with me!",
               {
-                  engine::text_effect{engine::text_effect::kind::BOLD, 0, 4},
-                  engine::text_effect{engine::text_effect::kind::ITALIC, 5, 8},
-                  engine::text_effect{engine::text_effect::kind::DELAY, 10, 14}.with_delay(15.f),
-                  engine::text_effect{engine::text_effect::kind::SPACING, 15, 18}.with_letter_spacing(10.f),
-                  engine::text_effect{engine::text_effect::kind::COLOR, 20, 24}.with_color(sf::Color::Red)
+                  engine::text_effect{engine::text_effect::kind::DELAY, 100, 118}.with_delay(5.0f),
+                  engine::text_effect{engine::text_effect::kind::COLOR, 100, 118}.with_color(sf::Color::Red)
               }
           },
           engine::paragraph{

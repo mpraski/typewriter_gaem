@@ -31,9 +31,10 @@ template<class T>
 using resource_map = std::unordered_map<std::string, resource_pack<T>>;
 
 class resources {
-    const constexpr static auto ROOT_RESOURCE_CATEGORY = "<root>";
     const constexpr static auto DEFAULT_FONT = "type_right";
 public:
+    const constexpr static auto ROOT_RESOURCE_CATEGORY = "<root>";
+
     resources(
         const std::string &fonts_path,
         const std::string &sounds_path,

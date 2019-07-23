@@ -258,14 +258,13 @@ void engine::page::ensure_updated() const {
 
     max_x = std::max(max_x, x);
     max_y = std::max(max_y, y);
-
   } else {
     const auto &glyph = font->getGlyph(curr_char, font_size, is_bold);
     addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
     x += glyph.advance + letter_spacing + letter_spacing_factor;
-  }
 
-  snds.play_typewriter_click();
+    snds.play_typewriter_click();
+  }
 
   update_bounds();
   delay();

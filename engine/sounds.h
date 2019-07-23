@@ -14,6 +14,8 @@ public:
 
     void play_typewriter_click() const;
 
+    void play_typewriter_space() const;
+
 private:
     const resource_pack<sf::SoundBuffer> *typewriter_clicks;
     mutable resource_pack<sf::Sound> sound_cache;

@@ -23,3 +23,15 @@ void engine::sounds::play_typewriter_click() const {
     sound_cache[rand_buf->first].play();
   }
 }
+
+void engine::sounds::play_typewriter_space() const {
+  constexpr auto key{"typewriter_spacebar"};
+
+  if (auto it = sound_cache.find(key); it != sound_cache.end()) {
+    it->second.play();
+  } else {
+    const auto &buf{resources->get_sounds(resources::ROOT_RESOURCE_CATEGORY).at(key)};
+    sound_cache.emplace(key, buf);
+    sound_cache[key].play();
+  }
+}
