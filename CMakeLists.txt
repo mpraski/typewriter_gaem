@@ -14,7 +14,7 @@ if (SFML_FOUND)
     if (APPLE)
         target_link_libraries(
                 typewriter_gaem
-                "-framework sfml-window"
+                "-framework sfml-system"
                 "-framework sfml-window"
                 "-framework sfml-graphics"
                 "-framework sfml-network"
