@@ -1,20 +1,20 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-#include "engine/page.h"
+#include "engine/engine.h"
 
 int main() {
   sf::RenderWindow window(sf::VideoMode(200, 200), "FSML works");
 
-  auto page_config{engine::make_page_config(
-      "./res/type_right.ttf",
-      "./res/sounds",
-      32u,
-      600.f
+  auto resources{engine::make_resources(
+      "./res/fonts",
+      "./res/sounds"
   )};
 
+  auto sounds{engine::sounds{resources}};
+
   engine::page page{
-      page_config,
+      resources,
       {
           engine::paragraph{
               L"Some few words that will overflow page width quite considerably.",

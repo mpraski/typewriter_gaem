@@ -12,13 +12,14 @@
 #include <cmath>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include "game_state.h"
 #include "paragraph.h"
-#include "page_config.h"
+#include "sounds.h"
 
 namespace engine {
-class page : public sf::Drawable, public sf::Transformable {
+class page : public game_state, public sf::Drawable, public sf::Transformable {
 public:
-    page(const page_config_ptr &config, std::vector<paragraph> &&ps);
+    page(const resources_ptr &rptr, std::vector<paragraph> &&ps);
 
     void add_paragraph(paragraph &&paragraph);
 
@@ -31,8 +32,8 @@ public:
     sf::FloatRect get_local_bounds() const;
 
 private:
-    page_config_ptr config;
-    // Font config
+    sounds snds;
+    // Font configuration
     const sf::Font *font;
     unsigned font_size;
     // Character and paragraph cursor
@@ -85,7 +86,7 @@ private:
 
     inline void new_line() const {
       y += line_spacing;
-      x = config->margin_horizontal;
+      x = resources->margin_horizontal;
     }
 };
 }

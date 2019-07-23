@@ -66,10 +66,11 @@ void addGlyphQuad(sf::VertexArray &vertices,
 }
 }
 
-engine::page::page(const page_config_ptr &config, std::vector<paragraph> &&ps) :
-    config{config},
-    font{config->font},
-    font_size{config->font_size},
+engine::page::page(const resources_ptr &rptr, std::vector<paragraph> &&ps) :
+    game_state{rptr},
+    snds{rptr},
+    font{resources->font},
+    font_size{resources->font_size},
     current_paragraph{},
     current_character{},
     checked_character{},
@@ -79,10 +80,10 @@ engine::page::page(const page_config_ptr &config, std::vector<paragraph> &&ps) :
     bounds{},
     end_of_text{},
     needs_update{true},
-    x{config->margin_horizontal},
-    y{config->margin_vertical + static_cast<float>(font_size)},
-    min_x{config->margin_horizontal + static_cast<float>(font_size)},
-    min_y{config->margin_vertical + static_cast<float>(font_size)},
+    x{resources->margin_horizontal},
+    y{resources->margin_vertical + static_cast<float>(font_size)},
+    min_x{resources->margin_horizontal + static_cast<float>(font_size)},
+    min_y{resources->margin_vertical + static_cast<float>(font_size)},
     max_x{},
     max_y{},
     is_bold{},
@@ -92,8 +93,8 @@ engine::page::page(const page_config_ptr &config, std::vector<paragraph> &&ps) :
     is_center{},
     italic_shear{},
     whitespace_width{font->getGlyph(L' ', font_size, false).advance},
-    letter_spacing{(whitespace_width / 3.f) * (config->letter_spacing_factor - 1.f)},
-    line_spacing{font->getLineSpacing(font_size) * config->line_spacing_factor},
+    letter_spacing{(whitespace_width / 3.f) * (resources->letter_spacing_factor - 1.f)},
+    line_spacing{font->getLineSpacing(font_size) * resources->line_spacing_factor},
     typing_delay_factor{1.f},
     letter_spacing_factor{1.f},
     text_color{sf::Color::White} {
@@ -200,7 +201,7 @@ void engine::page::ensure_line_break(const paragraph &paragraph) const {
 
   printf("\nx: %f, y: %f, word_width: %f\n", x, y, word_width);
 
-  if (x + word_width + config->margin_horizontal >= config->page_width) {
+  if (x + word_width + resources->margin_horizontal >= resources->page_width) {
     new_line();
 
     min_x = std::min(min_x, x);
@@ -251,7 +252,7 @@ void engine::page::ensure_updated() const {
         break;
       case L'\n':
         y += line_spacing;
-        x = config->margin_horizontal;
+        x = resources->margin_horizontal;
         break;
     }
 
@@ -263,6 +264,8 @@ void engine::page::ensure_updated() const {
     addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
     x += glyph.advance + letter_spacing + letter_spacing_factor;
   }
+
+  snds.play_typewriter_click();
 
   update_bounds();
   delay();
@@ -327,7 +330,7 @@ void engine::page::delay() const {
   sf::Clock clock;
   sf::Time time;
 
-  while (time.asMilliseconds() < config->typing_delay * typing_delay_factor) {
+  while (time.asMilliseconds() < resources->typing_delay * typing_delay_factor) {
     time += clock.getElapsedTime();
   }
 }
