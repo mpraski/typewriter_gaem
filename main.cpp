@@ -15,7 +15,7 @@ int main() {
   engine::page page{
       resources,
       {
-          /*new engine::paragraph(
+          new engine::paragraph(
               resources,
               L"Through the darkness of future past, the magician longs to see, one chance out between two worlds, fire walk with me!",
               {
@@ -23,7 +23,7 @@ int main() {
                   engine::text_effect{engine::text_effect::kind::DELAY, 100, 118}.with_delay(5.0f),
                   engine::text_effect{engine::text_effect::kind::COLOR, 100, 118}.with_color(sf::Color::Red)
               }
-          ),*/
+          ),
           new engine::dialog{
               resources,
               L"Conway",

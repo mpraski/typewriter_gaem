@@ -84,6 +84,8 @@ private:
 
     void ensure_updated() const;
 
+    void load_global_text_effects(printable_iterator it);
+
     void apply_global_text_effects(size_t idx) const;
 
     void apply_text_effects(const printable &printable) const;
@@ -101,11 +103,12 @@ private:
     void delay() const;
 
     inline void new_line() const {
+      rect(current_printable).top = y;
+
       y += line_spacing;
       x = resources->margin_horizontal;
       buffer.push_back(L'\n');
 
-      rect(current_printable).top = y;
       rect(current_printable).left = x;
     }
 

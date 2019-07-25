@@ -10,7 +10,7 @@ engine::paragraph::paragraph(
     std::wstring &&c,
     std::vector<engine::text_effect> &&es
 ) : printable{rptr, std::move(c)} {
-  prepare(contents);
+  add_tab(contents);
   for (const auto &e: es) {
     effects[e.begin].push_back(e);
   }

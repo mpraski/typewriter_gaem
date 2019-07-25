@@ -11,19 +11,23 @@ engine::dialog::dialog(
 ) : printable{rptr, person + L":\t" + speech},
     effects_on_hover{},
     effects_off_hover{} {
-  effects_off_hover[0].push_back(engine::text_effect{engine::text_effect::kind::BOLD, 0, person.length()});
+  effects_off_hover[0].push_back(text_effect{text_effect::kind::BOLD, 0, person.length()});
   effects_off_hover[0].push_back(
-      engine::text_effect{engine::text_effect::kind::COLOR, 0, contents.length()}.with_color(sf::Color::Yellow));
+      text_effect{text_effect::kind::COLOR, 0, contents.length()}.with_color(sf::Color::Yellow));
 
-  effects_on_hover[0].push_back(engine::text_effect{engine::text_effect::kind::BOLD, 0, person.length()});
+  effects_on_hover[0].push_back(text_effect{text_effect::kind::BOLD, 0, person.length()});
   effects_on_hover[0].push_back(
-      engine::text_effect{engine::text_effect::kind::COLOR, 0, contents.length()}.with_color(sf::Color::Cyan));
+      text_effect{text_effect::kind::COLOR, 0, contents.length()}.with_color(sf::Color::Cyan));
 
   effects = effects_off_hover;
 }
 
+bool engine::dialog::interactive() const {
+  return true;
+}
+
 void engine::dialog::on_hover_start() {
-  effects.clear();
+  effects = effects_on_hover;
 }
 
 void engine::dialog::on_hover_end() {

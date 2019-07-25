@@ -23,11 +23,11 @@ wchar_t engine::printable::operator[](size_t idx) const {
   return contents[idx];
 }
 
-const size_t engine::printable::length() const {
+size_t engine::printable::length() const {
   return contents.length();
 }
 
-const void engine::printable::load_effects(size_t idx, engine::printable::back_inserter it) const {
+void engine::printable::load_effects(size_t idx, engine::printable::back_inserter it) const {
   if (auto k{effects.find(idx)}; k != effects.end())
     std::copy(
         std::cbegin(k->second),
@@ -36,7 +36,7 @@ const void engine::printable::load_effects(size_t idx, engine::printable::back_i
     );
 }
 
-bool engine::printable::needs_update() const {
+bool engine::printable::interactive() const {
   return false;
 }
 

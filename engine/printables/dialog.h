@@ -21,6 +21,8 @@ private:
     effect_map effects_on_hover;
     effect_map effects_off_hover;
 
+    bool interactive() const override;
+
     void on_hover_start() override;
 
     void on_hover_end() override;

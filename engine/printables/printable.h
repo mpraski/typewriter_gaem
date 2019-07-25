@@ -28,13 +28,13 @@ public:
     wchar_t operator[](size_t idx) const;
 
     // Length of underlying string
-    const size_t length() const;
+    size_t length() const;
 
     // Push the text effects starting at idx to the back insert iterator
-    const void load_effects(size_t idx, back_inserter it) const;
+    void load_effects(size_t idx, back_inserter it) const;
 
     // Specific callbacks relating to the mouse events inside the printable
-    virtual bool needs_update() const;
+    virtual bool interactive() const;
 
     virtual void on_hover_start();
 

@@ -110,7 +110,7 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
 
   current_printable = std::begin(printables);
   rect(current_printable).top = resources->margin_vertical;
-  rect(current_printable).left = resources->margin_horizontal + static_cast<float>(resources->font_size);
+  rect(current_printable).left = x;
 }
 
 bool engine::page::text_end() const {
@@ -119,7 +119,7 @@ bool engine::page::text_end() const {
 
 void engine::page::advance() {
   if (current_character == pointer(current_printable)->length() - 1
-      && std::next(current_printable) == printables.end()) {
+      && std::next(current_printable) == std::end(printables)) {
     end_of_text = true;
 
     rect(current_printable).width = max_x - min_x;
@@ -131,6 +131,10 @@ void engine::page::advance() {
       rect(current_printable).width = max_x - min_x;
       rect(current_printable).height = max_y - min_y;
 
+      if (current_printable == std::begin(printables)) {
+        rect(current_printable).height += line_spacing;
+      }
+
       current_printable = std::next(current_printable);
       checked_character = current_character = 0;
 
@@ -141,10 +145,6 @@ void engine::page::advance() {
 }
 
 void engine::page::input() {
-  vertices.clear();
-  x = resources->margin_horizontal;
-  y = resources->margin_vertical + static_cast<float>(resources->font_size);
-
   apply_mouse_hover(resources->mouse_position());
   redraw();
 }
@@ -278,6 +278,34 @@ void engine::page::ensure_updated() const {
   delay();
 }
 
+void engine::page::load_global_text_effects(printable_iterator it) {
+  const auto &printable{*pointer(it)};
+  auto idx{index(it)};
+
+  for (size_t i{0}; i < printable.length(); ++i) {
+    new_effects.clear();
+    printable.load_effects(i, std::back_inserter(new_effects));
+
+    if (!new_effects.empty()) {
+      global_effects[idx].clear();
+      for (const auto &e : new_effects) {
+        // Construct in place using emplace to avoid copying via push_back
+        // This is a hot path, so maybe it's worth it
+        global_effects[idx].emplace_back(
+            e.kind,
+            idx,
+            idx + (e.end - e.begin),
+            e.delay_factor,
+            e.letter_spacing_factor,
+            e.color
+        );
+      }
+    }
+
+    idx++;
+  }
+}
+
 void engine::page::apply_global_text_effects(size_t idx) const {
   active_effects.insert(
       std::end(active_effects),
@@ -293,7 +321,8 @@ void engine::page::apply_text_effects(const printable &printable) const {
   printable.load_effects(current_character, std::back_inserter(new_effects));
 
   for (const auto &e : new_effects) {
-    global_effects[buffer.length()].push_back(e.to_page_coords(buffer.length()));
+    auto pos{buffer.length() ? buffer.length() - 1 : 0u};
+    global_effects[pos].push_back(e.to_page_coords(pos));
   }
 
   active_effects.insert(
@@ -341,13 +370,13 @@ void engine::page::set_text_variables() const {
 void engine::page::remove_global_text_effects(size_t idx) const {
   active_effects.erase(
       std::remove_if(
-          active_effects.begin(),
-          active_effects.end(),
+          std::begin(active_effects),
+          std::end(active_effects),
           [&](const auto &e) {
             return idx == e.end;
           }
       ),
-      active_effects.end()
+      std::end(active_effects)
   );
 
   unset_text_variables();
@@ -356,13 +385,13 @@ void engine::page::remove_global_text_effects(size_t idx) const {
 void engine::page::remove_text_effects() const {
   active_effects.erase(
       std::remove_if(
-          active_effects.begin(),
-          active_effects.end(),
+          std::begin(active_effects),
+          std::end(active_effects),
           [&](const auto &e) {
             return current_character == e.end;
           }
       ),
-      active_effects.end()
+      std::end(active_effects)
   );
 
   unset_text_variables();
@@ -401,31 +430,24 @@ void engine::page::apply_mouse_hover(sf::Vector2i cursor) {
     auto &pbounds{rect(p)};
 
     // To-Do: Only check printables in current viewport
-    if (pbounds.contains(cursor.x, cursor.y)) {
-      std::wcout << L"CONTAINS: " << printable.str() << std::endl;
-      printable.on_hover_start();
-    } else {
-      printable.on_hover_end();
-    }
-
-    auto idx{index(p)};
-    for (size_t i{0}; i < printable.length(); ++i) {
-      new_effects.clear();
-      printable.load_effects(i, std::back_inserter(new_effects));
-
-      if (!new_effects.empty()) {
-        global_effects[idx].clear();
-        for (const auto &e : new_effects) {
-          global_effects[idx].push_back(e.to_page_coords(idx));
-        }
+    if (printable.interactive()) {
+      if (pbounds.contains(cursor.x, cursor.y)) {
+        printable.on_hover_start();
+      } else {
+        printable.on_hover_end();
       }
 
-      idx++;
+      load_global_text_effects(p);
     }
   }
 }
 
 void engine::page::redraw() {
+  vertices.clear();
+
+  x = resources->margin_horizontal;
+  y = resources->margin_vertical + static_cast<float>(resources->font_size);
+
   auto prev_char{buffer[0]};
   size_t i{0};
 
@@ -445,6 +467,7 @@ void engine::page::redraw() {
           break;
         case L'\n':
           y += line_spacing;
+          // What the hell, why is this 2.f offset required?
           x = resources->margin_horizontal - 2.f;
           break;
       }

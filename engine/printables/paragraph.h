@@ -25,16 +25,6 @@ public:
     );
 
 private:
-    inline void prepare(std::wstring &s) {
-      add_tab(s);
-    }
-
-    static inline void trim_inside(std::wstring &s) {
-      s.erase(std::unique(s.begin(), s.end(), [](wchar_t l, wchar_t r) {
-        return (l == r) && std::iswspace(l);
-      }), s.end());
-    }
-
     static inline void add_tab(std::wstring &s) {
       s.insert(s.begin(), L'\t');
     }
