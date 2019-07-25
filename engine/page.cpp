@@ -66,24 +66,26 @@ void addGlyphQuad(sf::VertexArray &vertices,
 }
 }
 
-engine::page::page(const resources_ptr &rptr, std::vector<paragraph> &&ps) :
+engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     game_state{rptr},
-    snds{rptr},
-    font{resources->font},
-    font_size{resources->font_size},
-    current_paragraph{},
+    audio{rptr},
+    buffer{},
+    printables{},
+    active_effects{},
+    new_effects(),
+    global_effects{},
+    current_printable{},
     current_character{},
     checked_character{},
-    paragraphs{std::move(ps)},
     vertices{sf::Triangles},
     vertices_buffer{sf::Triangles, sf::VertexBuffer::Static},
     bounds{},
     end_of_text{},
     needs_update{true},
     x{resources->margin_horizontal},
-    y{resources->margin_vertical + static_cast<float>(font_size)},
-    min_x{resources->margin_horizontal + static_cast<float>(font_size)},
-    min_y{resources->margin_vertical + static_cast<float>(font_size)},
+    y{resources->margin_vertical + static_cast<float>(resources->font_size)},
+    min_x{resources->margin_horizontal + static_cast<float>(resources->font_size)},
+    min_y{resources->margin_vertical + static_cast<float>(resources->font_size)},
     max_x{},
     max_y{},
     is_bold{},
@@ -92,27 +94,23 @@ engine::page::page(const resources_ptr &rptr, std::vector<paragraph> &&ps) :
     is_uppercase{},
     is_center{},
     italic_shear{},
-    whitespace_width{font->getGlyph(L' ', font_size, false).advance},
+    whitespace_width{resources->font->getGlyph(L' ', resources->font_size, false).advance},
     letter_spacing{(whitespace_width / 3.f) * (resources->letter_spacing_factor - 1.f)},
-    line_spacing{font->getLineSpacing(font_size) * resources->line_spacing_factor},
+    line_spacing{resources->font->getLineSpacing(resources->font_size) * resources->line_spacing_factor},
     typing_delay_factor{1.f},
     letter_spacing_factor{1.f},
     text_color{sf::Color::White} {
   whitespace_width += letter_spacing;
-  if (paragraphs.empty()) {
-    throw std::runtime_error("Paragraphs cannot be empty");
+
+  for (auto p : ps) printables.emplace_back(p, sf::FloatRect{}, 0u);
+
+  if (printables.empty()) {
+    throw std::runtime_error("Printables cannot be empty");
   }
-}
 
-void engine::page::add_paragraph(paragraph &&paragraph) {
-  paragraphs.emplace_back(std::move(paragraph));
-}
-
-void engine::page::reset_paragraphs(std::vector<paragraph> &ps) {
-  paragraphs.clear();
-  paragraphs.insert(paragraphs.end(),
-                    std::make_move_iterator(std::begin(ps)),
-                    std::make_move_iterator(std::end(ps)));
+  current_printable = std::begin(printables);
+  rect(current_printable).top = resources->margin_vertical;
+  rect(current_printable).left = resources->margin_horizontal + static_cast<float>(resources->font_size);
 }
 
 bool engine::page::text_end() const {
@@ -120,33 +118,42 @@ bool engine::page::text_end() const {
 }
 
 void engine::page::advance() {
-  const auto &paragraph{paragraphs[current_paragraph]};
-
-  if (current_character == paragraph.length() - 1
-      && current_paragraph == paragraphs.size() - 1) {
+  if (current_character == pointer(current_printable)->length() - 1
+      && std::next(current_printable) == printables.end()) {
     end_of_text = true;
+
+    rect(current_printable).width = max_x - min_x;
+    rect(current_printable).height = max_y - min_y;
   } else {
-    if (current_character != paragraph.length() - 1) {
+    if (current_character != pointer(current_printable)->length() - 1) {
       current_character++;
     } else {
-      current_paragraph++;
+      rect(current_printable).width = max_x - min_x;
+      rect(current_printable).height = max_y - min_y;
+
+      current_printable = std::next(current_printable);
       checked_character = current_character = 0;
+
+      index(current_printable) = buffer.length();
     }
     needs_update = true;
   }
 }
 
-sf::FloatRect engine::page::get_local_bounds() const {
-  ensure_updated();
+void engine::page::input() {
+  vertices.clear();
+  x = resources->margin_horizontal;
+  y = resources->margin_vertical + static_cast<float>(resources->font_size);
 
-  return bounds;
+  apply_mouse_hover(resources->mouse_position());
+  redraw();
 }
 
 void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const {
   ensure_updated();
 
   states.transform *= getTransform();
-  states.texture = &font->getTexture(font_size);
+  states.texture = &resources->font->getTexture(resources->font_size);
 
   // Update the vertex buffer if it is being used
   if (sf::VertexBuffer::isAvailable()) {
@@ -167,7 +174,7 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
 }
 
 // Measure the length of the next word, if it overflows move it the next line
-void engine::page::ensure_line_break(const paragraph &paragraph) const {
+void engine::page::ensure_line_break(const printable &printable) const {
   if (current_character <= checked_character)
     return;
 
@@ -176,14 +183,14 @@ void engine::page::ensure_line_break(const paragraph &paragraph) const {
   float word_width{};
 
   do {
-    if (paragraph[curr_char] == L'\r')
+    if (printable[curr_char] == L'\r')
       continue;
 
-    printf("(%c)", paragraph[curr_char]);
+    printf("(%c)", printable[curr_char]);
 
-    word_width += font->getKerning(paragraph[prev_char], paragraph[curr_char], font_size);
+    word_width += resources->font->getKerning(printable[prev_char], printable[curr_char], resources->font_size);
 
-    switch (paragraph[curr_char]) {
+    switch (printable[curr_char]) {
       case L' ':
         word_width += whitespace_width + letter_spacing_factor;
         break;
@@ -191,13 +198,13 @@ void engine::page::ensure_line_break(const paragraph &paragraph) const {
         word_width += whitespace_width * 4;
         break;
       default:
-        const auto &glyph{font->getGlyph(paragraph[curr_char], font_size, is_bold)};
+        const auto &glyph{resources->font->getGlyph(printable[curr_char], resources->font_size, is_bold)};
         word_width += glyph.advance + letter_spacing + letter_spacing_factor;
         break;
     }
 
     checked_character = prev_char = curr_char;
-  } while (!std::iswspace(paragraph[curr_char++]));
+  } while (!std::iswspace(printable[curr_char++]));
 
   printf("\nx: %f, y: %f, word_width: %f\n", x, y, word_width);
 
@@ -219,12 +226,11 @@ void engine::page::ensure_updated() const {
 
   needs_update = false;
 
-  auto &paragraph{paragraphs[current_paragraph]};
-  wchar_t prev_char{paragraph[current_character ? current_character - 1u : 0u]};
-  wchar_t curr_char{paragraph[current_character]};
+  wchar_t prev_char{(*pointer(current_printable))[current_character ? current_character - 1u : 0u]};
+  wchar_t curr_char{(*pointer(current_printable))[current_character]};
 
-  // If this is the new paragraph, add a newline
-  if (current_paragraph && !current_character)
+  // If this is the new printable, add a newline
+  if (current_printable != std::begin(printables) && !current_character)
     new_line();
 
   // Skip to avoid glitches
@@ -232,11 +238,13 @@ void engine::page::ensure_updated() const {
     return;
 
   // Ensure line is broken if next word exceeds page width
-  ensure_line_break(paragraph);
+  ensure_line_break(*pointer(current_printable));
   // Load text effects starting at this position
-  apply_text_effects(paragraph);
+  apply_text_effects(*pointer(current_printable));
+  // Add to buffer
+  buffer.push_back(curr_char);
 
-  x += font->getKerning(prev_char, curr_char, font_size);
+  x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
 
   // Handle special characters
   if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
@@ -259,21 +267,46 @@ void engine::page::ensure_updated() const {
     max_x = std::max(max_x, x);
     max_y = std::max(max_y, y);
   } else {
-    const auto &glyph = font->getGlyph(curr_char, font_size, is_bold);
+    const auto &glyph = resources->font->getGlyph(curr_char, resources->font_size, is_bold);
     addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
     x += glyph.advance + letter_spacing + letter_spacing_factor;
 
-    snds.play_typewriter_click();
+    audio.play_typewriter_click();
   }
 
   update_bounds();
   delay();
 }
 
-void engine::page::apply_text_effects(paragraph &paragraph) const {
-  paragraph.add_starting_effects(current_character);
-  // Set instance variables to ensure text effects are rendered
-  for (const auto &e : paragraph.get_active_effects()) {
+void engine::page::apply_global_text_effects(size_t idx) const {
+  active_effects.insert(
+      std::end(active_effects),
+      std::begin(global_effects[idx]),
+      std::end(global_effects[idx])
+  );
+
+  set_text_variables();
+}
+
+void engine::page::apply_text_effects(const printable &printable) const {
+  new_effects.clear();
+  printable.load_effects(current_character, std::back_inserter(new_effects));
+
+  for (const auto &e : new_effects) {
+    global_effects[buffer.length()].push_back(e.to_page_coords(buffer.length()));
+  }
+
+  active_effects.insert(
+      std::end(active_effects),
+      std::begin(new_effects),
+      std::end(new_effects)
+  );
+
+  set_text_variables();
+}
+
+void engine::page::set_text_variables() const {
+  for (const auto &e : active_effects) {
     switch (e.kind) {
       case text_effect::kind::BOLD:
         is_bold = true;
@@ -289,6 +322,7 @@ void engine::page::apply_text_effects(paragraph &paragraph) const {
         break;
       case text_effect::kind::UPPERCASE:
         is_uppercase = true;
+        break;
       case text_effect::kind::DELAY:
         typing_delay_factor = e.delay_factor;
         break;
@@ -304,10 +338,37 @@ void engine::page::apply_text_effects(paragraph &paragraph) const {
   }
 }
 
+void engine::page::remove_global_text_effects(size_t idx) const {
+  active_effects.erase(
+      std::remove_if(
+          active_effects.begin(),
+          active_effects.end(),
+          [&](const auto &e) {
+            return idx == e.end;
+          }
+      ),
+      active_effects.end()
+  );
+
+  unset_text_variables();
+}
+
 void engine::page::remove_text_effects() const {
-  // Remove text effects which end at the current character
-  // Reset all instance variables defining text style
-  paragraphs[current_paragraph].remove_ending_effects(current_character);
+  active_effects.erase(
+      std::remove_if(
+          active_effects.begin(),
+          active_effects.end(),
+          [&](const auto &e) {
+            return current_character == e.end;
+          }
+      ),
+      active_effects.end()
+  );
+
+  unset_text_variables();
+}
+
+void engine::page::unset_text_variables() const {
   is_bold = false;
   is_underlined = false;
   is_strike_through = false;
@@ -331,5 +392,71 @@ void engine::page::delay() const {
 
   while (time.asMilliseconds() < resources->typing_delay * typing_delay_factor) {
     time += clock.getElapsedTime();
+  }
+}
+
+void engine::page::apply_mouse_hover(sf::Vector2i cursor) {
+  for (auto p{std::begin(printables)}; p != std::end(printables); ++p) {
+    auto &printable{*pointer(p)};
+    auto &pbounds{rect(p)};
+
+    // To-Do: Only check printables in current viewport
+    if (pbounds.contains(cursor.x, cursor.y)) {
+      std::wcout << L"CONTAINS: " << printable.str() << std::endl;
+      printable.on_hover_start();
+    } else {
+      printable.on_hover_end();
+    }
+
+    auto idx{index(p)};
+    for (size_t i{0}; i < printable.length(); ++i) {
+      new_effects.clear();
+      printable.load_effects(i, std::back_inserter(new_effects));
+
+      if (!new_effects.empty()) {
+        global_effects[idx].clear();
+        for (const auto &e : new_effects) {
+          global_effects[idx].push_back(e.to_page_coords(idx));
+        }
+      }
+
+      idx++;
+    }
+  }
+}
+
+void engine::page::redraw() {
+  auto prev_char{buffer[0]};
+  size_t i{0};
+
+  // To-Do draw a black strip over the text in question before overwriting it
+  for (auto curr_char : buffer.from(0u)) {
+    apply_global_text_effects(i);
+
+    x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
+
+    if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
+      switch (curr_char) {
+        case L' ':
+          x += whitespace_width + letter_spacing_factor;
+          break;
+        case L'\t':
+          x += whitespace_width * 4;
+          break;
+        case L'\n':
+          y += line_spacing;
+          x = resources->margin_horizontal - 2.f;
+          break;
+      }
+    } else {
+      const auto &glyph = resources->font->getGlyph(curr_char, resources->font_size, is_bold);
+      addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
+      x += glyph.advance + letter_spacing + letter_spacing_factor;
+    }
+
+    prev_char = curr_char;
+
+    remove_global_text_effects(i);
+    i++;
   }
 }

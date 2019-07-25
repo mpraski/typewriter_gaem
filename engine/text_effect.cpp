@@ -6,8 +6,8 @@
 
 engine::text_effect::text_effect(
     enum kind kind,
-    unsigned begin,
-    unsigned end,
+    size_t begin,
+    size_t end,
     float delay_factor,
     float letter_spacing_factor,
     sf::Color color
@@ -18,6 +18,17 @@ engine::text_effect::text_effect(
     letter_spacing_factor{letter_spacing_factor},
     color{color} {
 
+}
+
+engine::text_effect engine::text_effect::to_page_coords(size_t idx) const {
+  return {
+      kind,
+      idx,
+      idx + (end - begin),
+      delay_factor,
+      letter_spacing_factor,
+      color
+  };
 }
 
 engine::text_effect &engine::text_effect::with_delay(float df) {

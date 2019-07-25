@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <unordered_map>
 #include <vector>
+#include <functional>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
@@ -31,11 +32,12 @@ template<class T>
 using resource_map = std::unordered_map<std::string, resource_pack<T>>;
 
 class resources {
-    const constexpr static auto DEFAULT_FONT = "type_right";
+    const constexpr static auto DEFAULT_FONT = "MonoSpatial";
 public:
     const constexpr static auto ROOT_RESOURCE_CATEGORY = "<root>";
 
     resources(
+        sf::VideoMode mode,
         const std::string &fonts_path,
         const std::string &sounds_path,
         unsigned font_size = 24u,
@@ -45,7 +47,7 @@ public:
         float margin_horizontal = 20.f,
         float letter_spacing_factor = 1.f,
         float line_spacing_factor = 1.f,
-        unsigned typing_delay = 1000u
+        unsigned typing_delay = 500u
     );
 
     resources(const resources &p) = delete;
@@ -60,6 +62,12 @@ public:
 
     RESOURCE_GETTER(sounds);
 
+    void display(std::function<void(sf::RenderWindow &w)> f) const;
+
+    sf::Vector2i mouse_position() const;
+
+    sf::VideoMode mode;
+    mutable sf::RenderWindow window;
     const sf::Font *font;
     unsigned font_size;
     float page_width;

@@ -26,12 +26,14 @@ public:
 
     text_effect(
         kind kind,
-        unsigned begin,
-        unsigned end,
+        size_t begin,
+        size_t end,
         float delay_factor = 1.f,
         float letter_spacing_factor = 0.f,
         sf::Color color = sf::Color::White
     );
+
+    text_effect to_page_coords(size_t idx) const;
 
     text_effect &with_delay(float df = 1.f);
 
@@ -40,12 +42,14 @@ public:
     text_effect &with_color(sf::Color c = sf::Color::White);
 
     inline bool operator==(const text_effect &other) const noexcept {
-      return kind == other.kind;
+      return kind == other.kind
+             && begin == other.begin
+             && end == other.end;
     }
 
     kind kind;
-    unsigned begin;
-    unsigned end;
+    size_t begin;
+    size_t end;
     float delay_factor;
     float letter_spacing_factor;
     sf::Color color;
@@ -56,8 +60,8 @@ namespace std {
 template<>
 class hash<engine::text_effect> {
 public :
-    size_t operator()(const engine::text_effect &name) const {
-      return static_cast<size_t>(to_integral(name.kind));
+    size_t operator()(const engine::text_effect &e) const {
+      return static_cast<size_t>(to_integral(e.kind)) ^ e.begin ^ e.end;
     }
 
 private:
@@ -71,7 +75,7 @@ template<>
 class equal_to<engine::text_effect> {
 public:
     bool operator()(const engine::text_effect &l, const engine::text_effect &r) const {
-      return l.kind == r.kind;
+      return l == r;
     }
 };
 };

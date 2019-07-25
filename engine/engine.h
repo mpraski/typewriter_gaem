@@ -7,10 +7,11 @@
 
 #include "game_state.h"
 #include "page.h"
-#include "paragraph.h"
+#include "printables/paragraph.h"
+#include "printables/dialog.h"
 #include "resources.h"
 #include "sounds.h"
 #include "text_effect.h"
-#include "utils.h"
+#include "utilities/converters.h"
 
 #endif //TYPEWRITER_GAEM_ENGINE_H

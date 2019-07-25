@@ -10,38 +10,46 @@
 #include <cwctype>
 #include <memory>
 #include <cmath>
+#include <unordered_set>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "game_state.h"
-#include "paragraph.h"
 #include "sounds.h"
+#include "printables/printable.h"
+#include "utilities/text_buffer.h"
+
+#define pointer(IT) std::get<0>(*(IT))
+#define rect(IT) std::get<1>(*(IT))
+#define index(IT) std::get<2>(*(IT))
 
 namespace engine {
 class page : public game_state, public sf::Drawable, public sf::Transformable {
+    using printable_array = std::vector<std::tuple<std::unique_ptr<printable>, sf::FloatRect, size_t>>;
+    using printable_iterator = printable_array::iterator;
+    using effect_array = std::vector<text_effect>;
+    using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
 public:
-    page(const resources_ptr &rptr, std::vector<paragraph> &&ps);
-
-    void add_paragraph(paragraph &&paragraph);
-
-    void reset_paragraphs(std::vector<paragraph> &ps);
+    page(const resources_ptr &rptr, std::vector<printable *> &&ps);
 
     bool text_end() const;
 
     void advance();
 
-    sf::FloatRect get_local_bounds() const;
+    void input();
 
 private:
-    sounds snds;
-    // Font configuration
-    const sf::Font *font;
-    unsigned font_size;
+    sounds audio;
+    mutable text_buffer buffer;
+    // Core data
+    mutable printable_array printables;
+    mutable effect_array active_effects;
+    mutable effect_array new_effects;
+    mutable effect_map global_effects;
     // Character and paragraph cursor
-    unsigned current_paragraph;
+    printable_iterator current_printable;
     unsigned current_character;
     mutable unsigned checked_character;
-    // Paragraphs displayed on this page
-    mutable std::vector<paragraph> paragraphs;
     // SFML buffers
     mutable sf::VertexArray vertices;
     mutable sf::VertexBuffer vertices_buffer;
@@ -72,13 +80,21 @@ private:
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
-    void ensure_line_break(const paragraph &paragraph) const;
+    void ensure_line_break(const printable &printable) const;
 
     void ensure_updated() const;
 
-    void apply_text_effects(paragraph &paragraph) const;
+    void apply_global_text_effects(size_t idx) const;
+
+    void apply_text_effects(const printable &printable) const;
+
+    void set_text_variables() const;
+
+    void remove_global_text_effects(size_t idx) const;
 
     void remove_text_effects() const;
+
+    void unset_text_variables() const;
 
     void update_bounds() const;
 
@@ -87,7 +103,15 @@ private:
     inline void new_line() const {
       y += line_spacing;
       x = resources->margin_horizontal;
+      buffer.push_back(L'\n');
+
+      rect(current_printable).top = y;
+      rect(current_printable).left = x;
     }
+
+    void apply_mouse_hover(sf::Vector2i cursor);
+
+    void redraw();
 };
 }
 
