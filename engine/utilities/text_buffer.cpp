@@ -28,8 +28,12 @@ size_t engine::text_buffer::length() const {
   return data.size();
 }
 
-void engine::text_buffer::push_back(wchar_t c) {
+void engine::text_buffer::push(wchar_t c) {
   data.push_back(c);
+}
+
+void engine::text_buffer::pop() {
+  data.pop_back();
 }
 
 void engine::text_buffer::clear() {

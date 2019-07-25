@@ -17,6 +17,7 @@ engine::resources::resources(
     float line_spacing_factor,
     unsigned typing_delay)
     : mode{mode},
+      cursor_type{sf::Cursor::Arrow},
       window{mode, "Title"},
       font{},
       font_size{font_size},
@@ -52,7 +53,7 @@ engine::resources::resources(
   font = &fonts[ROOT_RESOURCE_CATEGORY][DEFAULT_FONT];
 }
 
-void engine::resources::display(std::function<void(sf::RenderWindow &w)> f) const {
+void engine::resources::display(const std::function<void(sf::RenderWindow &w)> &f) const {
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
@@ -67,4 +68,13 @@ void engine::resources::display(std::function<void(sf::RenderWindow &w)> f) cons
 
 sf::Vector2i engine::resources::mouse_position() const {
   return sf::Mouse::getPosition(window);
+}
+
+void engine::resources::set_cursor(sf::Cursor::Type type) const {
+  if (cursor_type != type) {
+    cursor_type = type;
+    if (sf::Cursor cursor; cursor.loadFromSystem(type)) {
+      window.setMouseCursor(cursor);
+    }
+  }
 }

@@ -26,7 +26,9 @@ public:
 
     size_t length() const;
 
-    void push_back(wchar_t c);
+    void push(wchar_t c);
+
+    void pop();
 
     void clear();
 

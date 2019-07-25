@@ -9,6 +9,8 @@ engine::dialog::dialog(
     const std::wstring &person,
     const std::wstring &speech
 ) : printable{rptr, person + L":\t" + speech},
+    on{},
+    update{},
     effects_on_hover{},
     effects_off_hover{} {
   effects_off_hover[0].push_back(text_effect{text_effect::kind::BOLD, 0, person.length()});
@@ -26,11 +28,29 @@ bool engine::dialog::interactive() const {
   return true;
 }
 
+bool engine::dialog::needs_update() const {
+  return update;
+}
+
 void engine::dialog::on_hover_start() {
+  if (on) {
+    update = false;
+    return;
+  } else {
+    update = true;
+    on = true;
+  }
   effects = effects_on_hover;
 }
 
 void engine::dialog::on_hover_end() {
+  if (!on) {
+    update = false;
+    return;
+  } else {
+    update = true;
+    on = false;
+  }
   effects = effects_off_hover;
 }
 

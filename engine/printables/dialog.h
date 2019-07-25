@@ -18,10 +18,14 @@ public:
     );
 
 private:
+    bool on;
+    bool update;
     effect_map effects_on_hover;
     effect_map effects_off_hover;
 
     bool interactive() const override;
+
+    bool needs_update() const override;
 
     void on_hover_start() override;
 

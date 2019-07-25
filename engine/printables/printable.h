@@ -36,6 +36,8 @@ public:
     // Specific callbacks relating to the mouse events inside the printable
     virtual bool interactive() const;
 
+    virtual bool needs_update() const;
+
     virtual void on_hover_start();
 
     virtual void on_hover_end();

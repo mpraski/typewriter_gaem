@@ -62,11 +62,14 @@ public:
 
     RESOURCE_GETTER(sounds);
 
-    void display(std::function<void(sf::RenderWindow &w)> f) const;
+    void display(const std::function<void(sf::RenderWindow &w)> &f) const;
 
     sf::Vector2i mouse_position() const;
 
+    void set_cursor(sf::Cursor::Type type) const;
+
     sf::VideoMode mode;
+    mutable sf::Cursor::Type cursor_type;
     mutable sf::RenderWindow window;
     const sf::Font *font;
     unsigned font_size;

@@ -40,6 +40,10 @@ bool engine::printable::interactive() const {
   return false;
 }
 
+bool engine::printable::needs_update() const {
+  return true;
+}
+
 void engine::printable::on_hover_start() {
 
 }

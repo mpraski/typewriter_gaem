@@ -122,14 +122,14 @@ void engine::page::advance() {
       && std::next(current_printable) == std::end(printables)) {
     end_of_text = true;
 
-    rect(current_printable).width = max_x - min_x;
-    rect(current_printable).height = max_y - min_y;
+    rect(current_printable).width = max_x - rect(current_printable).left;
+    rect(current_printable).height = max_y - rect(current_printable).top + static_cast<float>(resources->font_size) / 2;
   } else {
     if (current_character != pointer(current_printable)->length() - 1) {
       current_character++;
     } else {
-      rect(current_printable).width = max_x - min_x;
-      rect(current_printable).height = max_y - min_y;
+      rect(current_printable).width = max_x - rect(current_printable).left;
+      rect(current_printable).height = max_y - rect(current_printable).top;;
 
       if (current_printable == std::begin(printables)) {
         rect(current_printable).height += line_spacing;
@@ -178,8 +178,8 @@ void engine::page::ensure_line_break(const printable &printable) const {
   if (current_character <= checked_character)
     return;
 
-  unsigned curr_char{current_character};
-  unsigned prev_char{current_character};
+  size_t curr_char{current_character};
+  size_t prev_char{current_character};
   float word_width{};
 
   do {
@@ -215,8 +215,6 @@ void engine::page::ensure_line_break(const printable &printable) const {
     min_y = std::min(min_y, y);
     max_x = std::max(max_x, x);
     max_y = std::max(max_y, y);
-
-    update_bounds();
   }
 }
 
@@ -229,22 +227,23 @@ void engine::page::ensure_updated() const {
   wchar_t prev_char{(*pointer(current_printable))[current_character ? current_character - 1u : 0u]};
   wchar_t curr_char{(*pointer(current_printable))[current_character]};
 
-  // If this is the new printable, add a newline
-  if (current_printable != std::begin(printables) && !current_character)
-    new_line();
-
   // Skip to avoid glitches
   if (curr_char == L'\r')
     return;
+
+  // If this is the new printable, add a newline
+  if (current_printable != std::begin(printables) && !current_character) {
+    new_line();
+  } else {
+    x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
+  }
 
   // Ensure line is broken if next word exceeds page width
   ensure_line_break(*pointer(current_printable));
   // Load text effects starting at this position
   apply_text_effects(*pointer(current_printable));
   // Add to buffer
-  buffer.push_back(curr_char);
-
-  x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
+  buffer.push(curr_char);
 
   // Handle special characters
   if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
@@ -274,7 +273,6 @@ void engine::page::ensure_updated() const {
     audio.play_typewriter_click();
   }
 
-  update_bounds();
   delay();
 }
 
@@ -289,16 +287,7 @@ void engine::page::load_global_text_effects(printable_iterator it) {
     if (!new_effects.empty()) {
       global_effects[idx].clear();
       for (const auto &e : new_effects) {
-        // Construct in place using emplace to avoid copying via push_back
-        // This is a hot path, so maybe it's worth it
-        global_effects[idx].emplace_back(
-            e.kind,
-            idx,
-            idx + (e.end - e.begin),
-            e.delay_factor,
-            e.letter_spacing_factor,
-            e.color
-        );
+        global_effects[idx].push_back(e.to_page_coords(idx));
       }
     }
 
@@ -408,13 +397,6 @@ void engine::page::unset_text_variables() const {
   text_color = sf::Color::White;
 }
 
-void engine::page::update_bounds() const {
-  bounds.left = min_x;
-  bounds.top = min_y;
-  bounds.width = max_x - min_x;
-  bounds.height = max_y - min_y;
-}
-
 void engine::page::delay() const {
   sf::Clock clock;
   sf::Time time;
@@ -437,7 +419,9 @@ void engine::page::apply_mouse_hover(sf::Vector2i cursor) {
         printable.on_hover_end();
       }
 
-      load_global_text_effects(p);
+      if (printable.needs_update()) {
+        load_global_text_effects(p);
+      }
     }
   }
 }
@@ -448,12 +432,12 @@ void engine::page::redraw() {
   x = resources->margin_horizontal;
   y = resources->margin_vertical + static_cast<float>(resources->font_size);
 
-  auto prev_char{buffer[0]};
-  size_t i{0};
+  wchar_t curr_char, prev_char{buffer[0]};
 
-  // To-Do draw a black strip over the text in question before overwriting it
-  for (auto curr_char : buffer.from(0u)) {
+  auto range{buffer.from(0u)};
+  for (size_t i{0}; i < range.length(); ++i) {
     apply_global_text_effects(i);
+    curr_char = range[i];
 
     x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
 
@@ -467,8 +451,7 @@ void engine::page::redraw() {
           break;
         case L'\n':
           y += line_spacing;
-          // What the hell, why is this 2.f offset required?
-          x = resources->margin_horizontal - 2.f;
+          x = resources->margin_horizontal;
           break;
       }
     } else {
@@ -478,8 +461,6 @@ void engine::page::redraw() {
     }
 
     prev_char = curr_char;
-
     remove_global_text_effects(i);
-    i++;
   }
 }

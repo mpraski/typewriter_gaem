@@ -48,8 +48,8 @@ private:
     mutable effect_map global_effects;
     // Character and paragraph cursor
     printable_iterator current_printable;
-    unsigned current_character;
-    mutable unsigned checked_character;
+    size_t current_character;
+    mutable size_t checked_character;
     // SFML buffers
     mutable sf::VertexArray vertices;
     mutable sf::VertexBuffer vertices_buffer;
@@ -98,8 +98,6 @@ private:
 
     void unset_text_variables() const;
 
-    void update_bounds() const;
-
     void delay() const;
 
     inline void new_line() const {
@@ -107,7 +105,7 @@ private:
 
       y += line_spacing;
       x = resources->margin_horizontal;
-      buffer.push_back(L'\n');
+      buffer.push(L'\n');
 
       rect(current_printable).left = x;
     }
