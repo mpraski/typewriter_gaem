@@ -66,9 +66,12 @@ public:
 
     sf::Vector2i mouse_position() const;
 
+    bool mouse_moved() const;
+
     void set_cursor(sf::Cursor::Type type) const;
 
     sf::VideoMode mode;
+    mutable sf::Vector2i curr_mouse, prev_mouse;
     mutable sf::Cursor::Type cursor_type;
     mutable sf::RenderWindow window;
     const sf::Font *font;
@@ -150,6 +153,11 @@ using resources_ptr = std::shared_ptr<const resources>;
 template<class ...Ts>
 static auto make_resources(Ts &&... args) {
   return std::make_shared<const resources>(std::forward<Ts>(args)...);
+}
+
+template<class Base, class T>
+inline bool instanceof(const T *ptr) {
+  return dynamic_cast<const Base *>(ptr) != nullptr;
 }
 }
 

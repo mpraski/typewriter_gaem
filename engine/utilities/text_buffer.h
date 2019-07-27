@@ -16,7 +16,7 @@ class text_buffer {
 public:
     text_buffer() = default;
 
-    std::wstring_view at(size_t begin, size_t end) const;
+    std::wstring_view range(size_t begin, size_t end) const;
 
     std::wstring_view from(size_t begin) const;
 

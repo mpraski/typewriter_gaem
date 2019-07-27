@@ -17,6 +17,8 @@ engine::resources::resources(
     float line_spacing_factor,
     unsigned typing_delay)
     : mode{mode},
+      curr_mouse{},
+      prev_mouse{},
       cursor_type{sf::Cursor::Arrow},
       window{mode, "Title"},
       font{},
@@ -67,7 +69,13 @@ void engine::resources::display(const std::function<void(sf::RenderWindow &w)> &
 }
 
 sf::Vector2i engine::resources::mouse_position() const {
-  return sf::Mouse::getPosition(window);
+  prev_mouse = curr_mouse;
+  curr_mouse = sf::Mouse::getPosition(window);
+  return curr_mouse;
+}
+
+bool engine::resources::mouse_moved() const {
+  return curr_mouse != prev_mouse;
 }
 
 void engine::resources::set_cursor(sf::Cursor::Type type) const {

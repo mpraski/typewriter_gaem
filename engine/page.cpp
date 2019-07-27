@@ -75,6 +75,7 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     new_effects(),
     global_effects{},
     current_printable{},
+    dialog_start{},
     current_character{},
     checked_character{},
     vertices{sf::Triangles},
@@ -124,6 +125,8 @@ void engine::page::advance() {
 
     rect(current_printable).width = max_x - rect(current_printable).left;
     rect(current_printable).height = max_y - rect(current_printable).top + static_cast<float>(resources->font_size) / 2;
+
+    redraw();
   } else {
     if (current_character != pointer(current_printable)->length() - 1) {
       current_character++;
@@ -139,14 +142,21 @@ void engine::page::advance() {
       checked_character = current_character = 0;
 
       index(current_printable) = buffer.length();
+
+      if (!dialog_start && instanceof<dialog>(pointer(current_printable).get())) {
+        dialog_start = current_printable;
+      }
     }
     needs_update = true;
   }
 }
 
 void engine::page::input() {
-  apply_mouse_hover(resources->mouse_position());
-  redraw();
+  auto mouse_position{resources->mouse_position()};
+  if (resources->mouse_moved()) {
+    apply_mouse_hover(mouse_position);
+    redraw();
+  }
 }
 
 void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -240,7 +250,7 @@ void engine::page::ensure_updated() const {
 
   // Ensure line is broken if next word exceeds page width
   ensure_line_break(*pointer(current_printable));
-  // Load text effects starting at this position
+  // Load text effects starting range this position
   apply_text_effects(*pointer(current_printable));
   // Add to buffer
   buffer.push(curr_char);
@@ -404,6 +414,16 @@ void engine::page::delay() const {
   while (time.asMilliseconds() < resources->typing_delay * typing_delay_factor) {
     time += clock.getElapsedTime();
   }
+}
+
+void engine::page::new_line() const {
+  rect(current_printable).top = y;
+
+  y += line_spacing;
+  x = resources->margin_horizontal;
+  buffer.push(L'\n');
+
+  rect(current_printable).left = x;
 }
 
 void engine::page::apply_mouse_hover(sf::Vector2i cursor) {

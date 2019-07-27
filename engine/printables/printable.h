@@ -30,7 +30,7 @@ public:
     // Length of underlying string
     size_t length() const;
 
-    // Push the text effects starting at idx to the back insert iterator
+    // Push the text effects starting range idx to the back insert iterator
     void load_effects(size_t idx, back_inserter it) const;
 
     // Specific callbacks relating to the mouse events inside the printable
@@ -48,6 +48,7 @@ protected:
     std::wstring contents;
     effect_map effects;
 
+private:
     static inline void trim_start(std::wstring &s) {
       s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wchar_t ch) {
         return !std::iswspace(ch);
@@ -64,6 +65,8 @@ protected:
       s.insert(s.end(), L' ');
     }
 };
+
+using printable_ptr = std::unique_ptr<printable>;
 }
 
 #endif //TYPEWRITER_GAEM_PRINTABLE_H

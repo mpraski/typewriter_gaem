@@ -4,7 +4,7 @@
 
 #include "text_buffer.h"
 
-std::wstring_view engine::text_buffer::at(size_t begin, size_t end) const {
+std::wstring_view engine::text_buffer::range(size_t begin, size_t end) const {
   assert(begin <= end);
   assert(end <= data.size());
 
@@ -12,7 +12,7 @@ std::wstring_view engine::text_buffer::at(size_t begin, size_t end) const {
 }
 
 std::wstring_view engine::text_buffer::from(size_t begin) const {
-  return at(begin, data.size() - 1);
+  return range(begin, data.size() - 1);
 }
 
 std::wstring engine::text_buffer::str() const {
