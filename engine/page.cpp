@@ -132,7 +132,7 @@ void engine::page::advance() {
       current_character++;
     } else {
       rect(current_printable).width = max_x - rect(current_printable).left;
-      rect(current_printable).height = max_y - rect(current_printable).top;;
+      rect(current_printable).height = max_y - rect(current_printable).top;
 
       if (current_printable == std::begin(printables)) {
         rect(current_printable).height += line_spacing;
@@ -426,6 +426,14 @@ void engine::page::new_line() const {
   rect(current_printable).left = x;
 }
 
+void engine::page::add_printable(printable_ptr &&ptr) const {
+  printables.emplace_back(std::move(ptr), sf::FloatRect{}, 0u);
+}
+
+void engine::page::truncate_printables(size_t idx) const {
+  printables.resize(idx);
+}
+
 void engine::page::apply_mouse_hover(sf::Vector2i cursor) {
   for (auto p{std::begin(printables)}; p != std::end(printables); ++p) {
     auto &printable{*pointer(p)};
@@ -454,7 +462,7 @@ void engine::page::redraw() {
 
   wchar_t curr_char, prev_char{buffer[0]};
 
-  auto range{buffer.from(0u)};
+  auto range{buffer.from()};
   for (size_t i{0}; i < range.length(); ++i) {
     apply_global_text_effects(i);
     curr_char = range[i];

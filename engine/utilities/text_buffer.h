@@ -18,7 +18,7 @@ public:
 
     std::wstring_view range(size_t begin, size_t end) const;
 
-    std::wstring_view from(size_t begin) const;
+    std::wstring_view from(size_t begin = 0u) const;
 
     std::wstring str() const;
 
@@ -28,7 +28,7 @@ public:
 
     void push(wchar_t c);
 
-    void pop();
+    void truncate(size_t idx);
 
     void clear();
 

@@ -26,6 +26,9 @@
 
 namespace engine {
 class page : public game_state, public sf::Drawable, public sf::Transformable {
+    // tuple<0> = pointer to the printable
+    // tuple<1> = bounding box of the printable (complete once printed)
+    // tuple<2> = global page text index at which this printable's text begins
     using printable_array = std::vector<std::tuple<printable_ptr, sf::FloatRect, size_t>>;
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;
@@ -104,6 +107,10 @@ private:
     void delay() const;
 
     void new_line() const;
+
+    void add_printable(printable_ptr &&ptr) const;
+
+    void truncate_printables(size_t idx) const;
 
     void apply_mouse_hover(sf::Vector2i cursor);
 

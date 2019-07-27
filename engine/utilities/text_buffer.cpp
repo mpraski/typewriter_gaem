@@ -32,8 +32,8 @@ void engine::text_buffer::push(wchar_t c) {
   data.push_back(c);
 }
 
-void engine::text_buffer::pop() {
-  data.pop_back();
+void engine::text_buffer::truncate(size_t idx) {
+  data.resize(idx);
 }
 
 void engine::text_buffer::clear() {

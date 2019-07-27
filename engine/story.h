@@ -5,13 +5,21 @@
 #ifndef TYPEWRITER_GAEM_STORY_H
 #define TYPEWRITER_GAEM_STORY_H
 
-#include <stack>
+#include <functional>
 #include "printables/printable.h"
+#include "action.h"
 
 namespace engine {
 class story {
-private:
-    std::stack<printable_ptr> story_printables;
+public:
+    bool can_progress() const;
+
+    void update_printables(
+        const std::function<void(printable_ptr &&printable)> &adder,
+        const std::function<void(size_t idx)> &truncator
+    );
+
+    void act(action action);
 };
 }
 
