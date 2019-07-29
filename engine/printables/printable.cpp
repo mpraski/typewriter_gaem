@@ -37,9 +37,6 @@ void engine::printable::load_effects(size_t idx, engine::printable::back_inserte
 }
 
 void engine::printable::break_line_at(size_t idx) {
-  if (!std::iswspace(contents[idx])) {
-    throw std::runtime_error("fuck off, wchar_t");
-  }
   contents[idx] = L'\n';
 }
 

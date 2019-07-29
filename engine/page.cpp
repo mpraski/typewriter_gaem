@@ -7,24 +7,21 @@
 namespace {
 // Add an underline or strikethrough line to the vertex array
 void addLine(sf::VertexArray &vertices,
-             float lineLength,
+             float x,
+             float width,
              float lineTop,
              const sf::Color &color,
              float offset,
-             float thickness,
-             float outlineThickness = 0) {
+             float thickness) {
   float top{std::floor(lineTop + offset - (thickness / 2) + 0.5f)};
   float bottom{top + std::floor(thickness + 0.5f)};
 
-  vertices.append(sf::Vertex(sf::Vector2f(-outlineThickness, top - outlineThickness), color, sf::Vector2f(1, 1)));
-  vertices.append(
-      sf::Vertex(sf::Vector2f(lineLength + outlineThickness, top - outlineThickness), color, sf::Vector2f(1, 1)));
-  vertices.append(sf::Vertex(sf::Vector2f(-outlineThickness, bottom + outlineThickness), color, sf::Vector2f(1, 1)));
-  vertices.append(sf::Vertex(sf::Vector2f(-outlineThickness, bottom + outlineThickness), color, sf::Vector2f(1, 1)));
-  vertices.append(
-      sf::Vertex(sf::Vector2f(lineLength + outlineThickness, top - outlineThickness), color, sf::Vector2f(1, 1)));
-  vertices.append(
-      sf::Vertex(sf::Vector2f(lineLength + outlineThickness, bottom + outlineThickness), color, sf::Vector2f(1, 1)));
+  vertices.append(sf::Vertex(sf::Vector2f(x, top), color, sf::Vector2f(1, 1)));
+  vertices.append(sf::Vertex(sf::Vector2f(x + width, top), color, sf::Vector2f(1, 1)));
+  vertices.append(sf::Vertex(sf::Vector2f(x, bottom), color, sf::Vector2f(1, 1)));
+  vertices.append(sf::Vertex(sf::Vector2f(x, bottom), color, sf::Vector2f(1, 1)));
+  vertices.append(sf::Vertex(sf::Vector2f(x + width, top), color, sf::Vector2f(1, 1)));
+  vertices.append(sf::Vertex(sf::Vector2f(x + width, bottom), color, sf::Vector2f(1, 1)));
 }
 
 // Add a glyph quad to the vertex array
@@ -32,8 +29,7 @@ void addGlyphQuad(sf::VertexArray &vertices,
                   sf::Vector2f position,
                   const sf::Color &color,
                   const sf::Glyph &glyph,
-                  float italicShear,
-                  float outlineThickness = 0) {
+                  float italicShear) {
   float padding{1.f};
 
   float left{glyph.bounds.left - padding};
@@ -46,23 +42,18 @@ void addGlyphQuad(sf::VertexArray &vertices,
   float u2{static_cast<float>(glyph.textureRect.left + glyph.textureRect.width) + padding};
   float v2{static_cast<float>(glyph.textureRect.top + glyph.textureRect.height) + padding};
 
-  vertices.append(sf::Vertex(
-      sf::Vector2f(position.x + left - italicShear * top - outlineThickness, position.y + top - outlineThickness),
-      color, sf::Vector2f(u1, v1)));
-  vertices.append(sf::Vertex(
-      sf::Vector2f(position.x + right - italicShear * top - outlineThickness, position.y + top - outlineThickness),
-      color, sf::Vector2f(u2, v1)));
-  vertices.append(sf::Vertex(
-      sf::Vector2f(position.x + left - italicShear * bottom - outlineThickness, position.y + bottom - outlineThickness),
-      color, sf::Vector2f(u1, v2)));
-  vertices.append(sf::Vertex(
-      sf::Vector2f(position.x + left - italicShear * bottom - outlineThickness, position.y + bottom - outlineThickness),
-      color, sf::Vector2f(u1, v2)));
-  vertices.append(sf::Vertex(
-      sf::Vector2f(position.x + right - italicShear * top - outlineThickness, position.y + top - outlineThickness),
-      color, sf::Vector2f(u2, v1)));
-  vertices.append(sf::Vertex(sf::Vector2f(position.x + right - italicShear * bottom - outlineThickness,
-                                          position.y + bottom - outlineThickness), color, sf::Vector2f(u2, v2)));
+  vertices.append(
+      sf::Vertex(sf::Vector2f(position.x + left - italicShear * top, position.y + top), color, sf::Vector2f(u1, v1)));
+  vertices.append(
+      sf::Vertex(sf::Vector2f(position.x + right - italicShear * top, position.y + top), color, sf::Vector2f(u2, v1)));
+  vertices.append(sf::Vertex(sf::Vector2f(position.x + left - italicShear * bottom, position.y + bottom), color,
+                             sf::Vector2f(u1, v2)));
+  vertices.append(sf::Vertex(sf::Vector2f(position.x + left - italicShear * bottom, position.y + bottom), color,
+                             sf::Vector2f(u1, v2)));
+  vertices.append(
+      sf::Vertex(sf::Vector2f(position.x + right - italicShear * top, position.y + top), color, sf::Vector2f(u2, v1)));
+  vertices.append(sf::Vertex(sf::Vector2f(position.x + right - italicShear * bottom, position.y + bottom), color,
+                             sf::Vector2f(u2, v2)));
 }
 }
 
@@ -72,7 +63,6 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     printables{},
     active_effects{},
     current_printable{},
-    dialog_start{},
     current_character{},
     checked_character{},
     vertices{sf::Triangles},
@@ -95,6 +85,8 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     whitespace_width{resources->font->getGlyph(L' ', resources->font_size, false).advance},
     letter_spacing{(whitespace_width / 3.f) * (resources->letter_spacing_factor - 1.f)},
     line_spacing{resources->font->getLineSpacing(resources->font_size) * resources->line_spacing_factor},
+    underline_offset{resources->font->getUnderlinePosition(resources->font_size)},
+    underline_thickness{resources->font->getUnderlineThickness(resources->font_size)},
     typing_delay_factor{1.f},
     letter_spacing_factor{1.f},
     text_color{sf::Color::White} {
@@ -138,10 +130,6 @@ void engine::page::advance() {
 
       rect(current_printable).top = y - line_spacing;
       rect(current_printable).height = x;
-
-      if (!dialog_start && instanceof<dialog>(pointer(current_printable).get())) {
-        dialog_start = current_printable;
-      }
     }
     needs_update = true;
   }
@@ -212,7 +200,7 @@ void engine::page::ensure_line_break(printable &printable) const {
     }
 
     checked_character = prev_char = curr_char;
-  } while (!std::iswspace(printable[curr_char++]));
+  } while (!std::iswblank(printable[curr_char++]));
 
   if (x + word_width + resources->margin_horizontal >= resources->page_width
       && printable[curr_char] != L'\n') {
@@ -224,19 +212,21 @@ void engine::page::ensure_updated() const {
   if (!needs_update)
     return;
 
-  wchar_t prev_char{(*pointer(current_printable))[current_character ? current_character - 1u : 0u]};
-  wchar_t curr_char{(*pointer(current_printable))[current_character]};
+  auto &printable{*pointer(current_printable)};
+
+  // Ensure line is broken if next word exceeds page width
+  ensure_line_break(printable);
+  // Load text effects starting range this position
+  apply_text_effects(printable, current_character);
+
+  wchar_t prev_char{printable[current_character ? current_character - 1u : 0u]};
+  wchar_t curr_char{printable[current_character]};
 
   // Skip to avoid glitches
   if (curr_char == L'\r')
     return;
 
   x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
-
-  // Ensure line is broken if next word exceeds page width
-  ensure_line_break(*pointer(current_printable));
-  // Load text effects starting range this position
-  apply_text_effects(*pointer(current_printable), current_character);
 
   // Handle special characters
   if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
@@ -261,7 +251,20 @@ void engine::page::ensure_updated() const {
   } else {
     const auto &glyph = resources->font->getGlyph(curr_char, resources->font_size, is_bold);
     addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
-    x += glyph.advance + letter_spacing + letter_spacing_factor;
+    auto advance{glyph.advance + letter_spacing + letter_spacing_factor};
+
+    if (is_underlined) {
+      addLine(vertices, x, advance, y, text_color, underline_offset, underline_thickness);
+    }
+
+    auto x_bounds{resources->font->getGlyph(L'x', resources->font_size, is_bold).bounds};
+    float strike_through_offset{x_bounds.top + x_bounds.height / 2.f};
+
+    if (is_strike_through) {
+      addLine(vertices, x, advance, y, text_color, strike_through_offset, underline_thickness);
+    }
+
+    x += advance;
 
     audio.play_typewriter_click();
   }
@@ -277,10 +280,6 @@ void engine::page::ensure_updated() const {
 void engine::page::apply_text_effects(const printable &printable, size_t idx) const {
   printable.load_effects(idx, std::back_inserter(active_effects));
 
-  set_text_variables();
-}
-
-void engine::page::set_text_variables() const {
   for (const auto &e : active_effects) {
     switch (e.kind) {
       case text_effect::kind::BOLD:
@@ -325,10 +324,6 @@ void engine::page::remove_text_effects(size_t idx) const {
       std::end(active_effects)
   );
 
-  unset_text_variables();
-}
-
-void engine::page::unset_text_variables() const {
   is_bold = false;
   is_underlined = false;
   is_strike_through = false;
@@ -403,7 +398,20 @@ void engine::page::redraw() {
       } else {
         const auto &glyph = resources->font->getGlyph(curr_char, resources->font_size, is_bold);
         addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
-        x += glyph.advance + letter_spacing + letter_spacing_factor;
+        auto advance{glyph.advance + letter_spacing + letter_spacing_factor};
+
+        if (is_underlined) {
+          addLine(vertices, x, advance, y, text_color, underline_offset, underline_thickness);
+        }
+
+        auto x_bounds{resources->font->getGlyph(L'x', resources->font_size, is_bold).bounds};
+        float strike_through_offset{x_bounds.top + x_bounds.height / 2.f};
+
+        if (is_strike_through) {
+          addLine(vertices, x, advance, y, text_color, strike_through_offset, underline_thickness);
+        }
+
+        x += advance;
       }
 
       prev_char = curr_char;

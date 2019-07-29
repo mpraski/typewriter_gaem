@@ -46,7 +46,6 @@ private:
     mutable effect_array active_effects;
     // Character and paragraph cursor
     printable_iterator current_printable;
-    dialog_iterator dialog_start;
     size_t current_character;
     mutable size_t checked_character;
     // SFML buffers
@@ -73,6 +72,8 @@ private:
     mutable float whitespace_width;
     mutable float letter_spacing;
     mutable float line_spacing;
+    mutable float underline_offset;
+    mutable float underline_thickness;
     mutable float typing_delay_factor;
     mutable float letter_spacing_factor;
     mutable sf::Color text_color;
@@ -84,12 +85,8 @@ private:
     void ensure_updated() const;
 
     void apply_text_effects(const printable &printable, size_t idx) const;
-
-    void set_text_variables() const;
-
+    
     void remove_text_effects(size_t idx) const;
-
-    void unset_text_variables() const;
 
     void delay() const;
 

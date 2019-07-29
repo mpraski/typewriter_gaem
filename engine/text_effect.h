@@ -33,8 +33,6 @@ public:
         sf::Color color = sf::Color::White
     );
 
-    text_effect to_page_coords(size_t idx) const;
-
     text_effect &with_delay(float df = 1.f);
 
     text_effect &with_letter_spacing(float ls = 1.f);

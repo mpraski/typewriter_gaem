@@ -20,13 +20,6 @@ engine::text_effect::text_effect(
 
 }
 
-engine::text_effect engine::text_effect::to_page_coords(size_t idx) const {
-  auto copied{*this};
-  copied.begin = idx;
-  copied.end = idx + (end - begin);
-  return copied;
-}
-
 engine::text_effect &engine::text_effect::with_delay(float df) {
   delay_factor = df;
   return *this;
