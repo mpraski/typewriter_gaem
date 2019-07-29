@@ -13,13 +13,16 @@ engine::dialog::dialog(
     update{},
     effects_on_hover{},
     effects_off_hover{} {
-  effects_off_hover[0].push_back(text_effect{text_effect::kind::BOLD, 0, person.length()});
-  effects_off_hover[0].push_back(
-      text_effect{text_effect::kind::COLOR, 0, contents.length()}.with_color(sf::Color::Yellow));
+  assert(!person.empty());
+  assert(!speech.empty());
 
-  effects_on_hover[0].push_back(text_effect{text_effect::kind::BOLD, 0, person.length()});
+  effects_off_hover[0].push_back(text_effect{text_effect::kind::BOLD, 0, person.length() - 1});
+  effects_off_hover[0].push_back(
+      text_effect{text_effect::kind::COLOR, 0, contents.length() - 1}.with_color(sf::Color::Yellow));
+
+  effects_on_hover[0].push_back(text_effect{text_effect::kind::BOLD, 0, person.length() - 1});
   effects_on_hover[0].push_back(
-      text_effect{text_effect::kind::COLOR, 0, contents.length()}.with_color(sf::Color::Cyan));
+      text_effect{text_effect::kind::COLOR, 0, contents.length() - 1}.with_color(sf::Color::Cyan));
 
   effects = effects_off_hover;
 }

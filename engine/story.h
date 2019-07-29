@@ -16,7 +16,7 @@ public:
 
     void update_printables(
         const std::function<void(printable_ptr &&printable)> &adder,
-        const std::function<void(size_t idx)> &truncator
+        const std::function<void(size_t last_printables)> &remover
     );
 
     void act(action action);

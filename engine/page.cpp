@@ -69,11 +69,8 @@ void addGlyphQuad(sf::VertexArray &vertices,
 engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     game_state{rptr},
     audio{rptr},
-    buffer{},
     printables{},
     active_effects{},
-    new_effects(),
-    global_effects{},
     current_printable{},
     dialog_start{},
     current_character{},
@@ -103,7 +100,7 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     text_color{sf::Color::White} {
   whitespace_width += letter_spacing;
 
-  for (auto p : ps) printables.emplace_back(p, sf::FloatRect{}, 0u);
+  for (auto p : ps) printables.emplace_back(p, sf::FloatRect{});
 
   if (printables.empty()) {
     throw std::runtime_error("Printables cannot be empty");
@@ -124,7 +121,9 @@ void engine::page::advance() {
     end_of_text = true;
 
     rect(current_printable).width = max_x - rect(current_printable).left;
-    rect(current_printable).height = max_y - rect(current_printable).top + static_cast<float>(resources->font_size) / 2;
+    rect(current_printable).height = max_y - rect(current_printable).top - line_spacing / 2;
+
+    bounds.height += static_cast<float>(resources->font_size) / 2;
 
     redraw();
   } else {
@@ -132,16 +131,13 @@ void engine::page::advance() {
       current_character++;
     } else {
       rect(current_printable).width = max_x - rect(current_printable).left;
-      rect(current_printable).height = max_y - rect(current_printable).top;
-
-      if (current_printable == std::begin(printables)) {
-        rect(current_printable).height += line_spacing;
-      }
+      rect(current_printable).height = max_y - rect(current_printable).top - line_spacing;
 
       current_printable = std::next(current_printable);
-      checked_character = current_character = 0;
+      checked_character = current_character = 0u;
 
-      index(current_printable) = buffer.length();
+      rect(current_printable).top = y - line_spacing;
+      rect(current_printable).height = x;
 
       if (!dialog_start && instanceof<dialog>(pointer(current_printable).get())) {
         dialog_start = current_printable;
@@ -180,11 +176,15 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(vertices, states);
   }
 
-  remove_text_effects();
+  if (needs_update) {
+    remove_text_effects(current_character);
+  }
+
+  needs_update = false;
 }
 
 // Measure the length of the next word, if it overflows move it the next line
-void engine::page::ensure_line_break(const printable &printable) const {
+void engine::page::ensure_line_break(printable &printable) const {
   if (current_character <= checked_character)
     return;
 
@@ -195,8 +195,6 @@ void engine::page::ensure_line_break(const printable &printable) const {
   do {
     if (printable[curr_char] == L'\r')
       continue;
-
-    printf("(%c)", printable[curr_char]);
 
     word_width += resources->font->getKerning(printable[prev_char], printable[curr_char], resources->font_size);
 
@@ -216,23 +214,15 @@ void engine::page::ensure_line_break(const printable &printable) const {
     checked_character = prev_char = curr_char;
   } while (!std::iswspace(printable[curr_char++]));
 
-  printf("\nx: %f, y: %f, word_width: %f\n", x, y, word_width);
-
-  if (x + word_width + resources->margin_horizontal >= resources->page_width) {
-    new_line();
-
-    min_x = std::min(min_x, x);
-    min_y = std::min(min_y, y);
-    max_x = std::max(max_x, x);
-    max_y = std::max(max_y, y);
+  if (x + word_width + resources->margin_horizontal >= resources->page_width
+      && printable[curr_char] != L'\n') {
+    printable.break_line_at(prev_char);
   }
 }
 
 void engine::page::ensure_updated() const {
   if (!needs_update)
     return;
-
-  needs_update = false;
 
   wchar_t prev_char{(*pointer(current_printable))[current_character ? current_character - 1u : 0u]};
   wchar_t curr_char{(*pointer(current_printable))[current_character]};
@@ -241,19 +231,12 @@ void engine::page::ensure_updated() const {
   if (curr_char == L'\r')
     return;
 
-  // If this is the new printable, add a newline
-  if (current_printable != std::begin(printables) && !current_character) {
-    new_line();
-  } else {
-    x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
-  }
+  x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
 
   // Ensure line is broken if next word exceeds page width
   ensure_line_break(*pointer(current_printable));
   // Load text effects starting range this position
-  apply_text_effects(*pointer(current_printable));
-  // Add to buffer
-  buffer.push(curr_char);
+  apply_text_effects(*pointer(current_printable), current_character);
 
   // Handle special characters
   if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
@@ -283,52 +266,16 @@ void engine::page::ensure_updated() const {
     audio.play_typewriter_click();
   }
 
+  bounds.top = min_y;
+  bounds.left = min_x;
+  bounds.height = max_y - min_y;
+  bounds.width = max_x - min_x;
+
   delay();
 }
 
-void engine::page::load_global_text_effects(printable_iterator it) {
-  const auto &printable{*pointer(it)};
-  auto idx{index(it)};
-
-  for (size_t i{0}; i < printable.length(); ++i) {
-    new_effects.clear();
-    printable.load_effects(i, std::back_inserter(new_effects));
-
-    if (!new_effects.empty()) {
-      global_effects[idx].clear();
-      for (const auto &e : new_effects) {
-        global_effects[idx].push_back(e.to_page_coords(idx));
-      }
-    }
-
-    idx++;
-  }
-}
-
-void engine::page::apply_global_text_effects(size_t idx) const {
-  active_effects.insert(
-      std::end(active_effects),
-      std::begin(global_effects[idx]),
-      std::end(global_effects[idx])
-  );
-
-  set_text_variables();
-}
-
-void engine::page::apply_text_effects(const printable &printable) const {
-  new_effects.clear();
-  printable.load_effects(current_character, std::back_inserter(new_effects));
-
-  for (const auto &e : new_effects) {
-    auto pos{buffer.length() ? buffer.length() - 1 : 0u};
-    global_effects[pos].push_back(e.to_page_coords(pos));
-  }
-
-  active_effects.insert(
-      std::end(active_effects),
-      std::begin(new_effects),
-      std::end(new_effects)
-  );
+void engine::page::apply_text_effects(const printable &printable, size_t idx) const {
+  printable.load_effects(idx, std::back_inserter(active_effects));
 
   set_text_variables();
 }
@@ -366,28 +313,13 @@ void engine::page::set_text_variables() const {
   }
 }
 
-void engine::page::remove_global_text_effects(size_t idx) const {
+void engine::page::remove_text_effects(size_t idx) const {
   active_effects.erase(
       std::remove_if(
           std::begin(active_effects),
           std::end(active_effects),
           [&](const auto &e) {
             return idx == e.end;
-          }
-      ),
-      std::end(active_effects)
-  );
-
-  unset_text_variables();
-}
-
-void engine::page::remove_text_effects() const {
-  active_effects.erase(
-      std::remove_if(
-          std::begin(active_effects),
-          std::end(active_effects),
-          [&](const auto &e) {
-            return current_character == e.end;
           }
       ),
       std::end(active_effects)
@@ -411,27 +343,13 @@ void engine::page::delay() const {
   sf::Clock clock;
   sf::Time time;
 
-  while (time.asMilliseconds() < resources->typing_delay * typing_delay_factor) {
+  while (time.asMilliseconds() < static_cast<float>(resources->typing_delay) * typing_delay_factor) {
     time += clock.getElapsedTime();
   }
 }
 
-void engine::page::new_line() const {
-  rect(current_printable).top = y;
-
-  y += line_spacing;
-  x = resources->margin_horizontal;
-  buffer.push(L'\n');
-
-  rect(current_printable).left = x;
-}
-
 void engine::page::add_printable(printable_ptr &&ptr) const {
-  printables.emplace_back(std::move(ptr), sf::FloatRect{}, 0u);
-}
-
-void engine::page::truncate_printables(size_t idx) const {
-  printables.resize(idx);
+  printables.emplace_back(std::move(ptr), sf::FloatRect{});
 }
 
 void engine::page::apply_mouse_hover(sf::Vector2i cursor) {
@@ -446,10 +364,6 @@ void engine::page::apply_mouse_hover(sf::Vector2i cursor) {
       } else {
         printable.on_hover_end();
       }
-
-      if (printable.needs_update()) {
-        load_global_text_effects(p);
-      }
     }
   }
 }
@@ -460,35 +374,40 @@ void engine::page::redraw() {
   x = resources->margin_horizontal;
   y = resources->margin_vertical + static_cast<float>(resources->font_size);
 
-  wchar_t curr_char, prev_char{buffer[0]};
+  for (auto it{std::begin(printables)}; it != std::end(printables); ++it) {
+    const auto &printable{*pointer(it)};
 
-  auto range{buffer.from()};
-  for (size_t i{0}; i < range.length(); ++i) {
-    apply_global_text_effects(i);
-    curr_char = range[i];
+    wchar_t curr_char, prev_char = printable[0u];
+    for (size_t i{0u}; i < printable.length(); ++i) {
+      apply_text_effects(printable, i);
+      curr_char = printable[i];
 
-    x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
+      if (curr_char == L'\r')
+        return;
 
-    if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
-      switch (curr_char) {
-        case L' ':
-          x += whitespace_width + letter_spacing_factor;
-          break;
-        case L'\t':
-          x += whitespace_width * 4;
-          break;
-        case L'\n':
-          y += line_spacing;
-          x = resources->margin_horizontal;
-          break;
+      x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
+
+      if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
+        switch (curr_char) {
+          case L' ':
+            x += whitespace_width + letter_spacing_factor;
+            break;
+          case L'\t':
+            x += whitespace_width * 4;
+            break;
+          case L'\n':
+            y += line_spacing;
+            x = resources->margin_horizontal;
+            break;
+        }
+      } else {
+        const auto &glyph = resources->font->getGlyph(curr_char, resources->font_size, is_bold);
+        addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
+        x += glyph.advance + letter_spacing + letter_spacing_factor;
       }
-    } else {
-      const auto &glyph = resources->font->getGlyph(curr_char, resources->font_size, is_bold);
-      addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
-      x += glyph.advance + letter_spacing + letter_spacing_factor;
-    }
 
-    prev_char = curr_char;
-    remove_global_text_effects(i);
+      prev_char = curr_char;
+      remove_text_effects(i);
+    }
   }
 }

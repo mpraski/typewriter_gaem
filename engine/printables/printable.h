@@ -33,6 +33,8 @@ public:
     // Push the text effects starting range idx to the back insert iterator
     void load_effects(size_t idx, back_inserter it) const;
 
+    void break_line_at(size_t idx);
+
     // Specific callbacks relating to the mouse events inside the printable
     virtual bool interactive() const;
 
@@ -63,6 +65,7 @@ private:
 
     static inline void add_end_space(std::wstring &s) {
       s.insert(s.end(), L' ');
+      s.insert(s.end(), L'\n');
     }
 };
 

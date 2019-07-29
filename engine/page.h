@@ -20,16 +20,12 @@
 #include "printables/dialog.h"
 #include "utilities/text_buffer.h"
 
-#define pointer(IT) std::get<0>(*(IT))
-#define rect(IT) std::get<1>(*(IT))
-#define index(IT) std::get<2>(*(IT))
+#define pointer(IT) (IT)->first
+#define rect(IT) (IT)->second
 
 namespace engine {
 class page : public game_state, public sf::Drawable, public sf::Transformable {
-    // tuple<0> = pointer to the printable
-    // tuple<1> = bounding box of the printable (complete once printed)
-    // tuple<2> = global page text index at which this printable's text begins
-    using printable_array = std::vector<std::tuple<printable_ptr, sf::FloatRect, size_t>>;
+    using printable_array = std::vector<std::pair<printable_ptr, sf::FloatRect>>;
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;
     using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
@@ -46,11 +42,8 @@ public:
 private:
     sounds audio;
     // Core data
-    mutable text_buffer buffer;
     mutable printable_array printables;
     mutable effect_array active_effects;
-    mutable effect_array new_effects;
-    mutable effect_map global_effects;
     // Character and paragraph cursor
     printable_iterator current_printable;
     dialog_iterator dialog_start;
@@ -86,31 +79,21 @@ private:
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
-    void ensure_line_break(const printable &printable) const;
+    void ensure_line_break(printable &printable) const;
 
     void ensure_updated() const;
 
-    void load_global_text_effects(printable_iterator it);
-
-    void apply_global_text_effects(size_t idx) const;
-
-    void apply_text_effects(const printable &printable) const;
+    void apply_text_effects(const printable &printable, size_t idx) const;
 
     void set_text_variables() const;
 
-    void remove_global_text_effects(size_t idx) const;
-
-    void remove_text_effects() const;
+    void remove_text_effects(size_t idx) const;
 
     void unset_text_variables() const;
 
     void delay() const;
 
-    void new_line() const;
-
     void add_printable(printable_ptr &&ptr) const;
-
-    void truncate_printables(size_t idx) const;
 
     void apply_mouse_hover(sf::Vector2i cursor);
 
