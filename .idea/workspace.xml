@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SCOPE_TYPE" value="3" />
+  </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
       <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
@@ -12,18 +15,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/engine/utilities/general.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/utilities/general.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/action.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/action.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/action.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/action.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/engine.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/dialog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/dialog.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/printables/printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/resources.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/resources.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/story.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/story.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/sounds.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/sounds.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/text_effect.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/text_effect.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -54,7 +59,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -97,7 +102,9 @@
       <workItem from="1563617384992" duration="12316000" />
       <workItem from="1563696401604" duration="15292000" />
       <workItem from="1563737061767" duration="121219000" />
-      <workItem from="1564334855707" duration="36639000" />
+      <workItem from="1564334855707" duration="39141000" />
+      <workItem from="1564503775992" duration="5613000" />
+      <workItem from="1564509424113" duration="2412000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -218,7 +225,14 @@
       <option name="project" value="LOCAL" />
       <updated>1564423370686</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="fixed printable bounds setting and added debug bounds mode">
+      <created>1564476584624</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1564476584624</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -229,7 +243,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -252,6 +268,7 @@
     <MESSAGE value="ditto" />
     <MESSAGE value="simplified text model" />
     <MESSAGE value="added support for underline and strike-through formatting" />
-    <option name="LAST_COMMIT_MESSAGE" value="added support for underline and strike-through formatting" />
+    <MESSAGE value="fixed printable bounds setting and added debug bounds mode" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed printable bounds setting and added debug bounds mode" />
   </component>
 </project>

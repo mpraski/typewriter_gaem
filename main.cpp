@@ -18,7 +18,7 @@ int main() {
               resources,
               L"Through the darkness of future past, the magician longs to see, one chance out between two worlds, fire walk with me!",
               {
-                  engine::text_effect{engine::text_effect::kind::STRIKE_THROUGH, 0, 7},
+                  engine::text_effect{engine::text_effect::kind::UNDERLINE, 0, 7},
                   engine::text_effect{engine::text_effect::kind::DELAY, 100, 118}.with_delay(5.0f),
                   engine::text_effect{engine::text_effect::kind::COLOR, 100, 118}.with_color(sf::Color::Red)
               }
@@ -40,6 +40,8 @@ int main() {
           },
       }
   };
+
+  page.move(20.f, 20.f);
 
   resources->display([&](auto &window) {
     window.clear();

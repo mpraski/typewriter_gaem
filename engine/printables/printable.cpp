@@ -14,11 +14,11 @@ engine::printable::printable(const resources_ptr &rptr, std::wstring &&c)
 
   trim_start(contents);
   trim_end(contents);
-  add_end_space(contents);
+  add_end_new_line(contents);
 }
 
-const std::wstring &engine::printable::str() const {
-  return contents;
+std::wstring_view engine::printable::view() const {
+  return std::wstring_view{contents};
 }
 
 wchar_t engine::printable::operator[](size_t idx) const {
@@ -39,6 +39,9 @@ void engine::printable::load_effects(size_t idx, engine::printable::back_inserte
 }
 
 void engine::printable::break_line_at(size_t idx) {
+  if (!std::iswblank(contents[idx])) {
+    throw std::runtime_error(general::str("Symbol ", contents[idx], " is not blank"));
+  }
   contents[idx] = L'\n';
 }
 

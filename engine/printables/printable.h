@@ -12,6 +12,7 @@
 #include <vector>
 #include "../text_effect.h"
 #include "../game_state.h"
+#include "../utilities/general.h"
 
 namespace engine {
 class printable : public game_state {
@@ -22,7 +23,7 @@ public:
     printable(const resources_ptr &rptr, std::wstring &&c);
 
     // To string
-    const std::wstring &str() const;
+    std::wstring_view view() const;
 
     // Char of underlying string
     wchar_t operator[](size_t idx) const;
@@ -33,6 +34,7 @@ public:
     // Push the text effects starting range idx to the back insert iterator
     void load_effects(size_t idx, back_inserter it) const;
 
+    // Insert new line character at a blank symbol
     void break_line_at(size_t idx);
 
     // Specific callbacks relating to the mouse events inside the printable
@@ -63,8 +65,7 @@ private:
       }).base(), s.end());
     }
 
-    static inline void add_end_space(std::wstring &s) {
-      s.insert(s.end(), L' ');
+    static inline void add_end_new_line(std::wstring &s) {
       s.insert(s.end(), L'\n');
     }
 };

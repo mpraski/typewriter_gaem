@@ -2,15 +2,15 @@
 // Created by marcin on 7/23/19.
 //
 
-#ifndef TYPEWRITER_GAEM_SOUNDS_H
-#define TYPEWRITER_GAEM_SOUNDS_H
+#ifndef TYPEWRITER_GAEM_AUDIO_SYSTEM_H
+#define TYPEWRITER_GAEM_AUDIO_SYSTEM_H
 
 #include "game_state.h"
 
 namespace engine {
-class sounds : public game_state {
+class audio_system : public game_state {
 public:
-    explicit sounds(const resources_ptr &rptr);
+    explicit audio_system(const resources_ptr &rptr);
 
     void play_typewriter_click() const;
 
@@ -27,12 +27,12 @@ private:
       long int sz{std::distance(begin, end)};
       long int div{RAND_MAX / sz};
 
-      size_t k;
+      long int k;
       do { k = std::rand() / div; } while (k >= sz);
 
       return std::next(begin, k);
     }
 };
-};
+}
 
-#endif //TYPEWRITER_GAEM_SOUNDS_H
+#endif //TYPEWRITER_GAEM_AUDIO_SYSTEM_H

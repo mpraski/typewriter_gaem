@@ -71,7 +71,7 @@ void engine::resources::display(const std::function<void(sf::RenderWindow &w)> &
 sf::Vector2f engine::resources::mouse_position() const {
   prev_mouse = curr_mouse;
   curr_mouse = sf::Mouse::getPosition(window);
-  return sf::Vector2f(curr_mouse);
+  return sf::Vector2f{curr_mouse};
 }
 
 bool engine::resources::mouse_moved() const {

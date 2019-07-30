@@ -10,7 +10,7 @@
 #include "printables/paragraph.h"
 #include "printables/dialog.h"
 #include "resources.h"
-#include "sounds.h"
+#include "audio_system.h"
 #include "text_effect.h"
 #include "utilities/converters.h"
 

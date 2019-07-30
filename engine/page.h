@@ -17,7 +17,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "game_state.h"
-#include "sounds.h"
+#include "audio_system.h"
 #include "printables/printable.h"
 #include "printables/dialog.h"
 #include "utilities/text_buffer.h"
@@ -42,14 +42,12 @@ public:
     void input();
 
 private:
-    sounds audio;
+    audio_system audio;
     // Core data
     mutable printable_array printables;
     mutable effect_array active_effects;
-    // Character and paragraph cursor
     printable_iterator current_printable;
     size_t current_character;
-    mutable size_t checked_character;
     // SFML buffers
     mutable sf::VertexArray vertices;
     mutable sf::VertexBuffer vertices_buffer;
@@ -58,6 +56,7 @@ private:
     // Control flags
     mutable bool end_of_text;
     mutable bool needs_update;
+    mutable bool needs_redraw;
     // Text bounds
     mutable float x;
     mutable float y;
@@ -88,7 +87,7 @@ private:
 
     sf::FloatRect global_bounds() const;
 
-    void ensure_line_break(printable &printable) const;
+    void ensure_line_breaks(printable &printable) const;
 
     void ensure_updated() const;
 

@@ -154,11 +154,6 @@ template<class ...Ts>
 static auto make_resources(Ts &&... args) {
   return std::make_shared<const resources>(std::forward<Ts>(args)...);
 }
-
-template<class Base, class T>
-inline bool instanceof(const T *ptr) {
-  return dynamic_cast<const Base *>(ptr) != nullptr;
-}
 }
 
 #endif //TYPEWRITER_GAEM_RESOURCES_H

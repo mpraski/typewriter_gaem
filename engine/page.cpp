@@ -64,17 +64,17 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     active_effects{},
     current_printable{},
     current_character{},
-    checked_character{},
     vertices{sf::Triangles},
     vertices_buffer{sf::Triangles, sf::VertexBuffer::Static},
     debug_bounds_vertices{sf::Lines},
     bounds{},
     end_of_text{},
     needs_update{true},
+    needs_redraw{true},
     x{resources->margin_horizontal},
     y{resources->margin_vertical + static_cast<float>(resources->font_size)},
-    min_x{static_cast<float>(resources->font_size)},
-    min_y{static_cast<float>(resources->font_size)},
+    min_x{},
+    min_y{},
     max_x{},
     max_y{},
     is_bold{},
@@ -103,6 +103,8 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
   current_printable = std::begin(printables);
   rect(current_printable).top = resources->margin_vertical;
   rect(current_printable).left = x;
+
+  ensure_line_breaks(*pointer(current_printable));
 }
 
 bool engine::page::text_end() const {
@@ -145,6 +147,34 @@ void engine::page::advance() {
     debug_bounds_vertices.append(
         sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
                    sf::Vector2f(1, 1)));
+
+    auto root_trans{global_bounds()};
+    debug_bounds_vertices.append(
+        sf::Vertex(sf::Vector2f(root_trans.left, root_trans.top), sf::Color::Magenta,
+                   sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(root_trans.left, root_trans.top + root_trans.height),
+        sf::Color::Magenta, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(root_trans.left, root_trans.top + root_trans.height),
+        sf::Color::Magenta, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(root_trans.left + root_trans.width,
+                     root_trans.top + root_trans.height),
+        sf::Color::Magenta, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(root_trans.left + root_trans.width,
+                     root_trans.top + root_trans.height),
+        sf::Color::Magenta, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(root_trans.left + root_trans.width, root_trans.top),
+        sf::Color::Magenta, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(root_trans.left + root_trans.width, root_trans.top),
+        sf::Color::Magenta, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(
+        sf::Vertex(sf::Vector2f(root_trans.left, root_trans.top), sf::Color::Magenta,
+                   sf::Vector2f(1, 1)));
 #endif
 
     redraw();
@@ -186,10 +216,12 @@ void engine::page::advance() {
 #endif
 
       current_printable = std::next(current_printable);
-      checked_character = current_character = 0;
+      current_character = 0;
 
       rect(current_printable).top = y - line_spacing / 1.3f;
       rect(current_printable).left = x;
+
+      ensure_line_breaks(*pointer(current_printable));
     }
     needs_update = true;
   }
@@ -235,11 +267,9 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
 }
 
 sf::FloatRect engine::page::local_bounds() const {
-  ensure_updated();
-
   auto bounds_with_margin{bounds};
-  bounds.height += resources->margin_vertical;
-  bounds.width += resources->margin_horizontal;
+  bounds_with_margin.height += resources->margin_vertical;
+  bounds_with_margin.width += resources->margin_horizontal;
   return bounds_with_margin;
 }
 
@@ -247,39 +277,51 @@ sf::FloatRect engine::page::global_bounds() const {
   return getTransform().transformRect(local_bounds());
 }
 
-// Measure the length of the next word, if it overflows move it the next line
-void engine::page::ensure_line_break(printable &printable) const {
-  if (current_character <= checked_character)
-    return;
+void engine::page::ensure_line_breaks(printable &printable) const {
+  auto last_blank{std::numeric_limits<size_t>::max()};
+  auto word_width{resources->margin_horizontal * 2};
+  sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};
 
-  size_t curr_char{current_character};
-  size_t prev_char{current_character};
-  float word_width{resources->margin_horizontal};
+  for (size_t i{0}; i < printable.length(); ++i) {
+    apply_text_effects(printable, i);
+    curr_char = sf::Utf32::decodeWide(printable[i]);
 
-  do {
-    if (printable[curr_char] == L'\r')
+    if (curr_char == L'\r')
       continue;
 
-    word_width += resources->font->getKerning(printable[prev_char], printable[curr_char], resources->font_size);
+    word_width += resources->font->getKerning(prev_char, curr_char, resources->font_size);
 
-    switch (printable[curr_char]) {
-      case L' ':
-        word_width += whitespace_width + letter_spacing_factor;
-        break;
-      case L'\t':
-        word_width += whitespace_width * 4;
-        break;
-      default:
-        const auto &glyph{resources->font->getGlyph(printable[curr_char], resources->font_size, is_bold)};
-        word_width += glyph.advance + letter_spacing + letter_spacing_factor;
-        break;
+    if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
+      switch (curr_char) {
+        case L' ':
+          word_width += whitespace_width + letter_spacing_factor;
+          last_blank = i;
+          break;
+        case L'\t':
+          word_width += whitespace_width * 4;
+          last_blank = i;
+          break;
+        case L'\n':
+          word_width = resources->margin_horizontal * 2;
+          break;
+      }
+    } else {
+      const auto &glyph{resources->font->getGlyph(curr_char, resources->font_size, is_bold)};
+      word_width += glyph.advance + letter_spacing + letter_spacing_factor;
     }
 
-    checked_character = prev_char = curr_char;
-  } while (!std::iswblank(printable[curr_char++]));
+    prev_char = curr_char;
+    remove_text_effects(i);
 
-  if (x + word_width >= resources->page_width && printable[curr_char] != L'\n') {
-    printable.break_line_at(prev_char);
+    if (word_width >= resources->page_width) {
+      if (last_blank == std::numeric_limits<size_t>::max()) {
+        throw std::runtime_error("No blank symbols found");
+      }
+
+      printable.break_line_at(last_blank);
+      word_width = resources->margin_horizontal * 2;
+      last_blank = std::numeric_limits<size_t>::max();
+    }
   }
 }
 
@@ -287,15 +329,12 @@ void engine::page::ensure_updated() const {
   if (!needs_update)
     return;
 
-  auto &printable{*pointer(current_printable)};
+  const auto &printable{*pointer(current_printable)};
 
-  // Ensure line is broken if next word exceeds page width
-  ensure_line_break(printable);
-  // Load text effects starting range this position
   apply_text_effects(printable, current_character);
 
-  auto prev_char{printable[current_character ? current_character - 1 : 0]};
-  auto curr_char{printable[current_character]};
+  auto prev_char{sf::Utf32::decodeWide(printable[current_character ? current_character - 1 : 0])};
+  auto curr_char{sf::Utf32::decodeWide(printable[current_character])};
 
   // Skip to avoid glitches
   if (curr_char == L'\r')
@@ -394,6 +433,8 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
         break;
       case text_effect::kind::CENTER:
         break;
+      case text_effect::kind::TEXTURE:
+        break;
     }
   }
 }
@@ -451,11 +492,17 @@ void engine::page::apply_mouse_position(sf::Vector2f cursor) {
       } else {
         printable.on_hover_end();
       }
+
+      needs_redraw = true;
     }
   }
 }
 
 void engine::page::redraw() {
+  if (!needs_redraw)
+    return;
+  needs_redraw = false;
+
   vertices.clear();
 
   x = resources->margin_horizontal;
@@ -464,10 +511,10 @@ void engine::page::redraw() {
   for (auto it{std::begin(printables)}; it != std::end(printables); ++it) {
     const auto &printable{*pointer(it)};
 
-    wchar_t curr_char, prev_char{printable[0]};
+    sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};
     for (size_t i{0}; i < printable.length(); ++i) {
       apply_text_effects(printable, i);
-      curr_char = printable[i];
+      curr_char = sf::Utf32::decodeWide(printable[i]);
 
       if (curr_char == L'\r')
         return;
