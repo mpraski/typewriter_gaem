@@ -6,7 +6,7 @@
 
 int main() {
   auto resources{engine::make_resources(
-      sf::VideoMode(400, 400),
+      sf::VideoMode(600, 600),
       "./res/fonts",
       "./res/sounds"
   )};
@@ -36,7 +36,7 @@ int main() {
           new engine::dialog{
               resources,
               L"Conway",
-              L"Ah shiet."
+              L"Aw shiet."
           },
       }
   };

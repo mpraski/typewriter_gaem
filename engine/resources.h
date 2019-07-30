@@ -64,7 +64,7 @@ public:
 
     void display(const std::function<void(sf::RenderWindow &w)> &f) const;
 
-    sf::Vector2i mouse_position() const;
+    sf::Vector2f mouse_position() const;
 
     bool mouse_moved() const;
 
@@ -126,7 +126,7 @@ private:
         auto name{resource_file_path.path().stem().string()};
 
         if (auto res{resource_builder(path)}; res) {
-          resources[resource_category].emplace(name, std::move(*res));
+          resources[resource_category].insert({name, std::move(*res)});
         } else {
           throw std::runtime_error("Unable to load resource from path: " + path);
         }

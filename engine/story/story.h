@@ -6,7 +6,7 @@
 #define TYPEWRITER_GAEM_STORY_H
 
 #include <functional>
-#include "printables/printable.h"
+#include "../printables/printable.h"
 #include "action.h"
 
 namespace engine {

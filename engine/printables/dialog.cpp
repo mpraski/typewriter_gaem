@@ -13,8 +13,12 @@ engine::dialog::dialog(
     update{},
     effects_on_hover{},
     effects_off_hover{} {
-  assert(!person.empty());
-  assert(!speech.empty());
+  if (person.empty()) {
+    throw std::invalid_argument("Person cannot be empty");
+  }
+  if (speech.empty()) {
+    throw std::invalid_argument("Speech cannot be empty");
+  }
 
   effects_off_hover[0].push_back(text_effect{text_effect::kind::BOLD, 0, person.length() - 1});
   effects_off_hover[0].push_back(

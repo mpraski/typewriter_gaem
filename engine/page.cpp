@@ -6,13 +6,13 @@
 
 namespace {
 // Add an underline or strikethrough line to the vertex array
-void addLine(sf::VertexArray &vertices,
-             float x,
-             float width,
-             float lineTop,
-             const sf::Color &color,
-             float offset,
-             float thickness) {
+void add_line(sf::VertexArray &vertices,
+              float x,
+              float width,
+              float lineTop,
+              const sf::Color &color,
+              float offset,
+              float thickness) {
   float top{std::floor(lineTop + offset - (thickness / 2) + 0.5f)};
   float bottom{top + std::floor(thickness + 0.5f)};
 
@@ -25,11 +25,11 @@ void addLine(sf::VertexArray &vertices,
 }
 
 // Add a glyph quad to the vertex array
-void addGlyphQuad(sf::VertexArray &vertices,
-                  sf::Vector2f position,
-                  const sf::Color &color,
-                  const sf::Glyph &glyph,
-                  float italicShear) {
+void add_glyph_quad(sf::VertexArray &vertices,
+                    sf::Vector2f position,
+                    const sf::Color &color,
+                    const sf::Glyph &glyph,
+                    float italicShear) {
   float padding{1.f};
 
   float left{glyph.bounds.left - padding};
@@ -67,13 +67,14 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     checked_character{},
     vertices{sf::Triangles},
     vertices_buffer{sf::Triangles, sf::VertexBuffer::Static},
+    debug_bounds_vertices{sf::Lines},
     bounds{},
     end_of_text{},
     needs_update{true},
     x{resources->margin_horizontal},
     y{resources->margin_vertical + static_cast<float>(resources->font_size)},
-    min_x{resources->margin_horizontal + static_cast<float>(resources->font_size)},
-    min_y{resources->margin_vertical + static_cast<float>(resources->font_size)},
+    min_x{static_cast<float>(resources->font_size)},
+    min_y{static_cast<float>(resources->font_size)},
     max_x{},
     max_y{},
     is_bold{},
@@ -85,6 +86,7 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     whitespace_width{resources->font->getGlyph(L' ', resources->font_size, false).advance},
     letter_spacing{(whitespace_width / 3.f) * (resources->letter_spacing_factor - 1.f)},
     line_spacing{resources->font->getLineSpacing(resources->font_size) * resources->line_spacing_factor},
+    line_spacing_margin{line_spacing / 1.3f},
     underline_offset{resources->font->getUnderlinePosition(resources->font_size)},
     underline_thickness{resources->font->getUnderlineThickness(resources->font_size)},
     typing_delay_factor{1.f},
@@ -113,9 +115,37 @@ void engine::page::advance() {
     end_of_text = true;
 
     rect(current_printable).width = max_x - rect(current_printable).left;
-    rect(current_printable).height = max_y - rect(current_printable).top - line_spacing / 2;
+    rect(current_printable).height = max_y - rect(current_printable).top - line_spacing_margin;
 
-    bounds.height += static_cast<float>(resources->font_size) / 2;
+#ifdef DEBUG
+    auto trans{getTransform().transformRect(rect(current_printable))};
+    debug_bounds_vertices.append(
+        sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
+                   sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(trans.left, trans.top + trans.height),
+        sf::Color::Yellow, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(trans.left, trans.top + trans.height),
+        sf::Color::Yellow, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(trans.left + trans.width,
+                     trans.top + trans.height),
+        sf::Color::Yellow, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(trans.left + trans.width,
+                     trans.top + trans.height),
+        sf::Color::Yellow, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(trans.left + trans.width, trans.top),
+        sf::Color::Yellow, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(sf::Vertex(
+        sf::Vector2f(trans.left + trans.width, trans.top),
+        sf::Color::Yellow, sf::Vector2f(1, 1)));
+    debug_bounds_vertices.append(
+        sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
+                   sf::Vector2f(1, 1)));
+#endif
 
     redraw();
   } else {
@@ -123,22 +153,51 @@ void engine::page::advance() {
       current_character++;
     } else {
       rect(current_printable).width = max_x - rect(current_printable).left;
-      rect(current_printable).height = max_y - rect(current_printable).top - line_spacing;
+      rect(current_printable).height = max_y - rect(current_printable).top - line_spacing_margin;
+
+#ifdef DEBUG
+      auto trans{getTransform().transformRect(rect(current_printable))};
+      debug_bounds_vertices.append(
+          sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
+                     sf::Vector2f(1, 1)));
+      debug_bounds_vertices.append(sf::Vertex(
+          sf::Vector2f(trans.left, trans.top + trans.height),
+          sf::Color::Yellow, sf::Vector2f(1, 1)));
+      debug_bounds_vertices.append(sf::Vertex(
+          sf::Vector2f(trans.left, trans.top + trans.height),
+          sf::Color::Yellow, sf::Vector2f(1, 1)));
+      debug_bounds_vertices.append(sf::Vertex(
+          sf::Vector2f(trans.left + trans.width,
+                       trans.top + trans.height),
+          sf::Color::Yellow, sf::Vector2f(1, 1)));
+      debug_bounds_vertices.append(sf::Vertex(
+          sf::Vector2f(trans.left + trans.width,
+                       trans.top + trans.height),
+          sf::Color::Yellow, sf::Vector2f(1, 1)));
+      debug_bounds_vertices.append(sf::Vertex(
+          sf::Vector2f(trans.left + trans.width, trans.top),
+          sf::Color::Yellow, sf::Vector2f(1, 1)));
+      debug_bounds_vertices.append(sf::Vertex(
+          sf::Vector2f(trans.left + trans.width, trans.top),
+          sf::Color::Yellow, sf::Vector2f(1, 1)));
+      debug_bounds_vertices.append(
+          sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
+                     sf::Vector2f(1, 1)));
+#endif
 
       current_printable = std::next(current_printable);
-      checked_character = current_character = 0u;
+      checked_character = current_character = 0;
 
-      rect(current_printable).top = y - line_spacing;
-      rect(current_printable).height = x;
+      rect(current_printable).top = y - line_spacing / 1.3f;
+      rect(current_printable).left = x;
     }
     needs_update = true;
   }
 }
 
 void engine::page::input() {
-  auto mouse_position{resources->mouse_position()};
-  if (resources->mouse_moved()) {
-    apply_mouse_hover(mouse_position);
+  if (auto mp{resources->mouse_position()}; global_bounds().contains(mp)) {
+    apply_mouse_position(mp);
     redraw();
   }
 }
@@ -164,11 +223,28 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(vertices, states);
   }
 
+#ifdef DEBUG
+  target.draw(debug_bounds_vertices);
+#endif
+
   if (needs_update) {
     remove_text_effects(current_character);
   }
 
   needs_update = false;
+}
+
+sf::FloatRect engine::page::local_bounds() const {
+  ensure_updated();
+
+  auto bounds_with_margin{bounds};
+  bounds.height += resources->margin_vertical;
+  bounds.width += resources->margin_horizontal;
+  return bounds_with_margin;
+}
+
+sf::FloatRect engine::page::global_bounds() const {
+  return getTransform().transformRect(local_bounds());
 }
 
 // Measure the length of the next word, if it overflows move it the next line
@@ -178,7 +254,7 @@ void engine::page::ensure_line_break(printable &printable) const {
 
   size_t curr_char{current_character};
   size_t prev_char{current_character};
-  float word_width{};
+  float word_width{resources->margin_horizontal};
 
   do {
     if (printable[curr_char] == L'\r')
@@ -202,8 +278,7 @@ void engine::page::ensure_line_break(printable &printable) const {
     checked_character = prev_char = curr_char;
   } while (!std::iswblank(printable[curr_char++]));
 
-  if (x + word_width + resources->margin_horizontal >= resources->page_width
-      && printable[curr_char] != L'\n') {
+  if (x + word_width >= resources->page_width && printable[curr_char] != L'\n') {
     printable.break_line_at(prev_char);
   }
 }
@@ -219,8 +294,8 @@ void engine::page::ensure_updated() const {
   // Load text effects starting range this position
   apply_text_effects(printable, current_character);
 
-  wchar_t prev_char{printable[current_character ? current_character - 1u : 0u]};
-  wchar_t curr_char{printable[current_character]};
+  auto prev_char{printable[current_character ? current_character - 1 : 0]};
+  auto curr_char{printable[current_character]};
 
   // Skip to avoid glitches
   if (curr_char == L'\r')
@@ -249,30 +324,41 @@ void engine::page::ensure_updated() const {
     max_x = std::max(max_x, x);
     max_y = std::max(max_y, y);
   } else {
-    const auto &glyph = resources->font->getGlyph(curr_char, resources->font_size, is_bold);
-    addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
+    const auto &glyph{resources->font->getGlyph(curr_char, resources->font_size, is_bold)};
+
+    float left{glyph.bounds.left};
+    float top{glyph.bounds.top};
+    float right{glyph.bounds.left + glyph.bounds.width};
+    float bottom{glyph.bounds.top + glyph.bounds.height};
+
+    min_x = std::min(min_x, x + left - italic_shear * bottom);
+    max_x = std::max(max_x, x + right - italic_shear * top);
+    min_y = std::min(min_y, y + top);
+    max_y = std::max(max_y, y + bottom);
+
+    bounds.top = min_y;
+    bounds.left = min_x;
+    bounds.height = max_y - min_y;
+    bounds.width = max_x - min_x;
+
+    add_glyph_quad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
     auto advance{glyph.advance + letter_spacing + letter_spacing_factor};
 
     if (is_underlined) {
-      addLine(vertices, x, advance, y, text_color, underline_offset, underline_thickness);
+      add_line(vertices, x, advance, y, text_color, underline_offset, underline_thickness);
     }
 
     auto x_bounds{resources->font->getGlyph(L'x', resources->font_size, is_bold).bounds};
     float strike_through_offset{x_bounds.top + x_bounds.height / 2.f};
 
     if (is_strike_through) {
-      addLine(vertices, x, advance, y, text_color, strike_through_offset, underline_thickness);
+      add_line(vertices, x, advance, y, text_color, strike_through_offset, underline_thickness);
     }
 
     x += advance;
 
     audio.play_typewriter_click();
   }
-
-  bounds.top = min_y;
-  bounds.left = min_x;
-  bounds.height = max_y - min_y;
-  bounds.width = max_x - min_x;
 
   delay();
 }
@@ -347,14 +433,20 @@ void engine::page::add_printable(printable_ptr &&ptr) const {
   printables.emplace_back(std::move(ptr), sf::FloatRect{});
 }
 
-void engine::page::apply_mouse_hover(sf::Vector2i cursor) {
+void engine::page::truncate_printables(size_t n) const {
+  if (n <= printables.size()) {
+    printables.resize(printables.size() - n);
+  }
+}
+
+void engine::page::apply_mouse_position(sf::Vector2f cursor) {
   for (auto p{std::begin(printables)}; p != std::end(printables); ++p) {
     auto &printable{*pointer(p)};
-    auto &pbounds{rect(p)};
+    auto &p_bounds{rect(p)};
 
     // To-Do: Only check printables in current viewport
     if (printable.interactive()) {
-      if (pbounds.contains(cursor.x, cursor.y)) {
+      if (getTransform().transformRect(p_bounds).contains(cursor)) {
         printable.on_hover_start();
       } else {
         printable.on_hover_end();
@@ -372,8 +464,8 @@ void engine::page::redraw() {
   for (auto it{std::begin(printables)}; it != std::end(printables); ++it) {
     const auto &printable{*pointer(it)};
 
-    wchar_t curr_char, prev_char = printable[0u];
-    for (size_t i{0u}; i < printable.length(); ++i) {
+    wchar_t curr_char, prev_char{printable[0]};
+    for (size_t i{0}; i < printable.length(); ++i) {
       apply_text_effects(printable, i);
       curr_char = printable[i];
 
@@ -396,19 +488,19 @@ void engine::page::redraw() {
             break;
         }
       } else {
-        const auto &glyph = resources->font->getGlyph(curr_char, resources->font_size, is_bold);
-        addGlyphQuad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
+        const auto &glyph{resources->font->getGlyph(curr_char, resources->font_size, is_bold)};
+        add_glyph_quad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
         auto advance{glyph.advance + letter_spacing + letter_spacing_factor};
 
         if (is_underlined) {
-          addLine(vertices, x, advance, y, text_color, underline_offset, underline_thickness);
+          add_line(vertices, x, advance, y, text_color, underline_offset, underline_thickness);
         }
 
         auto x_bounds{resources->font->getGlyph(L'x', resources->font_size, is_bold).bounds};
         float strike_through_offset{x_bounds.top + x_bounds.height / 2.f};
 
         if (is_strike_through) {
-          addLine(vertices, x, advance, y, text_color, strike_through_offset, underline_thickness);
+          add_line(vertices, x, advance, y, text_color, strike_through_offset, underline_thickness);
         }
 
         x += advance;

@@ -8,7 +8,9 @@ engine::printable::printable(const resources_ptr &rptr, std::wstring &&c)
     : game_state{rptr},
       contents{std::move(c)},
       effects{} {
-  assert(!contents.empty());
+  if (contents.empty()) {
+    throw std::invalid_argument("Contents cannot be empty");
+  }
 
   trim_start(contents);
   trim_end(contents);

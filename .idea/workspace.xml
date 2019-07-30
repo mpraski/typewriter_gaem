@@ -13,12 +13,17 @@
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/action.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/action.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/action.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/action.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/dialog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/dialog.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/printables/printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/printable.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/text_effect.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/text_effect.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/text_effect.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/text_effect.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/resources.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/resources.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/story.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/story.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -53,6 +58,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/engine/story" />
       <recent name="$PROJECT_DIR$/engine/printables" />
       <recent name="$PROJECT_DIR$/engine/utilities" />
       <recent name="$PROJECT_DIR$/res/fonts" />
@@ -91,7 +97,7 @@
       <workItem from="1563617384992" duration="12316000" />
       <workItem from="1563696401604" duration="15292000" />
       <workItem from="1563737061767" duration="121219000" />
-      <workItem from="1564334855707" duration="25362000" />
+      <workItem from="1564334855707" duration="36639000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -205,7 +211,14 @@
       <option name="project" value="LOCAL" />
       <updated>1564393039004</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="added support for underline and strike-through formatting">
+      <created>1564423370686</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1564423370686</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,6 +251,7 @@
     <MESSAGE value="fixed more shit" />
     <MESSAGE value="ditto" />
     <MESSAGE value="simplified text model" />
-    <option name="LAST_COMMIT_MESSAGE" value="simplified text model" />
+    <MESSAGE value="added support for underline and strike-through formatting" />
+    <option name="LAST_COMMIT_MESSAGE" value="added support for underline and strike-through formatting" />
   </component>
 </project>

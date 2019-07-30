@@ -5,6 +5,8 @@
 #ifndef SFML_GAME_PAGE_H
 #define SFML_GAME_PAGE_H
 
+#define DEBUG
+
 #include <vector>
 #include <string>
 #include <cwctype>
@@ -51,6 +53,7 @@ private:
     // SFML buffers
     mutable sf::VertexArray vertices;
     mutable sf::VertexBuffer vertices_buffer;
+    mutable sf::VertexArray debug_bounds_vertices;
     mutable sf::FloatRect bounds;
     // Control flags
     mutable bool end_of_text;
@@ -72,6 +75,7 @@ private:
     mutable float whitespace_width;
     mutable float letter_spacing;
     mutable float line_spacing;
+    mutable float line_spacing_margin;
     mutable float underline_offset;
     mutable float underline_thickness;
     mutable float typing_delay_factor;
@@ -80,19 +84,25 @@ private:
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
+    sf::FloatRect local_bounds() const;
+
+    sf::FloatRect global_bounds() const;
+
     void ensure_line_break(printable &printable) const;
 
     void ensure_updated() const;
 
     void apply_text_effects(const printable &printable, size_t idx) const;
-    
+
     void remove_text_effects(size_t idx) const;
 
     void delay() const;
 
     void add_printable(printable_ptr &&ptr) const;
 
-    void apply_mouse_hover(sf::Vector2i cursor);
+    void truncate_printables(size_t n) const;
+
+    void apply_mouse_position(sf::Vector2f cursor);
 
     void redraw();
 };
