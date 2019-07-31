@@ -87,7 +87,7 @@ private:
 
     sf::FloatRect global_bounds() const;
 
-    void ensure_line_breaks(printable &printable) const;
+    void preprocess(printable &printable) const;
 
     void ensure_updated() const;
 
@@ -97,9 +97,9 @@ private:
 
     void delay() const;
 
-    void add_printable(printable_ptr &&ptr) const;
+    void add_printable(printable_ptr &&ptr);
 
-    void truncate_printables(size_t n) const;
+    void truncate_printables(size_t n);
 
     void apply_mouse_position(sf::Vector2f cursor);
 

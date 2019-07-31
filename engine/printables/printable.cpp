@@ -64,3 +64,14 @@ void engine::printable::on_hover_end() {
 void engine::printable::on_click() {
 
 }
+
+void engine::printable::offset_effects(size_t idx, int amount) {
+  effect_map new_effects;
+  new_effects.reserve(effects.size());
+  for (auto &[k, v] : effects) {
+    auto new_key{k};
+    if (k >= idx) new_key += amount;
+    new_effects.insert(std::make_pair(new_key, std::move(v)));
+  }
+  effects = new_effects;
+}

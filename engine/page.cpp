@@ -104,7 +104,7 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
   rect(current_printable).top = resources->margin_vertical;
   rect(current_printable).left = x;
 
-  ensure_line_breaks(*pointer(current_printable));
+  preprocess(*pointer(current_printable));
 }
 
 bool engine::page::text_end() const {
@@ -221,7 +221,7 @@ void engine::page::advance() {
       rect(current_printable).top = y - line_spacing / 1.3f;
       rect(current_printable).left = x;
 
-      ensure_line_breaks(*pointer(current_printable));
+      preprocess(*pointer(current_printable));
     }
     needs_update = true;
   }
@@ -277,7 +277,7 @@ sf::FloatRect engine::page::global_bounds() const {
   return getTransform().transformRect(local_bounds());
 }
 
-void engine::page::ensure_line_breaks(printable &printable) const {
+void engine::page::preprocess(printable &printable) const {
   auto last_blank{std::numeric_limits<size_t>::max()};
   auto word_width{resources->margin_horizontal * 2};
   sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};
@@ -285,6 +285,17 @@ void engine::page::ensure_line_breaks(printable &printable) const {
   for (size_t i{0}; i < printable.length(); ++i) {
     apply_text_effects(printable, i);
     curr_char = sf::Utf32::decodeWide(printable[i]);
+
+    /*if (auto center_it{
+          std::find_if(
+              std::begin(active_effects),
+              std::end(active_effects),
+              [](const auto &e) {
+                return e.kind == text_effect::kind::CENTER;
+              }
+          )}; center_it != std::end(active_effects)) {
+
+    }*/
 
     if (curr_char == L'\r')
       continue;
@@ -470,13 +481,27 @@ void engine::page::delay() const {
   }
 }
 
-void engine::page::add_printable(printable_ptr &&ptr) const {
+void engine::page::add_printable(printable_ptr &&ptr) {
   printables.emplace_back(std::move(ptr), sf::FloatRect{});
+
+  current_printable = std::prev(std::end(printables));
+  current_character = 0;
+
+  preprocess(*pointer(current_printable));
+
+  needs_update = true;
+  end_of_text = false;
 }
 
-void engine::page::truncate_printables(size_t n) const {
+void engine::page::truncate_printables(size_t n) {
   if (n <= printables.size()) {
     printables.resize(printables.size() - n);
+
+    current_printable = std::prev(std::end(printables));
+    current_character = 0;
+
+    needs_update = true;
+    end_of_text = false;
   }
 }
 

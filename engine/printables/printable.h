@@ -18,7 +18,7 @@ namespace engine {
 class printable : public game_state {
 public:
     using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
-    using back_inserter = std::back_insert_iterator<std::vector<text_effect>>;
+    using back_inserter = std::back_insert_iterator<effect_map::mapped_type>;
 
     printable(const resources_ptr &rptr, std::wstring &&c);
 
@@ -36,6 +36,9 @@ public:
 
     // Insert new line character at a blank symbol
     void break_line_at(size_t idx);
+
+    // Apply some offset to all effects starting after or at idx
+    void offset_effects(size_t idx, int amount = 1);
 
     // Specific callbacks relating to the mouse events inside the printable
     virtual bool interactive() const;

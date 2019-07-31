@@ -8,6 +8,7 @@
 #include <functional>
 #include "../printables/printable.h"
 #include "action.h"
+#include "decision_node.h"
 
 namespace engine {
 class story {

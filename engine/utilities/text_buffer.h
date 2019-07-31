@@ -18,7 +18,7 @@ public:
 
     std::wstring_view range(size_t begin, size_t end) const;
 
-    std::wstring_view from(size_t begin = 0u) const;
+    std::wstring_view from(size_t begin = 0) const;
 
     std::wstring str() const;
 
