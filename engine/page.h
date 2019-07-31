@@ -52,6 +52,7 @@ private:
     mutable sf::VertexArray vertices;
     mutable sf::VertexBuffer vertices_buffer;
     mutable sf::VertexArray debug_bounds_vertices;
+    mutable sf::VertexArray font_texture_vertices;
     mutable sf::FloatRect bounds;
     // Control flags
     mutable bool end_of_text;
@@ -80,6 +81,7 @@ private:
     mutable float typing_delay_factor;
     mutable float letter_spacing_factor;
     mutable sf::Color text_color;
+    mutable const sf::Texture *text_texture;
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 

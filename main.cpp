@@ -8,7 +8,8 @@ int main() {
   auto resources{engine::make_resources(
       sf::VideoMode(600, 600),
       "./res/fonts",
-      "./res/sounds"
+      "./res/sounds",
+      "./res/textures"
   )};
 
   engine::page page{
@@ -18,10 +19,15 @@ int main() {
               resources,
               L"Through the darkness of future past, the magician longs to see, one chance out between two worlds, fire walk with me!",
               {
-                  engine::text_effect{engine::text_effect::kind::UNDERLINE, 0, 7},
+                  engine::text_effect{engine::text_effect::kind::TEXTURE, 0, 7}.with_texture("sample"),
                   engine::text_effect{engine::text_effect::kind::DELAY, 100, 118}.with_delay(5.0f),
                   engine::text_effect{engine::text_effect::kind::COLOR, 100, 118}.with_color(sf::Color::Red)
               }
+          ),
+          new engine::paragraph(
+              resources,
+              L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              {}
           ),
           new engine::dialog{
               resources,

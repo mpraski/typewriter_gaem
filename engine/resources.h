@@ -41,6 +41,7 @@ public:
         sf::VideoMode mode,
         const std::string &fonts_path,
         const std::string &sounds_path,
+        const std::string &textures_path,
         unsigned font_size = 24u,
         float page_width = 400.f,
         float page_height = 1000.f,
@@ -62,6 +63,8 @@ public:
     RESOURCE_GETTER(fonts);
 
     RESOURCE_GETTER(sounds);
+
+    RESOURCE_GETTER(textures);
 
     void display(const std::function<void(sf::RenderWindow &w)> &f) const;
 
@@ -88,6 +91,7 @@ public:
 private:
     resource_map<sf::Font> fonts;
     resource_map<sf::SoundBuffer> sounds;
+    resource_map<sf::Texture> textures;
 
     template<typename It>
     static void split(const std::string &s, char delim, It result) {

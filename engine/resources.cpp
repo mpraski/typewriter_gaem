@@ -8,6 +8,7 @@ engine::resources::resources(
     sf::VideoMode mode,
     const std::string &fonts_path,
     const std::string &sounds_path,
+    const std::string &textures_path,
     unsigned font_size,
     float page_width,
     float page_height,
@@ -47,6 +48,17 @@ engine::resources::resources(
               [](const auto &path) -> std::optional<sf::SoundBuffer> {
                 if (sf::SoundBuffer buffer; buffer.loadFromFile(path)) {
                   return buffer;
+                }
+                return {};
+              }
+          )
+      },
+      textures{
+          load_resources<sf::Texture>(
+              textures_path,
+              [](const auto &path) -> std::optional<sf::Texture> {
+                if (sf::Texture texture; texture.loadFromFile(path)) {
+                  return texture;
                 }
                 return {};
               }

@@ -45,6 +45,11 @@ void engine::printable::break_line_at(size_t idx) {
   contents[idx] = L'\n';
 }
 
+void engine::printable::inject_line_at(size_t idx) {
+  contents.insert(contents.begin() + idx, L'\n');
+  offset_effects(idx);
+}
+
 bool engine::printable::interactive() const {
   return false;
 }

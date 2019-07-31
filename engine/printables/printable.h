@@ -37,6 +37,9 @@ public:
     // Insert new line character at a blank symbol
     void break_line_at(size_t idx);
 
+    // Insert new line character at a blank symbol
+    void inject_line_at(size_t idx);
+
     // Apply some offset to all effects starting after or at idx
     void offset_effects(size_t idx, int amount = 1);
 

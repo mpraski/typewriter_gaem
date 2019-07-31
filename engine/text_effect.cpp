@@ -10,13 +10,15 @@ engine::text_effect::text_effect(
     size_t end,
     float delay_factor,
     float letter_spacing_factor,
-    sf::Color color
+    sf::Color color,
+    std::string texture
 ) : kind{kind},
     begin{begin},
     end{end},
     delay_factor{delay_factor},
     letter_spacing_factor{letter_spacing_factor},
-    color{color} {
+    color{color},
+    texture{std::move(texture)} {
 
 }
 
@@ -32,5 +34,10 @@ engine::text_effect &engine::text_effect::with_letter_spacing(float ls) {
 
 engine::text_effect &engine::text_effect::with_color(sf::Color c) {
   color = c;
+  return *this;
+}
+
+engine::text_effect &engine::text_effect::with_texture(std::string t) {
+  texture = std::move(t);
   return *this;
 }

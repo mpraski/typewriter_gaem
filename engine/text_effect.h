@@ -31,14 +31,17 @@ public:
         size_t end,
         float delay_factor = 1.f,
         float letter_spacing_factor = 0.f,
-        sf::Color color = sf::Color::White
+        sf::Color color = sf::Color::White,
+        std::string texture = ""
     );
 
-    text_effect &with_delay(float df = 1.f);
+    text_effect &with_delay(float df);
 
-    text_effect &with_letter_spacing(float ls = 1.f);
+    text_effect &with_letter_spacing(float ls);
 
-    text_effect &with_color(sf::Color c = sf::Color::White);
+    text_effect &with_color(sf::Color c);
+
+    text_effect &with_texture(std::string t);
 
     inline bool operator==(const text_effect &other) const noexcept {
       return kind == other.kind
@@ -52,6 +55,7 @@ public:
     float delay_factor;
     float letter_spacing_factor;
     sf::Color color;
+    std::string texture;
 };
 }
 

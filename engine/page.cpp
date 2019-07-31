@@ -24,6 +24,33 @@ void add_line(sf::VertexArray &vertices,
   vertices.append(sf::Vertex(sf::Vector2f(x + width, bottom), color, sf::Vector2f(1, 1)));
 }
 
+void add_font_background(sf::VertexArray &vertices,
+                         sf::Vector2f position,
+                         const sf::Glyph &glyph,
+                         float italicShear) {
+  float padding{1.f};
+
+  float left{glyph.bounds.left - padding};
+  float top{glyph.bounds.top - padding};
+  float right{glyph.bounds.left + glyph.bounds.width + padding};
+  float bottom{glyph.bounds.top + glyph.bounds.height + padding};
+
+  vertices.append(
+      sf::Vertex(sf::Vector2f(position.x + left - italicShear * top, position.y + top), sf::Vector2f(0, 0)));
+  vertices.append(
+      sf::Vertex(sf::Vector2f(position.x + right - italicShear * top, position.y + top),
+                 sf::Vector2f(glyph.bounds.width + padding, 0)));
+  vertices.append(sf::Vertex(sf::Vector2f(position.x + left - italicShear * bottom, position.y + bottom),
+                             sf::Vector2f(0, glyph.bounds.height + padding)));
+  vertices.append(sf::Vertex(sf::Vector2f(position.x + left - italicShear * bottom, position.y + bottom),
+                             sf::Vector2f(0, glyph.bounds.height + padding)));
+  vertices.append(
+      sf::Vertex(sf::Vector2f(position.x + right - italicShear * top, position.y + top),
+                 sf::Vector2f(glyph.bounds.width + padding, 0)));
+  vertices.append(sf::Vertex(sf::Vector2f(position.x + right - italicShear * bottom, position.y + bottom),
+                             sf::Vector2f(glyph.bounds.width + padding, glyph.bounds.height + padding)));
+}
+
 // Add a glyph quad to the vertex array
 void add_glyph_quad(sf::VertexArray &vertices,
                     sf::Vector2f position,
@@ -67,6 +94,7 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     vertices{sf::Triangles},
     vertices_buffer{sf::Triangles, sf::VertexBuffer::Static},
     debug_bounds_vertices{sf::Lines},
+    font_texture_vertices{sf::Triangles},
     bounds{},
     end_of_text{},
     needs_update{true},
@@ -91,7 +119,8 @@ engine::page::page(const resources_ptr &rptr, std::vector<printable *> &&ps) :
     underline_thickness{resources->font->getUnderlineThickness(resources->font_size)},
     typing_delay_factor{1.f},
     letter_spacing_factor{1.f},
-    text_color{sf::Color::White} {
+    text_color{sf::Color::White},
+    text_texture{} {
   whitespace_width += letter_spacing;
 
   for (auto p : ps) printables.emplace_back(p, sf::FloatRect{});
@@ -238,6 +267,12 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
   ensure_updated();
 
   states.transform *= getTransform();
+
+  if (text_texture) {
+    states.texture = text_texture;
+    target.draw(font_texture_vertices, states);
+  }
+
   states.texture = &resources->font->getTexture(resources->font_size);
 
   // Update the vertex buffer if it is being used
@@ -280,22 +315,12 @@ sf::FloatRect engine::page::global_bounds() const {
 void engine::page::preprocess(printable &printable) const {
   auto last_blank{std::numeric_limits<size_t>::max()};
   auto word_width{resources->margin_horizontal * 2};
+  auto p_len{printable.length()};
   sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};
 
-  for (size_t i{0}; i < printable.length(); ++i) {
+  for (size_t i{0}; i < p_len; ++i) {
     apply_text_effects(printable, i);
     curr_char = sf::Utf32::decodeWide(printable[i]);
-
-    /*if (auto center_it{
-          std::find_if(
-              std::begin(active_effects),
-              std::end(active_effects),
-              [](const auto &e) {
-                return e.kind == text_effect::kind::CENTER;
-              }
-          )}; center_it != std::end(active_effects)) {
-
-    }*/
 
     if (curr_char == L'\r')
       continue;
@@ -306,11 +331,11 @@ void engine::page::preprocess(printable &printable) const {
       switch (curr_char) {
         case L' ':
           word_width += whitespace_width + letter_spacing_factor;
-          last_blank = i;
+          if (i) last_blank = i;
           break;
         case L'\t':
           word_width += whitespace_width * 4;
-          last_blank = i;
+          if (i) last_blank = i;
           break;
         case L'\n':
           word_width = resources->margin_horizontal * 2;
@@ -326,10 +351,11 @@ void engine::page::preprocess(printable &printable) const {
 
     if (word_width >= resources->page_width) {
       if (last_blank == std::numeric_limits<size_t>::max()) {
-        throw std::runtime_error("No blank symbols found");
+        printable.inject_line_at(i);
+        p_len++;
+      } else {
+        printable.break_line_at(last_blank);
       }
-
-      printable.break_line_at(last_blank);
       word_width = resources->margin_horizontal * 2;
       last_blank = std::numeric_limits<size_t>::max();
     }
@@ -392,6 +418,9 @@ void engine::page::ensure_updated() const {
     bounds.width = max_x - min_x;
 
     add_glyph_quad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
+    if (text_texture) {
+      add_font_background(font_texture_vertices, sf::Vector2f(x, y), glyph, italic_shear);
+    }
     auto advance{glyph.advance + letter_spacing + letter_spacing_factor};
 
     if (is_underlined) {
@@ -445,6 +474,7 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
       case text_effect::kind::CENTER:
         break;
       case text_effect::kind::TEXTURE:
+        text_texture = &resources->get_textures("text").at(e.texture);
         break;
     }
   }
@@ -470,6 +500,7 @@ void engine::page::remove_text_effects(size_t idx) const {
   typing_delay_factor = 1.f;
   letter_spacing_factor = 1.f;
   text_color = sf::Color::White;
+  text_texture = nullptr;
 }
 
 void engine::page::delay() const {
