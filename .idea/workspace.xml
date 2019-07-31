@@ -14,19 +14,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/engine/story/decision_node.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/story/decision_node.h" afterDir="false" />
+    <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="using boost:filesystem instead of std::filesystem now because of gcc-8 fuckery (see https://bugs.launchpad.net/ubuntu/+source/gcc-8/+bug/1824721)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/audio_system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/engine.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/printable.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/story/story.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/utilities/text_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/text_buffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/resources.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.h" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -104,6 +95,8 @@
       <workItem from="1564509424113" duration="9501000" />
       <workItem from="1564563148482" duration="122000" />
       <workItem from="1564563284927" duration="14000" />
+      <workItem from="1564563446814" duration="75000" />
+      <workItem from="1564580108358" duration="905000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -238,7 +231,14 @@
       <option name="project" value="LOCAL" />
       <updated>1564511947683</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="downgraded minimal cmake version">
+      <created>1564563510942</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1564563510942</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -276,6 +276,8 @@
     <MESSAGE value="added support for underline and strike-through formatting" />
     <MESSAGE value="fixed printable bounds setting and added debug bounds mode" />
     <MESSAGE value="Fixed type mismatch, changed line breaks computation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed type mismatch, changed line breaks computation" />
+    <MESSAGE value="downgraded minimal cmake version" />
+    <MESSAGE value="using boost:filesystem instead of std::filesystem now because of gcc-8 fuckery (see https://bugs.launchpad.net/ubuntu/+source/gcc-8/+bug/1824721)" />
+    <option name="LAST_COMMIT_MESSAGE" value="using boost:filesystem instead of std::filesystem now because of gcc-8 fuckery (see https://bugs.launchpad.net/ubuntu/+source/gcc-8/+bug/1824721)" />
   </component>
 </project>

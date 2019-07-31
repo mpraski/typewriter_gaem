@@ -6,14 +6,15 @@
 #define TYPEWRITER_GAEM_RESOURCES_H
 
 #include <memory>
-#include <filesystem>
 #include <unordered_map>
 #include <vector>
 #include <functional>
+#include <sstream>
+#include <boost/filesystem.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
-namespace fs = std::filesystem;
+namespace fs = boost::filesystem;
 
 #define RESOURCE_GETTER(RMAP) \
 inline const auto &get_##RMAP(const std::string &res_category = ROOT_RESOURCE_CATEGORY) const { \
@@ -97,11 +98,10 @@ private:
       }
     }
 
-    static std::string get_sub_directory(const std::filesystem::path &path) {
+    static std::string get_sub_directory(const fs::path &path) {
       constexpr const auto separator{fs::path::preferred_separator};
-
       std::vector<std::string> parts;
-      split(path, separator, std::back_inserter(parts));
+      split(path.string(), separator, std::back_inserter(parts));
 
       if (parts.empty()) {
         throw std::runtime_error("Provided path does not contain sub directory: " + path.string());
@@ -118,7 +118,7 @@ private:
       resource_map<T> resources;
 
       auto creator{[&](const std::string &resource_category, const auto &resource_file_path) {
-        if (resource_file_path.is_directory()) {
+        if (fs::is_directory(resource_file_path)) {
           throw std::runtime_error("Resource file path is a directory: " + resource_file_path.path().string());
         }
 
@@ -133,7 +133,7 @@ private:
       }};
 
       for (const auto &resource_dir_path : fs::directory_iterator(resource_path)) {
-        if (resource_dir_path.is_directory()) {
+        if (fs::is_directory(resource_dir_path)) {
           auto resource_category{get_sub_directory(resource_dir_path.path())};
 
           for (const auto &resource_file_path : fs::directory_iterator(resource_dir_path)) {
