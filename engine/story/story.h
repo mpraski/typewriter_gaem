@@ -7,6 +7,7 @@
 
 #include <functional>
 #include "../printables/printable.h"
+#include "../printables/printable_store.h"
 #include "action.h"
 #include "decision_node.h"
 
@@ -15,12 +16,16 @@ class story {
 public:
     bool can_progress() const;
 
-    void update_printables(
-        const std::function<void(printable_ptr &&printable)> &adder,
-        const std::function<void(size_t last_printables)> &remover
-    );
-
     void act(action action);
+
+private:
+    printable_store store;
+    decision_node_ptr root_node;
+    decision_node_ptr curr_node;
+
+    inline auto safe_clone(const printable_ptr &ptr) {
+      return printable_ptr{ptr->clone()};
+    }
 };
 }
 

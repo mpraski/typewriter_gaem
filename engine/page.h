@@ -27,6 +27,7 @@
 
 namespace engine {
 class page : public game_state, public sf::Drawable, public sf::Transformable {
+
     using printable_array = std::vector<std::pair<printable_ptr, sf::FloatRect>>;
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;

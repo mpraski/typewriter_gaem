@@ -10,17 +10,23 @@
 #include <assert.h>
 #include <unordered_map>
 #include <vector>
+#include <boost/uuid/uuid.hpp>
 #include "../text_effect.h"
 #include "../game_state.h"
 #include "../utilities/general.h"
+#include "../story/action.h"
 
 namespace engine {
+using printable_id_t = boost::uuids::uuid;
+
 class printable : public game_state {
 public:
     using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
     using back_inserter = std::back_insert_iterator<effect_map::mapped_type>;
 
-    printable(const resources_ptr &rptr, std::wstring &&c);
+    printable(printable_id_t id, const resources_ptr &rptr, std::wstring &&c);
+
+    printable_id_t get_id() const;
 
     // To string
     std::wstring_view view() const;
@@ -43,18 +49,20 @@ public:
     // Apply some offset to all effects starting after or at idx
     void offset_effects(size_t idx, int amount = 1);
 
+    // Virtual constructor for deep copying
+    virtual printable *clone() const = 0;
+
     // Specific callbacks relating to the mouse events inside the printable
     virtual bool interactive() const;
-
-    virtual bool needs_update() const;
 
     virtual void on_hover_start();
 
     virtual void on_hover_end();
 
-    virtual void on_click();
+    virtual action on_click();
 
 protected:
+    printable_id_t id;
     std::wstring contents;
     effect_map effects;
 
@@ -77,6 +85,7 @@ private:
 };
 
 using printable_ptr = std::unique_ptr<printable>;
+
 }
 
 #endif //TYPEWRITER_GAEM_PRINTABLE_H

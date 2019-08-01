@@ -4,8 +4,9 @@
 
 #include "printable.h"
 
-engine::printable::printable(const resources_ptr &rptr, std::wstring &&c)
+engine::printable::printable(printable_id_t id, const resources_ptr &rptr, std::wstring &&c)
     : game_state{rptr},
+      id{id},
       contents{std::move(c)},
       effects{} {
   if (contents.empty()) {
@@ -15,6 +16,10 @@ engine::printable::printable(const resources_ptr &rptr, std::wstring &&c)
   trim_start(contents);
   trim_end(contents);
   add_end_new_line(contents);
+}
+
+engine::printable_id_t engine::printable::get_id() const {
+  return id;
 }
 
 std::wstring_view engine::printable::view() const {
@@ -54,10 +59,6 @@ bool engine::printable::interactive() const {
   return false;
 }
 
-bool engine::printable::needs_update() const {
-  return true;
-}
-
 void engine::printable::on_hover_start() {
 
 }
@@ -66,8 +67,8 @@ void engine::printable::on_hover_end() {
 
 }
 
-void engine::printable::on_click() {
-
+engine::action engine::printable::on_click() {
+  return {};
 }
 
 void engine::printable::offset_effects(size_t idx, int amount) {

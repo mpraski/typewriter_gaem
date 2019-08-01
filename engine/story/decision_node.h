@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <vector>
+#include "../printables/printable.h"
 
 namespace engine {
 class decision_node {
@@ -15,7 +16,8 @@ public:
 private:
     friend class story;
 
-    std::vector<decision_node_ptr> children;
+    std::vector<printable_ptr> contents;
+    std::vector<std::pair<printable_ptr, decision_node_ptr>> choices;
 };
 
 using decision_node_ptr = decision_node::decision_node_ptr;

@@ -267,12 +267,6 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
   ensure_updated();
 
   states.transform *= getTransform();
-
-  if (text_texture) {
-    states.texture = text_texture;
-    target.draw(font_texture_vertices, states);
-  }
-
   states.texture = &resources->font->getTexture(resources->font_size);
 
   // Update the vertex buffer if it is being used

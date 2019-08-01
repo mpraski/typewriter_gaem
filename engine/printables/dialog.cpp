@@ -5,10 +5,11 @@
 #include "dialog.h"
 
 engine::dialog::dialog(
+    printable_id_t id,
     const resources_ptr &rptr,
     const std::wstring &person,
     const std::wstring &speech
-) : printable{rptr, person + L":\t" + speech},
+) : printable{id, rptr, person + L":\t" + speech},
     on{},
     update{},
     effects_on_hover{},
@@ -31,12 +32,12 @@ engine::dialog::dialog(
   effects = effects_off_hover;
 }
 
-bool engine::dialog::interactive() const {
-  return true;
+engine::printable *engine::dialog::clone() const {
+  return new dialog{*this};
 }
 
-bool engine::dialog::needs_update() const {
-  return update;
+bool engine::dialog::interactive() const {
+  return true;
 }
 
 void engine::dialog::on_hover_start() {
@@ -61,6 +62,6 @@ void engine::dialog::on_hover_end() {
   effects = effects_off_hover;
 }
 
-void engine::dialog::on_click() {
-
+engine::action engine::dialog::on_click() {
+  return {action::kind::DIALOG, id};
 }
