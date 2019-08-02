@@ -13,6 +13,12 @@ namespace engine {
 class decision_node {
 public:
     using decision_node_ptr = std::shared_ptr<decision_node>;
+
+    decision_node(
+        const std::vector<printable *> &cnts,
+        const std::vector<std::pair<printable *, decision_node *>>& cshs
+    );
+
 private:
     friend class story;
 

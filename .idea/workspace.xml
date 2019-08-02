@@ -15,10 +15,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/engine/printables/printable_store.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/printables/printable_store.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/printables/center.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/printables/center.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/audio_system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/engine.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/printables/dialog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/dialog.cpp" afterDir="false" />
@@ -27,10 +29,17 @@
       <change beforePath="$PROJECT_DIR$/engine/printables/paragraph.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/paragraph.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/printables/printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/printables/printable.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable_store.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable_store.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable_store.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable_store.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/resources.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/resources.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/story/action.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/action.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/story/action.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/action.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/story/decision_node.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/decision_node.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/story/decision_node.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/decision_node.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/story/story.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/story/story.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/text_effect.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/text_effect.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -114,7 +123,7 @@
       <workItem from="1564563284927" duration="14000" />
       <workItem from="1564563446814" duration="75000" />
       <workItem from="1564580108358" duration="11444000" />
-      <workItem from="1564662204004" duration="8019000" />
+      <workItem from="1564662204004" duration="20649000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -270,7 +279,14 @@
       <option name="project" value="LOCAL" />
       <updated>1564604276786</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Prototyped decision tree and player actions">
+      <created>1564680937490</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1564680937491</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -312,6 +328,7 @@
     <MESSAGE value="downgraded minimal cmake version" />
     <MESSAGE value="using boost:filesystem instead of std::filesystem now because of gcc-8 fuckery (see https://bugs.launchpad.net/ubuntu/+source/gcc-8/+bug/1824721)" />
     <MESSAGE value="made an attempt to blend font texture with a background overlay to achieve coloured text" />
-    <option name="LAST_COMMIT_MESSAGE" value="made an attempt to blend font texture with a background overlay to achieve coloured text" />
+    <MESSAGE value="Prototyped decision tree and player actions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Prototyped decision tree and player actions" />
   </component>
 </project>

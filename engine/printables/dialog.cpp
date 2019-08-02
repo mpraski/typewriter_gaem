@@ -5,11 +5,10 @@
 #include "dialog.h"
 
 engine::dialog::dialog(
-    printable_id_t id,
     const resources_ptr &rptr,
     const std::wstring &person,
     const std::wstring &speech
-) : printable{id, rptr, person + L":\t" + speech},
+) : printable{rptr, person + L":\t" + speech},
     on{},
     update{},
     effects_on_hover{},

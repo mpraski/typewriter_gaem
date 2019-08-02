@@ -19,7 +19,6 @@ public:
         UNDERLINE,
         STRIKE_THROUGH,
         DELAY,
-        CENTER,
         SPACING,
         COLOR,
         TEXTURE

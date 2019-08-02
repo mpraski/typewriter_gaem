@@ -19,7 +19,6 @@ namespace engine {
 class paragraph : public printable {
 public:
     paragraph(
-        printable_id_t id,
         const resources_ptr &rptr,
         std::wstring &&c,
         std::vector<engine::text_effect> &&es

@@ -87,6 +87,13 @@ public:
     float letter_spacing_factor;
     float line_spacing_factor;
     unsigned typing_delay;
+    // Font dependent
+    float whitespace_width;
+    float letter_spacing;
+    float line_spacing;
+    float line_spacing_margin;
+    float underline_offset;
+    float underline_thickness;
 
 private:
     resource_map<sf::Font> fonts;

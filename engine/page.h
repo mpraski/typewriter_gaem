@@ -19,8 +19,10 @@
 #include "game_state.h"
 #include "audio_system.h"
 #include "printables/printable.h"
+#include "printables/printable_store.h"
 #include "printables/dialog.h"
 #include "utilities/text_buffer.h"
+#include "story/story.h"
 
 #define pointer(IT) (IT)->first
 #define rect(IT) (IT)->second
@@ -34,7 +36,7 @@ class page : public game_state, public sf::Drawable, public sf::Transformable {
     using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
     using dialog_iterator = std::optional<printable_iterator>;
 public:
-    page(const resources_ptr &rptr, std::vector<printable *> &&ps);
+    page(const resources_ptr &rptr, const story_ptr &sptr);
 
     bool text_end() const;
 
@@ -43,6 +45,7 @@ public:
     void input();
 
 private:
+    story_ptr story;
     audio_system audio;
     // Core data
     mutable printable_array printables;
@@ -73,12 +76,6 @@ private:
     mutable bool is_uppercase;
     mutable bool is_center;
     mutable float italic_shear;
-    mutable float whitespace_width;
-    mutable float letter_spacing;
-    mutable float line_spacing;
-    mutable float line_spacing_margin;
-    mutable float underline_offset;
-    mutable float underline_thickness;
     mutable float typing_delay_factor;
     mutable float letter_spacing_factor;
     mutable sf::Color text_color;
@@ -90,6 +87,8 @@ private:
 
     sf::FloatRect global_bounds() const;
 
+    printable_store store();
+
     void preprocess(printable &printable) const;
 
     void ensure_updated() const;
@@ -100,13 +99,19 @@ private:
 
     void delay() const;
 
-    void add_printable(printable_ptr &&ptr);
-
-    void truncate_printables(size_t n);
-
     void apply_mouse_position(sf::Vector2f cursor);
 
     void redraw();
+
+    inline auto find_printable(printable_id_t id) {
+      return std::find_if(
+          std::begin(printables),
+          std::end(printables),
+          [&](const auto &p) {
+            return p.first->get_id() == id;
+          }
+      );
+    }
 };
 }
 

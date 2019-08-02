@@ -12,7 +12,6 @@ namespace engine {
 class dialog : public printable {
 public:
     dialog(
-        printable_id_t id,
         const resources_ptr &rptr,
         const std::wstring &person,
         const std::wstring &speech

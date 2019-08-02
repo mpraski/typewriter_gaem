@@ -3,3 +3,9 @@
 //
 
 #include "action.h"
+
+engine::action::action(enum kind k, boost::uuids::uuid pid)
+    : kind{k},
+      pid{pid} {
+
+}

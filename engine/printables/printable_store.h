@@ -11,8 +11,17 @@
 namespace engine {
 class printable_store {
 public:
-    const std::function<void(printable_ptr &&)> &add;
-    const std::function<void(size_t)> &remove;
+    printable_store();
+
+    printable_store(
+        std::function<void(printable_ptr &&)> &&p,
+        std::function<void(printable_ptr &&)> &&a,
+        std::function<void(size_t)> &&t
+    );
+
+    std::function<void(printable_ptr &&)> populate;
+    std::function<void(printable_ptr &&)> add;
+    std::function<void(size_t)> truncate;
 };
 
 }

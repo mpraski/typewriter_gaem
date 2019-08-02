@@ -6,11 +6,10 @@
 #include "paragraph.h"
 
 engine::paragraph::paragraph(
-    printable_id_t id,
     const resources_ptr &rptr,
     std::wstring &&c,
     std::vector<engine::text_effect> &&es
-) : printable{id, rptr, std::move(c)} {
+) : printable{rptr, std::move(c)} {
   add_tab(contents);
   for (const auto &e: es) {
     effects[e.begin].push_back(e);

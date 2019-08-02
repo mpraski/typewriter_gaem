@@ -4,9 +4,9 @@
 
 #include "printable.h"
 
-engine::printable::printable(printable_id_t id, const resources_ptr &rptr, std::wstring &&c)
+engine::printable::printable(const resources_ptr &rptr, std::wstring &&c)
     : game_state{rptr},
-      id{id},
+      id{boost::uuids::random_generator()()},
       contents{std::move(c)},
       effects{} {
   if (contents.empty()) {
@@ -22,16 +22,8 @@ engine::printable_id_t engine::printable::get_id() const {
   return id;
 }
 
-std::wstring_view engine::printable::view() const {
-  return std::wstring_view{contents};
-}
-
-wchar_t engine::printable::operator[](size_t idx) const {
-  return contents[idx];
-}
-
-size_t engine::printable::length() const {
-  return contents.length();
+const std::wstring &engine::printable::view() const {
+  return contents;
 }
 
 void engine::printable::load_effects(size_t idx, engine::printable::back_inserter it) const {

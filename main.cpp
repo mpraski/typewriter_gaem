@@ -1,8 +1,4 @@
-#include <iostream>
-#include <unordered_map>
 #include <SFML/Graphics.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-
 #include "engine/engine.h"
 
 int main() {
@@ -13,44 +9,58 @@ int main() {
       "./res/textures"
   )};
 
+  auto sample_decision_tree{
+      std::make_shared<engine::decision_node>(
+          std::vector<engine::printable *>{
+              new engine::paragraph(
+                  resources,
+                  L"Through the darkness of future past, the magician longs to see, one chance out between two worlds, fire walk with me!",
+                  {
+                      engine::text_effect{engine::text_effect::kind::TEXTURE, 0, 7}.with_texture("sample"),
+                      engine::text_effect{engine::text_effect::kind::DELAY, 100, 118}.with_delay(5.0f),
+                      engine::text_effect{engine::text_effect::kind::COLOR, 100, 118}.with_color(sf::Color::Red)
+                  }
+              ),
+              new engine::paragraph(
+                  resources,
+                  L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  {}
+              )
+          },
+          std::vector<std::pair<engine::printable *, engine::decision_node *>>{
+              {
+                  new engine::dialog{
+                      resources,
+                      L"Conway",
+                      L"You just breathe the road."
+                  },
+                  nullptr
+              },
+              {
+                  new engine::dialog{
+                      resources,
+                      L"Conway",
+                      L"It will only get later."
+                  },
+                  nullptr
+              },
+              {
+                  new engine::dialog{
+                      resources,
+                      L"Conway",
+                      L"Aw shiet."
+                  },
+                  nullptr
+              }
+          }
+      )
+  };
+
+  auto sample_story{std::make_shared<engine::story>(sample_decision_tree)};
+
   engine::page page{
       resources,
-      {
-          new engine::paragraph(
-              boost::uuids::random_generator()(),
-              resources,
-              L"Through the darkness of future past, the magician longs to see, one chance out between two worlds, fire walk with me!",
-              {
-                  engine::text_effect{engine::text_effect::kind::TEXTURE, 0, 7}.with_texture("sample"),
-                  engine::text_effect{engine::text_effect::kind::DELAY, 100, 118}.with_delay(5.0f),
-                  engine::text_effect{engine::text_effect::kind::COLOR, 100, 118}.with_color(sf::Color::Red)
-              }
-          ),
-          new engine::paragraph(
-              boost::uuids::random_generator()(),
-              resources,
-              L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-              {}
-          ),
-          new engine::dialog{
-              boost::uuids::random_generator()(),
-              resources,
-              L"Conway",
-              L"You just breathe the road."
-          },
-          new engine::dialog{
-              boost::uuids::random_generator()(),
-              resources,
-              L"Conway",
-              L"It will only get later."
-          },
-          new engine::dialog{
-              boost::uuids::random_generator()(),
-              resources,
-              L"Conway",
-              L"Aw shiet."
-          },
-      }
+      sample_story
   };
 
   page.move(20.f, 20.f);

@@ -11,8 +11,12 @@ namespace engine {
 class action {
 public:
     enum class kind {
-      DIALOG
+        NOOP,
+        INITIAL,
+        DIALOG
     };
+
+    action(kind kind = kind::NOOP, boost::uuids::uuid pid = {});
 
     kind kind;
     boost::uuids::uuid pid;

@@ -8,6 +8,8 @@
 #include "printables/printable.h"
 #include "printables/paragraph.h"
 #include "printables/dialog.h"
+#include "printables/center.h"
+#include "printables/printable_store.h"
 #include "story/story.h"
 #include "story/decision_node.h"
 #include "story/action.h"

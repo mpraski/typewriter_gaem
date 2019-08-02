@@ -31,8 +31,7 @@ void engine::audio_system::play_typewriter_space() const {
 void engine::audio_system::play_with_cache(const std::string &key, const sf::SoundBuffer &buf) const {
   if (auto it{sound_cache.find(key)}; it != sound_cache.end()) {
     it->second.play();
-  } else {
-    sound_cache.emplace(key, buf);
-    sound_cache[key].play();
+  } else if (auto[it, ok]{sound_cache.emplace(key, buf)}; ok) {
+    it->second.play();
   }
 }

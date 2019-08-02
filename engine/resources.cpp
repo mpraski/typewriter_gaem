@@ -65,6 +65,15 @@ engine::resources::resources(
           )
       } {
   font = &fonts[ROOT_RESOURCE_CATEGORY][DEFAULT_FONT];
+
+  whitespace_width = font->getGlyph(L' ', font_size, false).advance;
+  letter_spacing = (whitespace_width / 3.f) * (letter_spacing_factor - 1.f);
+  line_spacing = font->getLineSpacing(font_size) * line_spacing_factor;
+  line_spacing_margin = line_spacing / 1.3f;
+  underline_offset = font->getUnderlinePosition(font_size);
+  underline_thickness = font->getUnderlineThickness(font_size);
+
+  whitespace_width += letter_spacing;
 }
 
 void engine::resources::display(const std::function<void(sf::RenderWindow &w)> &f) const {

@@ -14,7 +14,9 @@
 namespace engine {
 class story {
 public:
-    bool can_progress() const;
+    explicit story(const decision_node_ptr &ptr);
+
+    void set_store(printable_store &&s);
 
     void act(action action);
 
@@ -23,10 +25,12 @@ private:
     decision_node_ptr root_node;
     decision_node_ptr curr_node;
 
-    inline auto safe_clone(const printable_ptr &ptr) {
+    inline static auto safe_clone(const printable_ptr &ptr) {
       return printable_ptr{ptr->clone()};
     }
 };
+
+using story_ptr = std::shared_ptr<story>;
 }
 
 #endif //TYPEWRITER_GAEM_STORY_H

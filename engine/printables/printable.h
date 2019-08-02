@@ -7,10 +7,10 @@
 
 #include <iostream>
 #include <cstddef>
-#include <assert.h>
 #include <unordered_map>
 #include <vector>
 #include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 #include "../text_effect.h"
 #include "../game_state.h"
 #include "../utilities/general.h"
@@ -24,18 +24,23 @@ public:
     using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
     using back_inserter = std::back_insert_iterator<effect_map::mapped_type>;
 
-    printable(printable_id_t id, const resources_ptr &rptr, std::wstring &&c);
+    printable(const resources_ptr &rptr, std::wstring &&c);
 
+    // unique id of each printable
     printable_id_t get_id() const;
 
     // To string
-    std::wstring_view view() const;
+    const std::wstring &view() const;
 
     // Char of underlying string
-    wchar_t operator[](size_t idx) const;
+    inline wchar_t operator[](size_t idx) const {
+      return contents[idx];
+    }
 
     // Length of underlying string
-    size_t length() const;
+    inline size_t length() const {
+      return contents.length();
+    }
 
     // Push the text effects starting range idx to the back insert iterator
     void load_effects(size_t idx, back_inserter it) const;

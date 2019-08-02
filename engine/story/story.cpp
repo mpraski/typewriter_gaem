@@ -4,8 +4,28 @@
 
 #include "story.h"
 
+engine::story::story(const decision_node_ptr &ptr)
+    : store{},
+      root_node{ptr},
+      curr_node{ptr} {
+
+}
+
+void engine::story::set_store(printable_store &&s) {
+  store = std::move(s);
+}
+
 void engine::story::act(engine::action action) {
   switch (action.kind) {
+    case action::kind::INITIAL:
+      for (const auto &p : curr_node->contents) {
+        store.populate(safe_clone(p));
+      }
+
+      for (const auto&[p, d] : curr_node->choices) {
+        store.populate(safe_clone(p));
+      }
+      break;
     case action::kind::DIALOG:
       const auto &choices{curr_node->choices};
       if (auto choice_it{
@@ -18,12 +38,12 @@ void engine::story::act(engine::action action) {
             )
         }; choice_it != std::end(choices)) {
 
-        curr_node = (*choice_it).second;
+        curr_node = choice_it->second;
 
         if (choice_it == std::begin(choices)) {
-          store.remove(choices.size() - 1);
+          store.truncate(choices.size() - 1);
         } else {
-          store.remove(choices.size());
+          store.truncate(choices.size());
           // copy the selected printable and add it
           store.add(safe_clone(choice_it->first));
         }
