@@ -101,6 +101,8 @@ private:
 
     void apply_mouse_position(sf::Vector2f cursor);
 
+    void apply_mouse_click_position(sf::Vector2f cursor);
+
     void redraw();
 
     inline auto find_printable(printable_id_t id) {

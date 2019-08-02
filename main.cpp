@@ -34,7 +34,23 @@ int main() {
                       L"Conway",
                       L"You just breathe the road."
                   },
-                  nullptr
+                  new engine::decision_node{
+                      {
+                          new engine::paragraph{
+                              resources,
+                              L"Something",
+                              {}
+                          },
+                          new engine::paragraph{
+                              resources,
+                              L"Anything",
+                              {}
+                          },
+                      },
+                      {
+
+                      }
+                  }
               },
               {
                   new engine::dialog{

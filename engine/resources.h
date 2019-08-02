@@ -66,18 +66,19 @@ public:
 
     RESOURCE_GETTER(textures);
 
-    void display(const std::function<void(sf::RenderWindow &w)> &f) const;
+    void display(const std::function<void(sf::RenderWindow &)> &f) const;
+
+    bool mouse_moved() const;
 
     sf::Vector2f mouse_position() const;
 
-    bool mouse_moved() const;
+    bool mouse_click_available() const;
+
+    sf::Vector2f mouse_click_position() const;
 
     void set_cursor(sf::Cursor::Type type) const;
 
     sf::VideoMode mode;
-    mutable sf::Vector2i curr_mouse, prev_mouse;
-    mutable sf::Cursor::Type cursor_type;
-    mutable sf::RenderWindow window;
     const sf::Font *font;
     unsigned font_size;
     float page_width;
@@ -99,6 +100,11 @@ private:
     resource_map<sf::Font> fonts;
     resource_map<sf::SoundBuffer> sounds;
     resource_map<sf::Texture> textures;
+    mutable sf::Vector2i curr_mouse, prev_mouse;
+    mutable sf::Cursor::Type cursor_type;
+    mutable sf::RenderWindow window;
+    mutable bool mouse_pressed;
+    mutable sf::Vector2f mouse_pressed_position;
 
     template<typename It>
     static void split(const std::string &s, char delim, It result) {

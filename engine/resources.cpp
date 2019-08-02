@@ -63,7 +63,9 @@ engine::resources::resources(
                 return {};
               }
           )
-      } {
+      },
+      mouse_pressed{},
+      mouse_pressed_position{} {
   font = &fonts[ROOT_RESOURCE_CATEGORY][DEFAULT_FONT];
 
   whitespace_width = font->getGlyph(L' ', font_size, false).advance;
@@ -76,17 +78,37 @@ engine::resources::resources(
   whitespace_width += letter_spacing;
 }
 
-void engine::resources::display(const std::function<void(sf::RenderWindow &w)> &f) const {
+void engine::resources::display(const std::function<void(sf::RenderWindow &)> &f) const {
+  bool holds_mouse{false};
+
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed) {
-        window.close();
+      switch (event.type) {
+        case sf::Event::Closed:
+          window.close();
+          break;
+        case sf::Event::MouseButtonPressed:
+          holds_mouse = true;
+          break;
+        case sf::Event::MouseButtonReleased:
+          if (holds_mouse) {
+            mouse_pressed = true;
+            mouse_pressed_position = sf::Vector2f{sf::Mouse::getPosition(window)};
+            holds_mouse = false;
+          }
+          break;
+        default:
+          break;
       }
     }
 
     f(window);
   }
+}
+
+bool engine::resources::mouse_moved() const {
+  return curr_mouse != prev_mouse;
 }
 
 sf::Vector2f engine::resources::mouse_position() const {
@@ -95,8 +117,14 @@ sf::Vector2f engine::resources::mouse_position() const {
   return sf::Vector2f{curr_mouse};
 }
 
-bool engine::resources::mouse_moved() const {
-  return curr_mouse != prev_mouse;
+bool engine::resources::mouse_click_available() const {
+  return mouse_pressed;
+}
+
+sf::Vector2f engine::resources::mouse_click_position() const {
+  auto pos{mouse_pressed_position};
+  mouse_pressed = false;
+  return pos;
 }
 
 void engine::resources::set_cursor(sf::Cursor::Type type) const {

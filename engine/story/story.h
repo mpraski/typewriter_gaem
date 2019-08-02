@@ -18,6 +18,8 @@ public:
 
     void set_store(printable_store &&s);
 
+    void init();
+
     void act(action action);
 
 private:

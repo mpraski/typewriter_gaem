@@ -117,7 +117,11 @@ engine::page::page(const resources_ptr &rptr, const story_ptr &sptr) :
     text_color{sf::Color::White},
     text_texture{} {
   story->set_store(store());
-  story->act({action::kind::INITIAL});
+  story->init();
+
+  if (printables.empty()) {
+    throw std::runtime_error("No printables after initialisation");
+  }
 
   current_printable = std::begin(printables);
   rect(current_printable).top = resources->margin_vertical;
@@ -249,6 +253,9 @@ void engine::page::advance() {
 void engine::page::input() {
   if (auto mp{resources->mouse_position()}; global_bounds().contains(mp)) {
     apply_mouse_position(mp);
+    if (resources->mouse_click_available()) {
+      apply_mouse_click_position(resources->mouse_click_position());
+    }
     redraw();
   }
 }
@@ -286,10 +293,7 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
 }
 
 sf::FloatRect engine::page::local_bounds() const {
-  auto bounds_with_margin{bounds};
-  bounds_with_margin.height += resources->margin_vertical;
-  bounds_with_margin.width += resources->margin_horizontal;
-  return bounds_with_margin;
+  return bounds;
 }
 
 sf::FloatRect engine::page::global_bounds() const {
@@ -306,13 +310,12 @@ engine::printable_store engine::page::store() {
 
         printables.emplace_back(std::move(ptr), sf::FloatRect{});
 
-        current_printable = std::next(find_printable(pid));
+        current_printable = find_printable(pid);
         current_character = 0;
-
-        preprocess(*pointer(current_printable));
-
-        needs_update = true;
         end_of_text = false;
+        needs_update = true;
+
+        debug_bounds_vertices.clear();
       },
       [this](size_t n) {
         if (n <= printables.size()) {
@@ -320,15 +323,15 @@ engine::printable_store engine::page::store() {
 
           printables.resize(printables.size() - n);
 
-          current_printable = std::next(find_printable(pid));
+          current_printable = find_printable(pid);
           current_character = 0;
 
           if (!printables.empty() && current_printable == std::end(printables)) {
             current_printable = std::prev(std::end(printables));
           }
 
-          needs_update = true;
           end_of_text = false;
+          needs_update = true;
         }
       }
   };
@@ -436,8 +439,8 @@ void engine::page::ensure_updated() const {
 
     bounds.top = min_y;
     bounds.left = min_x;
-    bounds.height = max_y - min_y;
-    bounds.width = max_x - min_x;
+    bounds.height = max_y - min_y + resources->margin_vertical;
+    bounds.width = max_x - min_x + resources->margin_horizontal;
 
     add_glyph_quad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
     if (text_texture) {
@@ -533,19 +536,27 @@ void engine::page::delay() const {
 }
 
 void engine::page::apply_mouse_position(sf::Vector2f cursor) {
-  for (auto p{std::begin(printables)}; p != std::end(printables); ++p) {
-    auto &printable{*pointer(p)};
-    auto &p_bounds{rect(p)};
-
-    // To-Do: Only check printables in current viewport
-    if (printable.interactive()) {
+  for (auto &[printable, p_bounds] : printables) {
+    if (printable->interactive()) {
       if (getTransform().transformRect(p_bounds).contains(cursor)) {
-        printable.on_hover_start();
+        printable->on_hover_start();
       } else {
-        printable.on_hover_end();
+        printable->on_hover_end();
       }
 
       needs_redraw = true;
+    }
+  }
+}
+
+void engine::page::apply_mouse_click_position(sf::Vector2f cursor) {
+  for (auto &[printable, p_bounds] : printables) {
+    if (printable->interactive()) {
+      if (getTransform().transformRect(p_bounds).contains(cursor)) {
+        story->act(printable->on_click());
+        needs_redraw = true;
+        break;
+      }
     }
   }
 }

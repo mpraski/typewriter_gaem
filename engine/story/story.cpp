@@ -15,6 +15,10 @@ void engine::story::set_store(printable_store &&s) {
   store = std::move(s);
 }
 
+void engine::story::init() {
+  act({action::kind::INITIAL});
+}
+
 void engine::story::act(engine::action action) {
   switch (action.kind) {
     case action::kind::INITIAL:
