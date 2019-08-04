@@ -26,10 +26,6 @@ private:
     printable_store store;
     decision_node_ptr root_node;
     decision_node_ptr curr_node;
-
-    inline static auto safe_clone(const printable_ptr &ptr) {
-      return printable_ptr{ptr->clone()};
-    }
 };
 
 using story_ptr = std::shared_ptr<story>;

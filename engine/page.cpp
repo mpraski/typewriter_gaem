@@ -255,8 +255,9 @@ void engine::page::input() {
     apply_mouse_position(mp);
     if (resources->mouse_click_available()) {
       apply_mouse_click_position(resources->mouse_click_position());
+    } else {
+      redraw();
     }
-    redraw();
   }
 }
 
@@ -307,32 +308,37 @@ engine::printable_store engine::page::store() {
       },
       [this](printable_ptr &&ptr) {
         auto pid{pointer(current_printable)->get_id()};
-
         printables.emplace_back(std::move(ptr), sf::FloatRect{});
-
         current_printable = find_printable(pid);
-        current_character = 0;
-        end_of_text = false;
-        needs_update = true;
+
+        preprocess(*printables.back().first);
 
         debug_bounds_vertices.clear();
       },
       [this](size_t n) {
-        if (n <= printables.size()) {
-          auto pid{pointer(current_printable)->get_id()};
+        auto pid{pointer(current_printable)->get_id()};
+        printables.resize(printables.size() - n);
+        current_printable = find_printable(pid);
 
-          printables.resize(printables.size() - n);
-
-          current_printable = find_printable(pid);
-          current_character = 0;
-
-          if (!printables.empty() && current_printable == std::end(printables)) {
-            current_printable = std::prev(std::end(printables));
-          }
-
-          end_of_text = false;
-          needs_update = true;
+        if (!printables.empty() && current_printable == std::end(printables)) {
+          current_printable = std::prev(std::end(printables));
         }
+      },
+      [this](int distance) {
+        rect(current_printable).width = max_x - rect(current_printable).left;
+        rect(current_printable).height = max_y - rect(current_printable).top - resources->line_spacing_margin;
+
+        std::advance(current_printable, distance);
+
+        rect(current_printable).top = y - resources->line_spacing / 1.3f;
+        rect(current_printable).left = x;
+
+        current_character = 0;
+        end_of_text = false;
+        needs_update = true;
+      },
+      [this]() {
+        redraw();
       }
   };
 }
@@ -554,7 +560,6 @@ void engine::page::apply_mouse_click_position(sf::Vector2f cursor) {
     if (printable->interactive()) {
       if (getTransform().transformRect(p_bounds).contains(cursor)) {
         story->act(printable->on_click());
-        needs_redraw = true;
         break;
       }
     }
@@ -571,7 +576,7 @@ void engine::page::redraw() {
   x = resources->margin_horizontal;
   y = resources->margin_vertical + static_cast<float>(resources->font_size);
 
-  for (auto it{std::begin(printables)}; it != std::end(printables); ++it) {
+  for (auto it{std::begin(printables)}; it != std::next(current_printable); ++it) {
     const auto &printable{*pointer(it)};
 
     sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};

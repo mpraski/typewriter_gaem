@@ -4,11 +4,12 @@
 
 #include "printable.h"
 
-engine::printable::printable(const resources_ptr &rptr, std::wstring &&c)
+engine::printable::printable(const resources_ptr &rptr, const std::wstring &c)
     : game_state{rptr},
       id{boost::uuids::random_generator()()},
-      contents{std::move(c)},
-      effects{} {
+      contents{c},
+      effects{},
+      is_interactive{} {
   if (contents.empty()) {
     throw std::invalid_argument("Contents cannot be empty");
   }
@@ -22,7 +23,7 @@ engine::printable_id_t engine::printable::get_id() const {
   return id;
 }
 
-const std::wstring &engine::printable::view() const {
+const std::wstring &engine::printable::get_contents() const {
   return contents;
 }
 
@@ -45,10 +46,6 @@ void engine::printable::break_line_at(size_t idx) {
 void engine::printable::inject_line_at(size_t idx) {
   contents.insert(contents.begin() + idx, L'\n');
   offset_effects(idx);
-}
-
-bool engine::printable::interactive() const {
-  return false;
 }
 
 void engine::printable::on_hover_start() {

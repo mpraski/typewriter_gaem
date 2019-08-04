@@ -7,10 +7,13 @@
 
 engine::paragraph::paragraph(
     const resources_ptr &rptr,
-    std::wstring &&c,
-    std::vector<engine::text_effect> &&es
-) : printable{rptr, std::move(c)} {
-  add_tab(contents);
+    const std::wstring &c,
+    const std::vector<engine::text_effect> &es,
+    bool with_tab
+) : printable{rptr, c} {
+  if (with_tab) {
+    add_tab(contents);
+  }
   for (const auto &e: es) {
     effects[e.begin].push_back(e);
   }

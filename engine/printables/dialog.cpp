@@ -29,14 +29,12 @@ engine::dialog::dialog(
       text_effect{text_effect::kind::COLOR, 0, contents.length() - 1}.with_color(sf::Color::Cyan));
 
   effects = effects_off_hover;
+
+  is_interactive = true;
 }
 
 engine::printable *engine::dialog::clone() const {
   return new dialog{*this};
-}
-
-bool engine::dialog::interactive() const {
-  return true;
 }
 
 void engine::dialog::on_hover_start() {

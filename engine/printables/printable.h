@@ -24,13 +24,13 @@ public:
     using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
     using back_inserter = std::back_insert_iterator<effect_map::mapped_type>;
 
-    printable(const resources_ptr &rptr, std::wstring &&c);
+    printable(const resources_ptr &rptr, const std::wstring &c);
 
     // unique id of each printable
     printable_id_t get_id() const;
 
     // To string
-    const std::wstring &view() const;
+    const std::wstring &get_contents() const;
 
     // Char of underlying string
     inline wchar_t operator[](size_t idx) const {
@@ -40,6 +40,10 @@ public:
     // Length of underlying string
     inline size_t length() const {
       return contents.length();
+    }
+
+    inline bool interactive() const {
+      return is_interactive;
     }
 
     // Push the text effects starting range idx to the back insert iterator
@@ -58,8 +62,6 @@ public:
     virtual printable *clone() const = 0;
 
     // Specific callbacks relating to the mouse events inside the printable
-    virtual bool interactive() const;
-
     virtual void on_hover_start();
 
     virtual void on_hover_end();
@@ -67,9 +69,16 @@ public:
     virtual action on_click();
 
 protected:
+    friend class printable_store;
+
     printable_id_t id;
     std::wstring contents;
     effect_map effects;
+    bool is_interactive;
+
+    inline resources_ptr get_resources() const {
+      return resources;
+    }
 
 private:
     static inline void trim_start(std::wstring &s) {

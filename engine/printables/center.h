@@ -13,7 +13,7 @@ class center : public printable {
 public:
     center(
         const resources_ptr &rptr,
-        std::wstring &&c
+        const std::wstring &c
     );
 };
 }

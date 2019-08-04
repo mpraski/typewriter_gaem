@@ -25,8 +25,6 @@ private:
 
     printable *clone() const override;
 
-    bool interactive() const override;
-
     void on_hover_start() override;
 
     void on_hover_end() override;

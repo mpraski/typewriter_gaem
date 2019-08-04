@@ -20,8 +20,9 @@ class paragraph : public printable {
 public:
     paragraph(
         const resources_ptr &rptr,
-        std::wstring &&c,
-        std::vector<engine::text_effect> &&es
+        const std::wstring &c,
+        const std::vector<engine::text_effect> &es,
+        bool with_tab = true
     );
 
     printable *clone() const override;
