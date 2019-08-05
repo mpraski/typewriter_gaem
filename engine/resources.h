@@ -13,6 +13,7 @@
 #include <boost/filesystem.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include "utilities/general.h"
 
 namespace fs = boost::filesystem;
 
@@ -70,13 +71,15 @@ public:
 
     bool mouse_moved() const;
 
-    sf::Vector2f mouse_position() const;
+    const sf::Vector2f &mouse_position() const;
 
     bool mouse_click_available() const;
 
-    sf::Vector2f mouse_click_position() const;
+    const sf::Vector2f &mouse_click_position() const;
 
-    void set_cursor(sf::Cursor::Type type) const;
+    bool visible(sf::FloatRect bounds) const;
+
+    float effective_page_width() const;
 
     sf::VideoMode mode;
     const sf::Font *font;
@@ -100,25 +103,16 @@ private:
     resource_map<sf::Font> fonts;
     resource_map<sf::SoundBuffer> sounds;
     resource_map<sf::Texture> textures;
-    mutable sf::Vector2i curr_mouse, prev_mouse;
+    mutable sf::Vector2f curr_mouse, prev_mouse;
     mutable sf::Cursor::Type cursor_type;
     mutable sf::RenderWindow window;
     mutable bool mouse_pressed;
     mutable sf::Vector2f mouse_pressed_position;
 
-    template<typename It>
-    static void split(const std::string &s, char delim, It result) {
-      std::stringstream ss(s);
-      std::string item;
-      while (std::getline(ss, item, delim)) {
-        *(result++) = item;
-      }
-    }
-
     static std::string get_sub_directory(const fs::path &path) {
       constexpr const auto separator{fs::path::preferred_separator};
       std::vector<std::string> parts;
-      split(path.string(), separator, std::back_inserter(parts));
+      general::split(path.string(), separator, std::back_inserter(parts));
 
       if (parts.empty()) {
         throw std::runtime_error("Provided path does not contain sub directory: " + path.string());

@@ -81,7 +81,6 @@ protected:
       return resources;
     }
 
-private:
     static inline void trim_start(std::wstring &s) {
       s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wchar_t ch) {
         return !std::iswblank(ch);
@@ -117,7 +116,6 @@ struct hash<engine::printable> {
       return std::hash<boost::uuids::uuid>()(p.get_id());
     }
 };
-
 }
 
 #endif //TYPEWRITER_GAEM_PRINTABLE_H

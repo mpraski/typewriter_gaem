@@ -111,27 +111,25 @@ bool engine::resources::mouse_moved() const {
   return curr_mouse != prev_mouse;
 }
 
-sf::Vector2f engine::resources::mouse_position() const {
+const sf::Vector2f &engine::resources::mouse_position() const {
   prev_mouse = curr_mouse;
-  curr_mouse = sf::Mouse::getPosition(window);
-  return sf::Vector2f{curr_mouse};
+  curr_mouse = sf::Vector2f{sf::Mouse::getPosition(window)};
+  return curr_mouse;
 }
 
 bool engine::resources::mouse_click_available() const {
   return mouse_pressed;
 }
 
-sf::Vector2f engine::resources::mouse_click_position() const {
-  auto pos{mouse_pressed_position};
+const sf::Vector2f &engine::resources::mouse_click_position() const {
   mouse_pressed = false;
-  return pos;
+  return mouse_pressed_position;
 }
 
-void engine::resources::set_cursor(sf::Cursor::Type type) const {
-  if (cursor_type != type) {
-    cursor_type = type;
-    if (sf::Cursor cursor; cursor.loadFromSystem(type)) {
-      window.setMouseCursor(cursor);
-    }
-  }
+bool engine::resources::visible(sf::FloatRect bounds) const {
+  return false;
+}
+
+float engine::resources::effective_page_width() const {
+  return page_width - 2 * margin_horizontal;
 }

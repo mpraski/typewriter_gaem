@@ -32,8 +32,6 @@ class page : public game_state, public sf::Drawable, public sf::Transformable {
     using printable_array = std::vector<std::pair<printable_ptr, sf::FloatRect>>;
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;
-    using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
-    using preprocess_cache = std::unordered_set<printable_id_t>;
 public:
     page(const resources_ptr &rptr, const story_ptr &sptr);
 
@@ -98,20 +96,16 @@ private:
 
     void delay() const;
 
-    void apply_mouse_position(sf::Vector2f cursor);
+    void apply_mouse_position(const sf::Vector2f &cursor);
 
-    void apply_mouse_click_position(sf::Vector2f cursor);
+    void apply_mouse_click_position(const sf::Vector2f &cursor);
 
     void redraw();
 
-    inline auto find_printable(printable_id_t id) {
-      return std::find_if(
-          std::begin(printables),
-          std::end(printables),
-          [&](const auto &p) {
-            return p.first->get_id() == id;
-          }
-      );
+    inline auto find_printable(printable_id_t id) const {
+      return general::find(printables, [&](const auto &p) {
+        return p.first->get_id() == id;
+      });
     }
 };
 }

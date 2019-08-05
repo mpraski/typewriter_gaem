@@ -251,7 +251,7 @@ void engine::page::advance() {
 }
 
 void engine::page::input() {
-  if (auto mp{resources->mouse_position()}; global_bounds().contains(mp)) {
+  if (const auto &mp{resources->mouse_position()}; global_bounds().contains(mp)) {
     apply_mouse_position(mp);
     if (resources->mouse_click_available()) {
       apply_mouse_click_position(resources->mouse_click_position());
@@ -473,7 +473,8 @@ void engine::page::ensure_updated() const {
 
     x += advance;
 
-    audio.play_typewriter_click();
+    if (!(is_center && curr_char == sf::Utf32::decodeWide(L' ')))
+      audio.play_typewriter_click();
   }
 
   bounds.top = min_y;
@@ -483,9 +484,10 @@ void engine::page::ensure_updated() const {
 
   bounds.height = std::max(bounds.height,
                            bounds.height + resources->margin_vertical / 2 - resources->line_spacing_margin);
-  bounds.width = std::max(bounds.width, bounds.width + resources->margin_horizontal / 2);
+  bounds.width = std::max(bounds.width, bounds.width + resources->margin_horizontal);
 
-  delay();
+  if (!(is_center && curr_char == sf::Utf32::decodeWide(L' ')))
+    delay();
 }
 
 void engine::page::apply_text_effects(const printable &printable, size_t idx) const {
@@ -520,26 +522,23 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
       case text_effect::kind::TEXTURE:
         text_texture = &resources->get_textures("text").at(e.texture);
         break;
+      case text_effect::kind::CENTER:
+        is_center = true;
+        break;
     }
   }
 }
 
 void engine::page::remove_text_effects(size_t idx) const {
-  active_effects.erase(
-      std::remove_if(
-          std::begin(active_effects),
-          std::end(active_effects),
-          [&](const auto &e) {
-            return idx == e.end;
-          }
-      ),
-      std::end(active_effects)
-  );
+  general::remove_if(active_effects, [&](const auto &e) {
+    return idx == e.end;
+  });
 
   is_bold = false;
   is_underlined = false;
   is_strike_through = false;
   is_uppercase = false;
+  is_center = false;
   italic_shear = 0.f;
   typing_delay_factor = 1.f;
   letter_spacing_factor = 1.f;
@@ -556,7 +555,7 @@ void engine::page::delay() const {
   }
 }
 
-void engine::page::apply_mouse_position(sf::Vector2f cursor) {
+void engine::page::apply_mouse_position(const sf::Vector2f &cursor) {
   for (auto &[printable, p_bounds] : printables) {
     if (printable->interactive()) {
       if (getTransform().transformRect(p_bounds).contains(cursor)) {
@@ -570,7 +569,7 @@ void engine::page::apply_mouse_position(sf::Vector2f cursor) {
   }
 }
 
-void engine::page::apply_mouse_click_position(sf::Vector2f cursor) {
+void engine::page::apply_mouse_click_position(const sf::Vector2f &cursor) {
   for (auto &[printable, p_bounds] : printables) {
     if (printable->interactive()) {
       if (getTransform().transformRect(p_bounds).contains(cursor)) {

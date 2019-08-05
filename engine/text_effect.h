@@ -21,7 +21,8 @@ public:
         DELAY,
         SPACING,
         COLOR,
-        TEXTURE
+        TEXTURE,
+        CENTER
     };
 
     text_effect(

@@ -6,6 +6,7 @@
 #define TYPEWRITER_GAEM_GENERAL_H
 
 #include <sstream>
+#include <algorithm>
 
 namespace engine {
 class general {
@@ -23,6 +24,63 @@ public:
     template<class Base, class T>
     static bool instanceof(const T *ptr) {
       return dynamic_cast<const Base *>(ptr) != nullptr;
+    }
+
+    template<class T, class F>
+    static constexpr void remove_if(T &ts, F &&f) {
+      ts.erase(
+          std::remove_if(
+              std::begin(ts),
+              std::end(ts),
+              std::forward<F>(f)
+          ),
+          std::end(ts)
+      );
+    }
+
+    template<class T, class F>
+    static constexpr auto find(const T &ts, F &&f) {
+      return std::find_if(
+          std::cbegin(ts),
+          std::cend(ts),
+          std::forward<F>(f)
+      );
+    }
+
+    template<class T, class F>
+    static constexpr auto find(T &ts, F &&f) {
+      return std::find_if(
+          std::begin(ts),
+          std::end(ts),
+          std::forward<F>(f)
+      );
+    }
+
+    template<class T, class F>
+    static constexpr auto for_each(T &ts, F &&f) {
+      return std::for_each(
+          std::begin(ts),
+          std::end(ts),
+          std::forward<F>(f)
+      );
+    }
+
+    template<typename It>
+    static void split(const std::string &s, char delim, It result) {
+      std::stringstream ss(s);
+      std::string item;
+      while (std::getline(ss, item, delim)) {
+        *(result++) = item;
+      }
+    }
+
+    template<typename It>
+    static void wsplit(const std::wstring &s, wchar_t delim, It result) {
+      std::wstringstream wss(s);
+      std::wstring item;
+      while (std::getline(wss, item, delim)) {
+        *(result++) = item;
+      }
     }
 };
 }

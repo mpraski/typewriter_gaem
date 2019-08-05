@@ -34,16 +34,11 @@ void engine::story::act(engine::action action) {
       break;
     case action::kind::DIALOG:
       const auto &choices{curr_node->choices};
-      if (auto choice_it{
-            std::find_if(
-                std::begin(choices),
-                std::end(choices),
-                [&](const auto &p) {
-                  return p.first->get_id() == action.pid;
-                }
-            )
-        }; choice_it != std::end(choices)) {
+      auto choice_it{general::find(choices, [&](const auto &p) {
+        return p.first->get_id() == action.pid;
+      })};
 
+      if (choice_it != std::end(choices)) {
         curr_node = choice_it->second;
 
         // Remove last n dialog options and add the selected one

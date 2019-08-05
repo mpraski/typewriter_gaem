@@ -18,11 +18,13 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/center.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/center.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/center.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/center.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/printables/printable.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/printable_store.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable_store.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/printable_store.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable_store.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/resources.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/resources.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/story/story.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/story/story.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/text_effect.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/text_effect.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/utilities/general.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/general.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
@@ -111,7 +113,7 @@
       <workItem from="1564759144568" duration="9602000" />
       <workItem from="1564840933811" duration="2833000" />
       <workItem from="1564857808123" duration="8052000" />
-      <workItem from="1564992273983" duration="10720000" />
+      <workItem from="1564992273983" duration="19606000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -295,7 +297,14 @@
       <option name="project" value="LOCAL" />
       <updated>1564915530281</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="fixed dialog progression">
+      <created>1565003417763</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1565003417763</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -340,6 +349,7 @@
     <MESSAGE value="Prototyped decision tree and player actions" />
     <MESSAGE value="Further prototyped decision trees" />
     <MESSAGE value="some more prototyping" />
-    <option name="LAST_COMMIT_MESSAGE" value="some more prototyping" />
+    <MESSAGE value="fixed dialog progression" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed dialog progression" />
   </component>
 </project>

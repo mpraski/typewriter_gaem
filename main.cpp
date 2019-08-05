@@ -12,6 +12,10 @@ int main() {
   auto sample_decision_tree{
       std::make_shared<engine::decision_node>(
           std::vector<engine::printable *>{
+              new engine::center(
+                  resources,
+                  L"some\ncentered\ntext"
+              ),
               new engine::paragraph(
                   resources,
                   L"Through the darkness of future past, the magician longs to see, one chance out between two worlds, fire walk with me!",
@@ -87,7 +91,7 @@ int main() {
                           },
                       },
                       {
-                        
+
                       }
                   }
               },
