@@ -48,7 +48,22 @@ int main() {
                           },
                       },
                       {
-
+                          {
+                              new engine::dialog{
+                                  resources,
+                                  L"Conway",
+                                  L"Ah yes, very interesting"
+                              },
+                              nullptr
+                          },
+                          {
+                              new engine::dialog{
+                                  resources,
+                                  L"Conway",
+                                  L"Is this a KR0 ripoff?"
+                              },
+                              nullptr
+                          },
                       }
                   }
               },
@@ -58,7 +73,23 @@ int main() {
                       L"Conway",
                       L"It will only get later."
                   },
-                  nullptr
+                  new engine::decision_node{
+                      {
+                          new engine::paragraph{
+                              resources,
+                              L"Another line",
+                              {}
+                          },
+                          new engine::paragraph{
+                              resources,
+                              L"O two",
+                              {}
+                          },
+                      },
+                      {
+                        
+                      }
+                  }
               },
               {
                   new engine::dialog{

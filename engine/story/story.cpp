@@ -46,18 +46,37 @@ void engine::story::act(engine::action action) {
 
         curr_node = choice_it->second;
 
+        // Remove last n dialog options and add the selected one
+        // (without effects like colours etc)
         store.truncate(choices.size());
-        store.add(printable_store::without_effects(choice_it->first, text_effect::kind::COLOR));
+        store.add(printable_store::without_dynamic_effects(choice_it->first));
 
-        // add the contents of curr_node
-        for (const auto &p : curr_node->contents) {
-          store.add(printable_store::safe_clone(p));
+        // add the contents and choices of curr_node
+        add_printables(curr_node);
+
+        // Advance once, then redraw, then advance once again
+        // This is because player should immediatelly see their selected dialog
+        // option be embedded in the page, and then character drawing should start from
+        // the next non-dialog printable
+        if (choice_it == std::begin(choices)) {
+          store.advance();
         }
+
         store.sync();
-        store.advance(1);
+        store.advance();
       } else {
         throw std::runtime_error("Selected printable is not a choice");
       }
       break;
+  }
+}
+
+void engine::story::add_printables(const decision_node_ptr &ptr) {
+  for (const auto &p : ptr->contents) {
+    store.add(printable_store::safe_clone(p));
+  }
+
+  for (const auto &[p, d] : ptr->choices) {
+    store.add(printable_store::safe_clone(p));
   }
 }

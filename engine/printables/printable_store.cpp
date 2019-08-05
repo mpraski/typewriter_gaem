@@ -8,7 +8,7 @@ engine::printable_store::printable_store()
     : populate{[](auto &&) {}},
       add{[](auto &&) {}},
       truncate{[](auto) {}},
-      advance{[](auto) {}},
+      advance{[] {}},
       sync{[] {}} {
 
 }
@@ -17,7 +17,7 @@ engine::printable_store::printable_store(
     std::function<void(printable_ptr && )> &&p,
     std::function<void(printable_ptr &&)> &&a,
     std::function<void(size_t)> &&t,
-    std::function<void(int)> &&m,
+    std::function<void()> &&m,
     std::function<void()> &&s
 ) : populate{std::move(p)},
     add{std::move(a)},
@@ -25,4 +25,56 @@ engine::printable_store::printable_store(
     advance{std::move(m)},
     sync{std::move(s)} {
 
+}
+
+engine::printable_ptr engine::printable_store::without_effects(const printable_ptr &ptr) {
+  auto cloned{safe_clone(ptr)};
+  cloned->is_interactive = false;
+  cloned->effects.clear();
+
+  return cloned;
+}
+
+engine::printable_ptr engine::printable_store::without_effects(const printable_ptr &ptr, enum text_effect::kind kind) {
+  auto cloned{safe_clone(ptr)};
+  cloned->is_interactive = false;
+
+  for (auto&[pos, effects] : cloned->effects) {
+    effects.erase(
+        std::remove_if(
+            std::begin(effects),
+            std::end(effects),
+            [&](const auto &e) {
+              return e.kind == kind;
+            }
+        ),
+        std::end(effects)
+    );
+  }
+
+  return cloned;
+}
+
+engine::printable_ptr engine::printable_store::without_dynamic_effects(const printable_ptr &ptr) {
+  auto cloned{safe_clone(ptr)};
+  cloned->is_interactive = false;
+
+  for (auto&[pos, effects] : cloned->effects) {
+    effects.erase(
+        std::remove_if(
+            std::begin(effects),
+            std::end(effects),
+            [&](const auto &e) {
+              return std::find(
+                  std::begin(STATIC_EFFECTS),
+                  std::end(STATIC_EFFECTS),
+                  e.kind
+              ) == std::end(STATIC_EFFECTS);
+            }
+        ),
+        std::end(effects)
+    );
+  }
+
+  return cloned;
 }

@@ -11,6 +11,7 @@
 #include <vector>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
+#include <boost/functional/hash.hpp>
 #include "../text_effect.h"
 #include "../game_state.h"
 #include "../utilities/general.h"
@@ -99,6 +100,23 @@ private:
 };
 
 using printable_ptr = std::unique_ptr<printable>;
+
+}
+
+namespace std {
+template<>
+struct hash<boost::uuids::uuid> {
+    size_t operator()(const boost::uuids::uuid &uid) const {
+      return boost::hash<boost::uuids::uuid>()(uid);
+    }
+};
+
+template<>
+struct hash<engine::printable> {
+    size_t operator()(const engine::printable &p) const {
+      return std::hash<boost::uuids::uuid>()(p.get_id());
+    }
+};
 
 }
 

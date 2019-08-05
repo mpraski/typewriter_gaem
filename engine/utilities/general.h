@@ -7,6 +7,7 @@
 
 #include <sstream>
 
+namespace engine {
 class general {
 public:
     template<typename T, typename ... Ts>
@@ -24,6 +25,18 @@ public:
       return dynamic_cast<const Base *>(ptr) != nullptr;
     }
 };
+}
 
+namespace std {
+template<class T>
+inline auto last(const T &t) {
+  return std::prev(std::cend(t));
+}
+
+template<class T>
+inline auto last(T &t) {
+  return std::prev(std::end(t));
+}
+}
 
 #endif //TYPEWRITER_GAEM_GENERAL_H

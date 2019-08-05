@@ -29,12 +29,11 @@
 
 namespace engine {
 class page : public game_state, public sf::Drawable, public sf::Transformable {
-
     using printable_array = std::vector<std::pair<printable_ptr, sf::FloatRect>>;
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;
     using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
-    using dialog_iterator = std::optional<printable_iterator>;
+    using preprocess_cache = std::unordered_set<printable_id_t>;
 public:
     page(const resources_ptr &rptr, const story_ptr &sptr);
 

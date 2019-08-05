@@ -311,29 +311,40 @@ engine::printable_store engine::page::store() {
         printables.emplace_back(std::move(ptr), sf::FloatRect{});
         current_printable = find_printable(pid);
 
-        preprocess(*printables.back().first);
+        preprocess(*std::last(printables)->first);
 
+#ifdef DEBUG
         debug_bounds_vertices.clear();
+#endif
       },
       [this](size_t n) {
+        if (n >= printables.size()) {
+          throw std::runtime_error("Trying to truncate the entire printable store");
+        }
+
         auto pid{pointer(current_printable)->get_id()};
         printables.resize(printables.size() - n);
         current_printable = find_printable(pid);
 
-        if (!printables.empty() && current_printable == std::end(printables)) {
-          current_printable = std::prev(std::end(printables));
+        if (current_printable == std::end(printables)) {
+          current_printable = std::last(printables);
         }
+
+        y = rect(current_printable).top;
+        x = rect(current_printable).left;
+        max_y = std::min(max_y, rect(current_printable).top + rect(current_printable).height);
+        max_x = std::min(max_x, rect(current_printable).left + rect(current_printable).width);
       },
-      [this](int distance) {
+      [this]() {
         rect(current_printable).width = max_x - rect(current_printable).left;
         rect(current_printable).height = max_y - rect(current_printable).top - resources->line_spacing_margin;
 
-        std::advance(current_printable, distance);
+        current_printable = std::next(current_printable);
+        current_character = 0;
 
         rect(current_printable).top = y - resources->line_spacing / 1.3f;
         rect(current_printable).left = x;
 
-        current_character = 0;
         end_of_text = false;
         needs_update = true;
       },
@@ -443,11 +454,6 @@ void engine::page::ensure_updated() const {
     min_y = std::min(min_y, y + top);
     max_y = std::max(max_y, y + bottom);
 
-    bounds.top = min_y;
-    bounds.left = min_x;
-    bounds.height = max_y - min_y + resources->margin_vertical;
-    bounds.width = max_x - min_x + resources->margin_horizontal;
-
     add_glyph_quad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
     if (text_texture) {
       add_font_background(font_texture_vertices, sf::Vector2f(x, y), glyph, italic_shear);
@@ -469,6 +475,15 @@ void engine::page::ensure_updated() const {
 
     audio.play_typewriter_click();
   }
+
+  bounds.top = min_y;
+  bounds.left = min_x;
+  bounds.height = max_y - min_y;
+  bounds.width = max_x - min_x;
+
+  bounds.height = std::max(bounds.height,
+                           bounds.height + resources->margin_vertical / 2 - resources->line_spacing_margin);
+  bounds.width = std::max(bounds.width, bounds.width + resources->margin_horizontal / 2);
 
   delay();
 }

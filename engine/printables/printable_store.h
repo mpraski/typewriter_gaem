@@ -18,45 +18,32 @@ public:
         std::function<void(printable_ptr &&)> &&p,
         std::function<void(printable_ptr &&)> &&a,
         std::function<void(size_t)> &&t,
-        std::function<void(int)> &&m,
+        std::function<void()> &&m,
         std::function<void()> &&s
     );
 
     std::function<void(printable_ptr &&)> populate;
     std::function<void(printable_ptr &&)> add;
     std::function<void(size_t)> truncate;
-    std::function<void(int)> advance;
+    std::function<void()> advance;
     std::function<void()> sync;
 
     inline static auto safe_clone(const printable_ptr &ptr) {
       return printable_ptr{ptr->clone()};
     }
 
-    inline static auto without_effects(const printable_ptr &ptr) {
-      return printable_ptr{
-          new paragraph{ptr->get_resources(), ptr->get_contents(), {}, false}
-      };
-    }
+    static printable_ptr without_effects(const printable_ptr &ptr);
 
-    inline static auto without_effects(const printable_ptr &ptr, enum text_effect::kind kind) {
-      auto cloned{safe_clone(ptr)};
-      cloned->is_interactive = false;
+    static printable_ptr without_effects(const printable_ptr &ptr, enum text_effect::kind kind);
 
-      for (auto&[pos, effects] : cloned->effects) {
-        effects.erase(
-            std::remove_if(
-                std::begin(effects),
-                std::end(effects),
-                [&](const auto &e) {
-                  return e.kind == kind;
-                }
-            ),
-            std::end(effects)
-        );
-      }
+    static printable_ptr without_dynamic_effects(const printable_ptr &ptr);
 
-      return cloned;
-    }
+private:
+    const constexpr static enum text_effect::kind STATIC_EFFECTS[] = {
+        text_effect::kind::BOLD,
+        text_effect::kind::ITALIC,
+        text_effect::kind::UPPERCASE
+    };
 };
 
 }
