@@ -3,7 +3,7 @@
 
 int main() {
   auto resources{engine::make_resources(
-      sf::VideoMode(600, 600),
+      sf::VideoMode(460, 800),
       "./res/fonts",
       "./res/sounds",
       "./res/textures"
