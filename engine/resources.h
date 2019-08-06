@@ -11,6 +11,7 @@
 #include <functional>
 #include <sstream>
 #include <boost/filesystem.hpp>
+#include <boost/range/iterator_range.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "utilities/general.h"
@@ -147,7 +148,8 @@ private:
         if (fs::is_directory(resource_dir_path)) {
           auto resource_category{get_sub_directory(resource_dir_path.path())};
 
-          for (const auto &resource_file_path : fs::directory_iterator(resource_dir_path)) {
+          for (const auto &resource_file_path : boost::make_iterator_range(fs::directory_iterator(resource_dir_path),
+                                                                           {})) {
             creator(resource_category, resource_file_path);
           }
         } else {

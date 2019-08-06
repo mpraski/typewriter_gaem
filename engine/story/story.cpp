@@ -40,6 +40,9 @@ void engine::story::act(engine::action action) {
 
       if (choice_it != std::end(choices)) {
         curr_node = choice_it->second;
+        if (!curr_node) {
+          throw std::runtime_error("Selected node is null!");
+        }
 
         // Remove last n dialog options and add the selected one
         // (without effects like colours etc)

@@ -12,26 +12,34 @@ int main() {
   auto sample_decision_tree{
       std::make_shared<engine::decision_node>(
           std::vector<engine::printable *>{
-              new engine::center(
+              new engine::paragraph(
                   resources,
-                  L"some\ncentered\ntext"
+                  L"Some text that shouldget centered. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.",
+                  {
+                      engine::text_effect{engine::text_effect::kind::COLOR, 0, 3}.with_color(sf::Color::Red),
+                      engine::text_effect{engine::text_effect::kind::RIGHT, 5, 8},
+                      engine::text_effect{engine::text_effect::kind::CENTER, 10, 13},
+                      engine::text_effect{engine::text_effect::kind::BOLD, 10, 13},
+                      engine::text_effect{engine::text_effect::kind::DELAY, 10, 13}.with_delay(5.0f),
+                      engine::text_effect{engine::text_effect::kind::UNDERLINE, 15, 20},
+                      engine::text_effect{engine::text_effect::kind::CENTER, 15, 20}
+                  }
               ),
               new engine::paragraph(
                   resources,
                   L"Through the darkness of future past, the magician longs to see, one chance out between two worlds, fire walk with me!",
                   {
-                      engine::text_effect{engine::text_effect::kind::TEXTURE, 0, 7}.with_texture("sample"),
-                      engine::text_effect{engine::text_effect::kind::DELAY, 100, 118}.with_delay(5.0f),
-                      engine::text_effect{engine::text_effect::kind::COLOR, 100, 118}.with_color(sf::Color::Red)
+                      engine::text_effect{engine::text_effect::kind::DELAY, 99, 117}.with_delay(5.0f),
+                      engine::text_effect{engine::text_effect::kind::COLOR, 99, 117}.with_color(sf::Color::Red)
                   }
               ),
               new engine::paragraph(
                   resources,
-                  L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.",
                   {}
               )
           },
-          std::vector<std::pair<engine::printable *, engine::decision_node *>>{
+          std::vector<std::pair<engine::printable *, engine::decision_node * >>{
               {
                   new engine::dialog{
                       resources,

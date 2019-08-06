@@ -42,6 +42,12 @@ public:
     void input();
 
 private:
+    enum class displacement {
+        CENTER,
+        RIGHT,
+        NONE
+    };
+
     story_ptr story;
     audio_system audio;
     // Core data
@@ -71,7 +77,9 @@ private:
     mutable bool is_underlined;
     mutable bool is_strike_through;
     mutable bool is_uppercase;
-    mutable bool is_center;
+    mutable displacement displacement;
+    mutable size_t displacement_mode_end;
+    mutable size_t displacement_mode_end_prev;
     mutable float italic_shear;
     mutable float typing_delay_factor;
     mutable float letter_spacing_factor;
@@ -86,7 +94,9 @@ private:
 
     printable_store store();
 
-    void preprocess(printable &printable) const;
+    float measure_text(const printable &printable, size_t begin, size_t end) const;
+
+    void preprocess(printable &printable);
 
     void ensure_updated() const;
 
@@ -102,9 +112,24 @@ private:
 
     void redraw();
 
+    effect_array::const_iterator displacement_effect(enum displacement d) const;
+
+    float displacement_spacing(enum displacement d, float width) const;
+
+    inline void new_line() const {
+      y += resources->line_spacing;
+      x = resources->margin_horizontal;
+    }
+
     inline auto find_printable(printable_id_t id) const {
       return general::find(printables, [&](const auto &p) {
         return p.first->get_id() == id;
+      });
+    }
+
+    inline auto find_effect(enum text_effect::kind kind) const {
+      return general::find(active_effects, [&](const auto &e) {
+        return e.kind == kind;
       });
     }
 };

@@ -22,7 +22,8 @@ public:
         SPACING,
         COLOR,
         TEXTURE,
-        CENTER
+        CENTER,
+        RIGHT
     };
 
     text_effect(

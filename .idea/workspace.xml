@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AnalysisUIOptions">
-    <option name="SCOPE_TYPE" value="3" />
-  </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
       <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
@@ -16,12 +13,18 @@
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/audio_system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/engine.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/center.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/center.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/center.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/center.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/center.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/center.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/paragraph.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/paragraph.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/printables/printable.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/resources.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable_store.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable_store.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable_store.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable_store.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/resources.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/story/story.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/text_effect.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/text_effect.h" afterDir="false" />
@@ -113,7 +116,8 @@
       <workItem from="1564759144568" duration="9602000" />
       <workItem from="1564840933811" duration="2833000" />
       <workItem from="1564857808123" duration="8052000" />
-      <workItem from="1564992273983" duration="19606000" />
+      <workItem from="1564992273983" duration="29717000" />
+      <workItem from="1565077456286" duration="23948000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -304,7 +308,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565003417763</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="added centered text printable">
+      <created>1565025368396</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1565025368396</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -325,7 +336,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Implement own drawable to render text on a typewriter page" />
     <MESSAGE value="Fixed shit" />
     <MESSAGE value="changes" />
     <MESSAGE value="added support for some text effects" />
@@ -350,6 +360,18 @@
     <MESSAGE value="Further prototyped decision trees" />
     <MESSAGE value="some more prototyping" />
     <MESSAGE value="fixed dialog progression" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed dialog progression" />
+    <MESSAGE value="added centered text printable" />
+    <option name="LAST_COMMIT_MESSAGE" value="added centered text printable" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/engine/page.cpp</url>
+          <line>555</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

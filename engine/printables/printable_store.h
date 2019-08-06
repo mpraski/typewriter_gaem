@@ -8,6 +8,7 @@
 #include <functional>
 #include "printable.h"
 #include "paragraph.h"
+#include "../utilities/general.h"
 
 namespace engine {
 class printable_store {
@@ -45,7 +46,6 @@ private:
         text_effect::kind::UPPERCASE
     };
 };
-
 }
 
 #endif //TYPEWRITER_GAEM_PRINTABLE_STORE_H

@@ -64,9 +64,16 @@ void engine::printable::offset_effects(size_t idx, int amount) {
   effect_map new_effects;
   new_effects.reserve(effects.size());
   for (auto &[k, v] : effects) {
-    auto new_key{k};
-    if (k >= idx) new_key += amount;
-    new_effects.insert(std::make_pair(new_key, std::move(v)));
+    auto modified_key{k};
+    auto modified_effects{std::move(v)};
+    if (k >= idx) {
+      modified_key += amount;
+      for (auto &e : modified_effects) {
+        e.begin += amount;
+        e.end += amount;
+      }
+    }
+    new_effects.insert(std::make_pair(modified_key, std::move(modified_effects)));
   }
   effects = new_effects;
 }

@@ -82,19 +82,23 @@ public:
         *(result++) = item;
       }
     }
+
+    template<class T>
+    static inline auto last(const T &t) {
+      return std::prev(std::cend(t));
+    }
+
+    template<class T>
+    static inline auto last(T &t) {
+      return std::prev(std::end(t));
+    }
+
+    template<class E>
+    static constexpr auto to_underlying(E e) noexcept {
+      return static_cast<typename std::underlying_type<E>::type>(e);
+    }
+
 };
-}
-
-namespace std {
-template<class T>
-inline auto last(const T &t) {
-  return std::prev(std::cend(t));
-}
-
-template<class T>
-inline auto last(T &t) {
-  return std::prev(std::end(t));
-}
 }
 
 #endif //TYPEWRITER_GAEM_GENERAL_H

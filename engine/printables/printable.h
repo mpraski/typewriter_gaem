@@ -43,6 +43,7 @@ public:
       return contents.length();
     }
 
+    // Can the player interact with this printable (mouse events)
     inline bool interactive() const {
       return is_interactive;
     }
@@ -57,7 +58,7 @@ public:
     void inject_line_at(size_t idx);
 
     // Apply some offset to all effects starting after or at idx
-    void offset_effects(size_t idx, int amount = 1);
+    void offset_effects(size_t idx = 0, int amount = 1);
 
     // Virtual constructor for deep copying
     virtual printable *clone() const = 0;

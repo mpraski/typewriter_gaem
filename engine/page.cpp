@@ -110,7 +110,9 @@ engine::page::page(const resources_ptr &rptr, const story_ptr &sptr) :
     is_underlined{},
     is_strike_through{},
     is_uppercase{},
-    is_center{},
+    displacement{displacement::NONE},
+    displacement_mode_end{},
+    displacement_mode_end_prev{},
     italic_shear{},
     typing_delay_factor{1.f},
     letter_spacing_factor{1.f},
@@ -241,7 +243,7 @@ void engine::page::advance() {
       current_printable = std::next(current_printable);
       current_character = 0;
 
-      rect(current_printable).top = y - resources->line_spacing / 1.3f;
+      rect(current_printable).top = y - resources->line_spacing_margin;
       rect(current_printable).left = x;
 
       preprocess(*pointer(current_printable));
@@ -311,7 +313,7 @@ engine::printable_store engine::page::store() {
         printables.emplace_back(std::move(ptr), sf::FloatRect{});
         current_printable = find_printable(pid);
 
-        preprocess(*std::last(printables)->first);
+        preprocess(*general::last(printables)->first);
 
 #ifdef DEBUG
         debug_bounds_vertices.clear();
@@ -327,7 +329,7 @@ engine::printable_store engine::page::store() {
         current_printable = find_printable(pid);
 
         if (current_printable == std::end(printables)) {
-          current_printable = std::last(printables);
+          current_printable = general::last(printables);
         }
 
         y = rect(current_printable).top;
@@ -342,7 +344,7 @@ engine::printable_store engine::page::store() {
         current_printable = std::next(current_printable);
         current_character = 0;
 
-        rect(current_printable).top = y - resources->line_spacing / 1.3f;
+        rect(current_printable).top = y - resources->line_spacing_margin;
         rect(current_printable).left = x;
 
         end_of_text = false;
@@ -354,7 +356,43 @@ engine::printable_store engine::page::store() {
   };
 }
 
-void engine::page::preprocess(printable &printable) const {
+float engine::page::measure_text(const printable &printable, size_t begin, size_t end) const {
+  float width{};
+  sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[begin])};
+  for (size_t i{begin}; i < end; ++i) {
+    apply_text_effects(printable, i);
+    curr_char = sf::Utf32::decodeWide(printable[i]);
+
+    if (curr_char == L'\r')
+      continue;
+
+    width += resources->font->getKerning(prev_char, curr_char, resources->font_size);
+
+    if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
+      switch (curr_char) {
+        case L' ':
+          width += resources->whitespace_width + letter_spacing_factor;
+          break;
+        case L'\t':
+          width += resources->whitespace_width * 4;
+          break;
+        case L'\n':
+          return width;
+          break;
+      }
+    } else {
+      const auto &glyph{resources->font->getGlyph(curr_char, resources->font_size, is_bold)};
+      width += glyph.advance + resources->letter_spacing + letter_spacing_factor;
+    }
+
+    prev_char = curr_char;
+    remove_text_effects(i);
+  }
+
+  return width;
+}
+
+void engine::page::preprocess(printable &printable) {
   auto last_blank{std::numeric_limits<size_t>::max()};
   auto word_width{resources->margin_horizontal * 2};
   auto p_len{printable.length()};
@@ -366,6 +404,18 @@ void engine::page::preprocess(printable &printable) const {
 
     if (curr_char == L'\r')
       continue;
+
+    if (displacement != displacement::NONE && !displacement_mode_end) {
+      auto disp_effect{displacement_effect(displacement)};
+      displacement_mode_end = disp_effect->end;
+      word_width = 0;
+    }
+
+    if (displacement_mode_end && i != displacement_mode_end) {
+      continue;
+    } else {
+      displacement_mode_end = 0;
+    }
 
     word_width += resources->font->getKerning(prev_char, curr_char, resources->font_size);
 
@@ -419,6 +469,25 @@ void engine::page::ensure_updated() const {
   if (curr_char == L'\r')
     return;
 
+  if (displacement != displacement::NONE && !displacement_mode_end) {
+    enum displacement disp = displacement;
+    auto disp_effect{displacement_effect(disp)};
+    displacement_mode_end = disp_effect->end + 1;
+    auto width{measure_text(printable, disp_effect->begin, disp_effect->end)};
+    auto spacing{displacement_spacing(disp, width)};
+    if (displacement_mode_end_prev != current_character - 1) {
+      y += resources->line_spacing;
+    }
+    x = resources->margin_horizontal + spacing;
+    apply_text_effects(printable, current_character);
+    displacement_mode_end_prev = displacement_mode_end;
+  }
+
+  if (displacement_mode_end && current_character == displacement_mode_end) {
+    displacement_mode_end = 0;
+    new_line();
+  }
+
   x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
 
   // Handle special characters
@@ -434,8 +503,7 @@ void engine::page::ensure_updated() const {
         x += resources->whitespace_width * 4;
         break;
       case L'\n':
-        y += resources->line_spacing;
-        x = resources->margin_horizontal;
+        new_line();
         break;
     }
 
@@ -473,8 +541,7 @@ void engine::page::ensure_updated() const {
 
     x += advance;
 
-    if (!(is_center && curr_char == sf::Utf32::decodeWide(L' ')))
-      audio.play_typewriter_click();
+    audio.play_typewriter_click();
   }
 
   bounds.top = min_y;
@@ -486,8 +553,7 @@ void engine::page::ensure_updated() const {
                            bounds.height + resources->margin_vertical / 2 - resources->line_spacing_margin);
   bounds.width = std::max(bounds.width, bounds.width + resources->margin_horizontal);
 
-  if (!(is_center && curr_char == sf::Utf32::decodeWide(L' ')))
-    delay();
+  delay();
 }
 
 void engine::page::apply_text_effects(const printable &printable, size_t idx) const {
@@ -523,7 +589,10 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
         text_texture = &resources->get_textures("text").at(e.texture);
         break;
       case text_effect::kind::CENTER:
-        is_center = true;
+        displacement = displacement::CENTER;
+        break;
+      case text_effect::kind::RIGHT:
+        displacement = displacement::RIGHT;
         break;
     }
   }
@@ -538,7 +607,7 @@ void engine::page::remove_text_effects(size_t idx) const {
   is_underlined = false;
   is_strike_through = false;
   is_uppercase = false;
-  is_center = false;
+  displacement = displacement::NONE;
   italic_shear = 0.f;
   typing_delay_factor = 1.f;
   letter_spacing_factor = 1.f;
@@ -601,6 +670,27 @@ void engine::page::redraw() {
       if (curr_char == L'\r')
         return;
 
+      if (displacement != displacement::NONE && !displacement_mode_end) {
+        auto disp{displacement};
+        auto displ_effect{displacement_effect(disp)};
+        displacement_mode_end = displ_effect->end + 1;
+        // Call to measure_text invalidates iterators of active_effects,
+        // so need to set displacement_mode_end before that
+        auto width{measure_text(printable, displ_effect->begin, displ_effect->end)};
+        auto spacing{displacement_spacing(disp, width)};
+        if (displacement_mode_end_prev != i - 1) {
+          y += resources->line_spacing;
+        }
+        x = resources->margin_horizontal + spacing;
+        apply_text_effects(printable, i);
+        displacement_mode_end_prev = displacement_mode_end;
+      }
+
+      if (displacement_mode_end && i == displacement_mode_end) {
+        displacement_mode_end = 0;
+        new_line();
+      }
+
       x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
 
       if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
@@ -612,8 +702,7 @@ void engine::page::redraw() {
             x += resources->whitespace_width * 4;
             break;
           case L'\n':
-            y += resources->line_spacing;
-            x = resources->margin_horizontal;
+            new_line();
             break;
         }
       } else {
@@ -638,5 +727,27 @@ void engine::page::redraw() {
       prev_char = curr_char;
       remove_text_effects(i);
     }
+  }
+}
+
+engine::page::effect_array::const_iterator engine::page::displacement_effect(enum displacement d) const {
+  switch (d) {
+    case displacement::CENTER:
+      return find_effect(text_effect::kind::CENTER);
+    case displacement::RIGHT:
+      return find_effect(text_effect::kind::RIGHT);
+    default:
+      throw std::runtime_error("Wrong displacement value");
+  }
+}
+
+float engine::page::displacement_spacing(enum displacement d, float width) const {
+  switch (d) {
+    case displacement::CENTER:
+      return (resources->effective_page_width() - width) / 2;
+    case displacement::RIGHT:
+      return resources->effective_page_width() - width;
+    default:
+      throw std::runtime_error("Wrong displacement value");
   }
 }

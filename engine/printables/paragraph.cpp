@@ -11,11 +11,15 @@ engine::paragraph::paragraph(
     const std::vector<engine::text_effect> &es,
     bool with_tab
 ) : printable{rptr, c} {
+  for (const auto &e: es) {
+    if (e.end >= contents.length()) {
+      throw std::runtime_error("Effect lasts longer than its content");
+    }
+    effects[e.begin].push_back(e);
+  }
   if (with_tab) {
     add_tab(contents);
-  }
-  for (const auto &e: es) {
-    effects[e.begin].push_back(e);
+    offset_effects();
   }
 }
 
