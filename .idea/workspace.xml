@@ -13,11 +13,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/vendor/tweeny" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/tweeny" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/tweeny" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -116,7 +114,7 @@
       <workItem from="1564992273983" duration="29717000" />
       <workItem from="1565077456286" duration="25439000" />
       <workItem from="1565123198852" duration="2038000" />
-      <workItem from="1565166901987" duration="7798000" />
+      <workItem from="1565166901987" duration="8600000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -328,7 +326,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565170095451</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="added preliminary support for line shift tween">
+      <created>1565174749545</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1565174749545</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -349,7 +354,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="added support for some text effects" />
     <MESSAGE value="bumped compiler version to c++17" />
     <MESSAGE value="added resource loader" />
     <MESSAGE value="added sound effects" />
@@ -374,6 +378,7 @@
     <MESSAGE value="added centered text printable" />
     <MESSAGE value="finished text displacement effects" />
     <MESSAGE value="added cursor change on hover" />
-    <option name="LAST_COMMIT_MESSAGE" value="added cursor change on hover" />
+    <MESSAGE value="added preliminary support for line shift tween" />
+    <option name="LAST_COMMIT_MESSAGE" value="added preliminary support for line shift tween" />
   </component>
 </project>

@@ -1,0 +1,3 @@
+[submodule "vendor/tweeny"]
+	path = vendor/tweeny
+	url = https://github.com/mobius3/tweeny-demos.git
