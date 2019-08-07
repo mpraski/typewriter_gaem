@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
+      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
       <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
     </generated>
   </component>
@@ -12,13 +13,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/vendor/tweeny" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/printable.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/resources.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/resources.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -73,12 +72,21 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="CMake Application.typewriter_gaem">
+    <configuration name="tweeny-dummy" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="typewriter_gaem" TARGET_NAME="tweeny-dummy" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="typewriter_gaem" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="typewriter_gaem" TARGET_NAME="typewriter_gaem" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="typewriter_gaem" RUN_TARGET_NAME="typewriter_gaem">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="CMake Application.typewriter_gaem" />
+      <item itemvalue="CMake Application.tweeny-dummy" />
+    </list>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -108,7 +116,7 @@
       <workItem from="1564992273983" duration="29717000" />
       <workItem from="1565077456286" duration="25439000" />
       <workItem from="1565123198852" duration="2038000" />
-      <workItem from="1565166901987" duration="3079000" />
+      <workItem from="1565166901987" duration="7798000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -313,7 +321,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565113416270</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="added cursor change on hover">
+      <created>1565170095451</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1565170095451</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -334,7 +349,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="changes" />
     <MESSAGE value="added support for some text effects" />
     <MESSAGE value="bumped compiler version to c++17" />
     <MESSAGE value="added resource loader" />
@@ -359,6 +373,7 @@
     <MESSAGE value="fixed dialog progression" />
     <MESSAGE value="added centered text printable" />
     <MESSAGE value="finished text displacement effects" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished text displacement effects" />
+    <MESSAGE value="added cursor change on hover" />
+    <option name="LAST_COMMIT_MESSAGE" value="added cursor change on hover" />
   </component>
 </project>

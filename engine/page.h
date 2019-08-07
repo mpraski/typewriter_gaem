@@ -23,6 +23,7 @@
 #include "printables/dialog.h"
 #include "utilities/text_buffer.h"
 #include "story/story.h"
+#include "tweeny.h"
 
 #define pointer(IT) (IT)->first
 #define rect(IT) (IT)->second
@@ -61,10 +62,12 @@ private:
     mutable sf::VertexArray debug_bounds_vertices;
     mutable sf::VertexArray font_texture_vertices;
     mutable sf::FloatRect bounds;
+    mutable tweeny::tween<float> line_shift_tween;
     // Control flags
     mutable bool end_of_text;
     mutable bool needs_update;
     mutable bool needs_redraw;
+    mutable bool needs_line_shift;
     // Text bounds
     mutable float x;
     mutable float y;
@@ -72,6 +75,7 @@ private:
     mutable float min_y;
     mutable float max_x;
     mutable float max_y;
+    mutable size_t line_shift_tween_time;
     // Text properties
     mutable bool is_bold;
     mutable bool is_underlined;
@@ -104,7 +108,7 @@ private:
 
     void remove_text_effects(size_t idx) const;
 
-    void delay() const;
+    void delay(float duration, float delay_factor) const;
 
     void apply_mouse_hover(const sf::Vector2f &cursor);
 
@@ -115,6 +119,8 @@ private:
     effect_array::const_iterator displacement_effect(enum displacement d) const;
 
     float displacement_spacing(enum displacement d, float width) const;
+
+    void apply_line_shift();
 
     inline void new_line() const {
       y += resources->line_spacing;

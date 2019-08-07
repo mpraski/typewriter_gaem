@@ -10,6 +10,10 @@ add_executable(typewriter_gaem main.cpp engine/page.cpp engine/page.h engine/pri
 
 target_compile_definitions (typewriter_gaem PRIVATE BOOST_ALLOW_DEPRECATED_HEADERS)
 
+# Tweeny for tweening out of the box
+add_subdirectory(vendor/tweeny)
+target_link_libraries(typewriter_gaem tweeny)
+
 find_package(SFML COMPONENTS system window graphics network audio REQUIRED)
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 if (SFML_FOUND)

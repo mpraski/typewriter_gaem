@@ -97,15 +97,23 @@ engine::page::page(const resources_ptr &rptr, const story_ptr &sptr) :
     debug_bounds_vertices{sf::Lines},
     font_texture_vertices{sf::Triangles},
     bounds{},
+    line_shift_tween{
+        tweeny::from(0.f)
+            .to(resources->line_spacing)
+            .during(30)
+            .via(tweeny::easing::quadraticInOut)
+    },
     end_of_text{},
     needs_update{true},
     needs_redraw{true},
+    needs_line_shift{},
     x{resources->margin_horizontal},
     y{resources->margin_vertical + static_cast<float>(resources->font_size)},
     min_x{},
     min_y{},
     max_x{},
     max_y{},
+    line_shift_tween_time{},
     is_bold{},
     is_underlined{},
     is_strike_through{},
@@ -137,9 +145,12 @@ bool engine::page::text_end() const {
 }
 
 void engine::page::advance() {
-  if (current_character == pointer(current_printable)->length() - 1
-      && std::next(current_printable) == std::end(printables)) {
+  if (needs_line_shift) {
+    apply_line_shift();
+  } else if (current_character == pointer(current_printable)->length() - 1
+             && std::next(current_printable) == std::end(printables)) {
     end_of_text = true;
+    current_character = 0;
 
     rect(current_printable).width = max_x - rect(current_printable).left;
     rect(current_printable).height = max_y - rect(current_printable).top - resources->line_spacing_margin;
@@ -206,6 +217,9 @@ void engine::page::advance() {
   } else {
     if (current_character != pointer(current_printable)->length() - 1) {
       current_character++;
+      if (pointer(current_printable)->operator[](current_character) == L'\n') {
+        needs_line_shift = true;
+      }
     } else {
       rect(current_printable).width = max_x - rect(current_printable).left;
       rect(current_printable).height = max_y - rect(current_printable).top - resources->line_spacing_margin;
@@ -553,7 +567,7 @@ void engine::page::ensure_updated() const {
                            bounds.height + resources->margin_vertical / 2 - resources->line_spacing_margin);
   bounds.width = std::max(bounds.width, bounds.width + resources->margin_horizontal);
 
-  delay();
+  delay(static_cast<float>(resources->typing_delay), typing_delay_factor);
 }
 
 void engine::page::apply_text_effects(const printable &printable, size_t idx) const {
@@ -615,11 +629,11 @@ void engine::page::remove_text_effects(size_t idx) const {
   text_texture = nullptr;
 }
 
-void engine::page::delay() const {
+void engine::page::delay(float duration, float delay_factor = 1) const {
   sf::Clock clock;
   sf::Time time;
 
-  while (time.asMilliseconds() < static_cast<float>(resources->typing_delay) * typing_delay_factor) {
+  while (time.asMilliseconds() < duration * delay_factor) {
     time += clock.getElapsedTime();
   }
 }
@@ -669,8 +683,9 @@ void engine::page::redraw() {
   for (auto it{std::begin(printables)}; it != std::next(current_printable); ++it) {
     const auto &printable{*pointer(it)};
 
+    auto p_end{current_character ? current_character : printable.length()};
     sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};
-    for (size_t i{0}; i < printable.length(); ++i) {
+    for (size_t i{0}; i < p_end; ++i) {
       apply_text_effects(printable, i);
       curr_char = sf::Utf32::decodeWide(printable[i]);
 
@@ -756,5 +771,17 @@ float engine::page::displacement_spacing(enum displacement d, float width) const
       return resources->effective_page_width() - width;
     default:
       throw std::runtime_error("Wrong displacement value");
+  }
+}
+
+void engine::page::apply_line_shift() {
+  if (line_shift_tween_time < 30) {
+    move(0.f, -line_shift_tween.step(0.01f));
+    redraw();
+    delay(150000.f, 1.f);
+  } else {
+    line_shift_tween.seek(0);
+    line_shift_tween_time = 0;
+    needs_line_shift = false;
   }
 }
