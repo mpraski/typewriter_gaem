@@ -23,7 +23,8 @@ int main() {
                       engine::text_effect{engine::text_effect::kind::DELAY, 10, 13}.with_delay(5.0f),
                       engine::text_effect{engine::text_effect::kind::UNDERLINE, 15, 20},
                       engine::text_effect{engine::text_effect::kind::CENTER, 15, 20}
-                  }
+                  },
+                  false
               ),
               new engine::paragraph(
                   resources,

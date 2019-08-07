@@ -254,9 +254,9 @@ void engine::page::advance() {
 
 void engine::page::input() {
   if (const auto &mp{resources->mouse_position()}; global_bounds().contains(mp)) {
-    apply_mouse_position(mp);
+    apply_mouse_hover(mp);
     if (resources->mouse_click_available()) {
-      apply_mouse_click_position(resources->mouse_click_position());
+      apply_mouse_click(resources->mouse_click_position());
     } else {
       redraw();
     }
@@ -393,8 +393,8 @@ float engine::page::measure_text(const printable &printable, size_t begin, size_
 }
 
 void engine::page::preprocess(printable &printable) {
+  float word_width{};
   auto last_blank{std::numeric_limits<size_t>::max()};
-  auto word_width{resources->margin_horizontal * 2};
   auto p_len{printable.length()};
   sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};
 
@@ -430,7 +430,7 @@ void engine::page::preprocess(printable &printable) {
           if (i) last_blank = i;
           break;
         case L'\n':
-          word_width = resources->margin_horizontal * 2;
+          word_width = 0;
           break;
       }
     } else {
@@ -441,14 +441,14 @@ void engine::page::preprocess(printable &printable) {
     prev_char = curr_char;
     remove_text_effects(i);
 
-    if (word_width >= resources->page_width) {
+    if (word_width > resources->effective_page_width()) {
       if (last_blank == std::numeric_limits<size_t>::max()) {
         printable.inject_line_at(i);
         p_len++;
       } else {
         printable.break_line_at(last_blank);
       }
-      word_width = resources->margin_horizontal * 2;
+      word_width = 0;
       last_blank = std::numeric_limits<size_t>::max();
     }
   }
@@ -624,11 +624,13 @@ void engine::page::delay() const {
   }
 }
 
-void engine::page::apply_mouse_position(const sf::Vector2f &cursor) {
+void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
+  bool hovering{};
   for (auto &[printable, p_bounds] : printables) {
     if (printable->interactive()) {
       if (getTransform().transformRect(p_bounds).contains(cursor)) {
         printable->on_hover_start();
+        hovering = true;
       } else {
         printable->on_hover_end();
       }
@@ -636,13 +638,18 @@ void engine::page::apply_mouse_position(const sf::Vector2f &cursor) {
       needs_redraw = true;
     }
   }
+
+  resources->set_cursor(hovering
+                        ? resources::cursor::HAND
+                        : resources::cursor::ARROW);
 }
 
-void engine::page::apply_mouse_click_position(const sf::Vector2f &cursor) {
+void engine::page::apply_mouse_click(const sf::Vector2f &cursor) {
   for (auto &[printable, p_bounds] : printables) {
     if (printable->interactive()) {
       if (getTransform().transformRect(p_bounds).contains(cursor)) {
         story->act(printable->on_click());
+        resources->set_cursor(resources::cursor::ARROW);
         break;
       }
     }

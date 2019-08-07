@@ -18,9 +18,11 @@ engine::resources::resources(
     float line_spacing_factor,
     unsigned typing_delay)
     : mode{mode},
+      current_cursor{cursor::ARROW},
+      arrow_cursor{},
+      grab_cursor{},
       curr_mouse{},
       prev_mouse{},
-      cursor_type{sf::Cursor::Arrow},
       window{mode, "Title"},
       font{},
       font_size{font_size},
@@ -67,6 +69,14 @@ engine::resources::resources(
       mouse_pressed{},
       mouse_pressed_position{} {
   font = &fonts[ROOT_RESOURCE_CATEGORY][DEFAULT_FONT];
+
+  if (!arrow_cursor.loadFromSystem(sf::Cursor::Type::Arrow)) {
+    throw std::runtime_error("Arrow cursor loading error");
+  }
+
+  if (!grab_cursor.loadFromSystem(sf::Cursor::Type::Hand)) {
+    throw std::runtime_error("Grab cursor loading error");
+  }
 
   whitespace_width = font->getGlyph(L' ', font_size, false).advance;
   letter_spacing = (whitespace_width / 3.f) * (letter_spacing_factor - 1.f);
@@ -132,4 +142,17 @@ bool engine::resources::visible(sf::FloatRect bounds) const {
 
 float engine::resources::effective_page_width() const {
   return page_width - 2 * margin_horizontal;
+}
+
+void engine::resources::set_cursor(cursor c) const {
+  if (c == current_cursor) return;
+  current_cursor = c;
+  switch (c) {
+    case cursor::ARROW:
+      window.setMouseCursor(arrow_cursor);
+      break;
+    case cursor::HAND:
+      window.setMouseCursor(grab_cursor);
+      break;
+  }
 }

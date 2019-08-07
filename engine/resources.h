@@ -39,6 +39,11 @@ class resources {
 public:
     const constexpr static auto ROOT_RESOURCE_CATEGORY = "<root>";
 
+    enum class cursor {
+        ARROW,
+        HAND
+    };
+
     resources(
         sf::VideoMode mode,
         const std::string &fonts_path,
@@ -82,6 +87,8 @@ public:
 
     float effective_page_width() const;
 
+    void set_cursor(cursor c) const;
+
     sf::VideoMode mode;
     const sf::Font *font;
     unsigned font_size;
@@ -104,8 +111,10 @@ private:
     resource_map<sf::Font> fonts;
     resource_map<sf::SoundBuffer> sounds;
     resource_map<sf::Texture> textures;
+    mutable cursor current_cursor;
+    mutable sf::Cursor arrow_cursor;
+    mutable sf::Cursor grab_cursor;
     mutable sf::Vector2f curr_mouse, prev_mouse;
-    mutable sf::Cursor::Type cursor_type;
     mutable sf::RenderWindow window;
     mutable bool mouse_pressed;
     mutable sf::Vector2f mouse_pressed_position;

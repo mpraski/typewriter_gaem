@@ -106,9 +106,9 @@ private:
 
     void delay() const;
 
-    void apply_mouse_position(const sf::Vector2f &cursor);
+    void apply_mouse_hover(const sf::Vector2f &cursor);
 
-    void apply_mouse_click_position(const sf::Vector2f &cursor);
+    void apply_mouse_click(const sf::Vector2f &cursor);
 
     void redraw();
 
