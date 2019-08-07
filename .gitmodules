@@ -1,3 +1,3 @@
-[submodule "vendor/tweeny"]
+[submodule "tweeny_lib"]
 	path = vendor/tweeny
-	url = https://github.com/mobius3/tweeny-demos.git
+	url = https://github.com/mobius3/tweeny.git
