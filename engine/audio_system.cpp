@@ -2,7 +2,7 @@
 // Created by marcin on 7/23/19.
 //
 
-#include "audio_system.h"
+#include "audio_system.hpp"
 
 engine::audio_system::audio_system(const resources_ptr &rptr)
     : game_state{rptr},

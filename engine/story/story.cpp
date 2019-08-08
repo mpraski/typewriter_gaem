@@ -2,7 +2,7 @@
 // Created by marcin on 7/27/19.
 //
 
-#include "story.h"
+#include "story.hpp"
 
 engine::story::story(const decision_node_ptr &ptr)
     : store{},

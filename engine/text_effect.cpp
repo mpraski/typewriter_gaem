@@ -2,7 +2,7 @@
 // Created by marcin on 7/20/19.
 //
 
-#include "text_effect.h"
+#include "text_effect.hpp"
 
 engine::text_effect::text_effect(
     enum kind kind,

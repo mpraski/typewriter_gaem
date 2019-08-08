@@ -13,10 +13,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/animation/animation.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/animation/translate.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/utilities/tuples.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/tweeny" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/tweeny" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/audio_system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/audio_system.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/engine.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/game_state.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game_state.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/game_state.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game_state.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/dialog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/dialog.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/dialog.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/dialog.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/paragraph.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/paragraph.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/paragraph.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/paragraph.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable_store.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable_store.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable_store.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable_store.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/resources.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/resources.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/resources.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/story/action.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/action.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/story/action.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/action.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/story/decision_node.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/decision_node.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/story/decision_node.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/decision_node.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/story/story.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/story/story.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/text_effect.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/text_effect.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/text_effect.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/text_effect.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/utilities/converters.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/converters.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/utilities/converters.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/converters.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/utilities/general.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/general.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/utilities/general.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/general.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/utilities/text_buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/text_buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/utilities/text_buffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/text_buffer.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -49,7 +82,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
+    <property name="settings.editor.selected.configurable" value="database.main" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -116,7 +149,8 @@
       <workItem from="1565077456286" duration="25439000" />
       <workItem from="1565123198852" duration="2038000" />
       <workItem from="1565166901987" duration="8645000" />
-      <workItem from="1565175601029" duration="436000" />
+      <workItem from="1565175601029" duration="14421000" />
+      <workItem from="1565251650335" duration="18106000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>

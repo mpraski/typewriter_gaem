@@ -2,8 +2,8 @@
 // Created by marcin on 7/21/19.
 //
 
-#ifndef TYPEWRITER_GAEM_CONVERTERS_H
-#define TYPEWRITER_GAEM_CONVERTERS_H
+#ifndef TYPEWRITER_GAEM_CONVERTERS_HPP
+#define TYPEWRITER_GAEM_CONVERTERS_HPP
 
 #include <string>
 #include <codecvt>
@@ -19,4 +19,4 @@ public:
 };
 }
 
-#endif //TYPEWRITER_GAEM_CONVERTERS_H
+#endif //TYPEWRITER_GAEM_CONVERTERS_HPP

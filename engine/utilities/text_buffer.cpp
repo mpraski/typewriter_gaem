@@ -2,7 +2,7 @@
 // Created by marcin on 7/24/19.
 //
 
-#include "text_buffer.h"
+#include "text_buffer.hpp"
 
 std::wstring_view engine::text_buffer::range(size_t begin, size_t end) const {
   assert(begin <= end);

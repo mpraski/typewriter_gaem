@@ -2,8 +2,8 @@
 // Created by marcin on 7/24/19.
 //
 
-#ifndef TYPEWRITER_GAEM_PRINTABLE_H
-#define TYPEWRITER_GAEM_PRINTABLE_H
+#ifndef TYPEWRITER_GAEM_PRINTABLE_HPP
+#define TYPEWRITER_GAEM_PRINTABLE_HPP
 
 #include <iostream>
 #include <cstddef>
@@ -12,10 +12,10 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/functional/hash.hpp>
-#include "../text_effect.h"
-#include "../game_state.h"
-#include "../utilities/general.h"
-#include "../story/action.h"
+#include "../text_effect.hpp"
+#include "../game_state.hpp"
+#include "../utilities/general.hpp"
+#include "../story/action.hpp"
 
 namespace engine {
 using printable_id_t = boost::uuids::uuid;
@@ -120,4 +120,4 @@ struct hash<engine::printable> {
 };
 }
 
-#endif //TYPEWRITER_GAEM_PRINTABLE_H
+#endif //TYPEWRITER_GAEM_PRINTABLE_HPP

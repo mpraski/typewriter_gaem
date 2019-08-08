@@ -2,12 +2,12 @@
 // Created by marcin on 7/30/19.
 //
 
-#ifndef TYPEWRITER_GAEM_DECISION_NODE_H
-#define TYPEWRITER_GAEM_DECISION_NODE_H
+#ifndef TYPEWRITER_GAEM_DECISION_NODE_HPP
+#define TYPEWRITER_GAEM_DECISION_NODE_HPP
 
 #include <memory>
 #include <vector>
-#include "../printables/printable.h"
+#include "../printables/printable.hpp"
 
 namespace engine {
 class decision_node {
@@ -29,4 +29,4 @@ private:
 using decision_node_ptr = decision_node::decision_node_ptr;
 }
 
-#endif //TYPEWRITER_GAEM_DECISION_NODE_H
+#endif //TYPEWRITER_GAEM_DECISION_NODE_HPP

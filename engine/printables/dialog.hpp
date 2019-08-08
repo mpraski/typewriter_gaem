@@ -2,11 +2,11 @@
 // Created by marcin on 7/24/19.
 //
 
-#ifndef TYPEWRITER_GAEM_DIALOG_H
-#define TYPEWRITER_GAEM_DIALOG_H
+#ifndef TYPEWRITER_GAEM_DIALOG_HPP
+#define TYPEWRITER_GAEM_DIALOG_HPP
 
-#include "printable.h"
-#include "../text_effect.h"
+#include "printable.hpp"
+#include "../text_effect.hpp"
 
 namespace engine {
 class dialog : public printable {
@@ -33,4 +33,4 @@ private:
 };
 }
 
-#endif //TYPEWRITER_GAEM_DIALOG_H
+#endif //TYPEWRITER_GAEM_DIALOG_HPP

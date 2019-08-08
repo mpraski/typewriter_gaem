@@ -2,14 +2,14 @@
 // Created by marcin on 7/27/19.
 //
 
-#ifndef TYPEWRITER_GAEM_STORY_H
-#define TYPEWRITER_GAEM_STORY_H
+#ifndef TYPEWRITER_GAEM_STORY_HPP
+#define TYPEWRITER_GAEM_STORY_HPP
 
 #include <functional>
-#include "../printables/printable.h"
-#include "../printables/printable_store.h"
-#include "action.h"
-#include "decision_node.h"
+#include "../printables/printable.hpp"
+#include "../printables/printable_store.hpp"
+#include "action.hpp"
+#include "decision_node.hpp"
 
 namespace engine {
 class story {
@@ -33,4 +33,4 @@ private:
 using story_ptr = std::shared_ptr<story>;
 }
 
-#endif //TYPEWRITER_GAEM_STORY_H
+#endif //TYPEWRITER_GAEM_STORY_HPP

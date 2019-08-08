@@ -2,8 +2,8 @@
 // Created by marcin on 7/20/19.
 //
 
-#ifndef TYPEWRITER_GAEM_PARAGRAPH_H
-#define TYPEWRITER_GAEM_PARAGRAPH_H
+#ifndef TYPEWRITER_GAEM_PARAGRAPH_HPP
+#define TYPEWRITER_GAEM_PARAGRAPH_HPP
 
 
 #include <unordered_map>
@@ -11,9 +11,9 @@
 #include <vector>
 #include <algorithm>
 #include <cwctype>
-#include "printable.h"
-#include "../text_effect.h"
-#include "../utilities/converters.h"
+#include "printable.hpp"
+#include "../text_effect.hpp"
+#include "../utilities/converters.hpp"
 
 namespace engine {
 class paragraph : public printable {
@@ -34,4 +34,4 @@ private:
 };
 }
 
-#endif //TYPEWRITER_GAEM_PARAGRAPH_H
+#endif //TYPEWRITER_GAEM_PARAGRAPH_HPP

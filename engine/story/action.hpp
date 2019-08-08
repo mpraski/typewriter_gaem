@@ -2,8 +2,8 @@
 // Created by marcin on 7/27/19.
 //
 
-#ifndef TYPEWRITER_GAEM_ACTION_H
-#define TYPEWRITER_GAEM_ACTION_H
+#ifndef TYPEWRITER_GAEM_ACTION_HPP
+#define TYPEWRITER_GAEM_ACTION_HPP
 
 #include <boost/uuid/uuid.hpp>
 
@@ -23,4 +23,4 @@ public:
 };
 }
 
-#endif //TYPEWRITER_GAEM_ACTION_H
+#endif //TYPEWRITER_GAEM_ACTION_HPP

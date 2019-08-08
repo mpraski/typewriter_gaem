@@ -2,10 +2,10 @@
 // Created by marcin on 7/23/19.
 //
 
-#ifndef TYPEWRITER_GAEM_AUDIO_SYSTEM_H
-#define TYPEWRITER_GAEM_AUDIO_SYSTEM_H
+#ifndef TYPEWRITER_GAEM_AUDIO_SYSTEM_HPP
+#define TYPEWRITER_GAEM_AUDIO_SYSTEM_HPP
 
-#include "game_state.h"
+#include "game_state.hpp"
 
 namespace engine {
 class audio_system : public game_state {
@@ -35,4 +35,4 @@ private:
 };
 }
 
-#endif //TYPEWRITER_GAEM_AUDIO_SYSTEM_H
+#endif //TYPEWRITER_GAEM_AUDIO_SYSTEM_HPP

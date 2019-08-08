@@ -2,7 +2,7 @@
 // Created by marcin on 7/30/19.
 //
 
-#include "decision_node.h"
+#include "decision_node.hpp"
 
 engine::decision_node::decision_node(
     const std::vector<printable *> &cnts,

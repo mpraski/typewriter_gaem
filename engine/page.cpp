@@ -2,7 +2,7 @@
 // Created by marcin on 7/19/19.
 //
 
-#include "page.h"
+#include "page.hpp"
 
 namespace {
 // Add an underline or strikethrough line to the vertex array
@@ -97,11 +97,21 @@ engine::page::page(const resources_ptr &rptr, const story_ptr &sptr) :
     debug_bounds_vertices{sf::Lines},
     font_texture_vertices{sf::Triangles},
     bounds{},
-    line_shift_tween{
-        tweeny::from(0.f)
-            .to(resources->line_spacing)
-            .during(30)
+    line_shift_animation{
+        *this,
+        translate_vertical::builder()
+            .from(0.f)
+            .to(-resources->line_spacing)
+            .during(60)
             .via(tweeny::easing::quadraticInOut)
+            .loop()
+            .on_step([&] {
+              redraw();
+              delay(150000.f, 1.f);
+            })
+            .on_finish([&] {
+              needs_line_shift = false;
+            })
     },
     end_of_text{},
     needs_update{true},
@@ -113,7 +123,6 @@ engine::page::page(const resources_ptr &rptr, const story_ptr &sptr) :
     min_y{},
     max_x{},
     max_y{},
-    line_shift_tween_time{},
     is_bold{},
     is_underlined{},
     is_strike_through{},
@@ -140,13 +149,13 @@ engine::page::page(const resources_ptr &rptr, const story_ptr &sptr) :
   preprocess(*pointer(current_printable));
 }
 
-bool engine::page::text_end() const {
-  return end_of_text;
+bool engine::page::can_advance() const {
+  return !end_of_text;
 }
 
 void engine::page::advance() {
   if (needs_line_shift) {
-    apply_line_shift();
+    line_shift_animation.step();
   } else if (current_character == pointer(current_printable)->length() - 1
              && std::next(current_printable) == std::end(printables)) {
     end_of_text = true;
@@ -217,9 +226,6 @@ void engine::page::advance() {
   } else {
     if (current_character != pointer(current_printable)->length() - 1) {
       current_character++;
-      if (pointer(current_printable)->operator[](current_character) == L'\n') {
-        needs_line_shift = true;
-      }
     } else {
       rect(current_printable).width = max_x - rect(current_printable).left;
       rect(current_printable).height = max_y - rect(current_printable).top - resources->line_spacing_margin;
@@ -771,17 +777,5 @@ float engine::page::displacement_spacing(enum displacement d, float width) const
       return resources->effective_page_width() - width;
     default:
       throw std::runtime_error("Wrong displacement value");
-  }
-}
-
-void engine::page::apply_line_shift() {
-  if (line_shift_tween_time < 30) {
-    move(0.f, -line_shift_tween.step(0.01f));
-    redraw();
-    delay(150000.f, 1.f);
-  } else {
-    line_shift_tween.seek(0);
-    line_shift_tween_time = 0;
-    needs_line_shift = false;
   }
 }

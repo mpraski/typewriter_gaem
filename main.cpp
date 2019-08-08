@@ -1,7 +1,12 @@
 #include <SFML/Graphics.hpp>
-#include "engine/engine.h"
+#include "engine/engine.hpp"
+#include "tweeny.h"
 
 int main() {
+  /*auto tween = tweeny::from(0.f)
+      .to(10.f).during(100);
+  for (int i = 0; i < 100; i++) { printf("%f\n", tween.step(0.1f)); }*/
+
   auto resources{engine::make_resources(
       sf::VideoMode(460, 800),
       "./res/fonts",
@@ -130,7 +135,7 @@ int main() {
     window.draw(page);
     window.display();
 
-    if (!page.text_end()) {
+    if (page.can_advance()) {
       page.advance();
     } else {
       page.input();

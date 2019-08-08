@@ -2,7 +2,7 @@
 // Created by marcin on 7/24/19.
 //
 
-#include "dialog.h"
+#include "dialog.hpp"
 
 engine::dialog::dialog(
     const resources_ptr &rptr,

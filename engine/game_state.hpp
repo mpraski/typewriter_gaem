@@ -2,10 +2,10 @@
 // Created by marcin on 7/23/19.
 //
 
-#ifndef TYPEWRITER_GAEM_GAME_STATE_H
-#define TYPEWRITER_GAEM_GAME_STATE_H
+#ifndef TYPEWRITER_GAEM_GAME_STATE_HPP
+#define TYPEWRITER_GAEM_GAME_STATE_HPP
 
-#include "resources.h"
+#include "resources.hpp"
 
 namespace engine {
 class game_state {
@@ -17,4 +17,4 @@ protected:
 };
 }
 
-#endif //TYPEWRITER_GAEM_GAME_STATE_H
+#endif //TYPEWRITER_GAEM_GAME_STATE_HPP

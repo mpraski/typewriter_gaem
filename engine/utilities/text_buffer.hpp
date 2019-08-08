@@ -2,8 +2,8 @@
 // Created by marcin on 7/24/19.
 //
 
-#ifndef TYPEWRITER_GAEM_TEXT_BUFFER_H
-#define TYPEWRITER_GAEM_TEXT_BUFFER_H
+#ifndef TYPEWRITER_GAEM_TEXT_BUFFER_HPP
+#define TYPEWRITER_GAEM_TEXT_BUFFER_HPP
 
 #include <cstddef>
 #include <stdexcept>
@@ -37,4 +37,4 @@ private:
 };
 };
 
-#endif //TYPEWRITER_GAEM_TEXT_BUFFER_H
+#endif //TYPEWRITER_GAEM_TEXT_BUFFER_HPP

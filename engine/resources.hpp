@@ -2,8 +2,8 @@
 // Created by marcin on 7/21/19.
 //
 
-#ifndef TYPEWRITER_GAEM_RESOURCES_H
-#define TYPEWRITER_GAEM_RESOURCES_H
+#ifndef TYPEWRITER_GAEM_RESOURCES_HPP
+#define TYPEWRITER_GAEM_RESOURCES_HPP
 
 #include <memory>
 #include <unordered_map>
@@ -14,7 +14,7 @@
 #include <boost/range/iterator_range.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "utilities/general.h"
+#include "utilities/general.hpp"
 
 namespace fs = boost::filesystem;
 
@@ -72,6 +72,8 @@ public:
     RESOURCE_GETTER(sounds);
 
     RESOURCE_GETTER(textures);
+
+    void draw(const sf::Drawable& drawable) const;
 
     void display(const std::function<void(sf::RenderWindow &)> &f) const;
 
@@ -178,4 +180,4 @@ static auto make_resources(Ts &&... args) {
 }
 }
 
-#endif //TYPEWRITER_GAEM_RESOURCES_H
+#endif //TYPEWRITER_GAEM_RESOURCES_HPP

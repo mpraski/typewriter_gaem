@@ -16,13 +16,13 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "game_state.h"
-#include "audio_system.h"
-#include "printables/printable.h"
-#include "printables/printable_store.h"
-#include "printables/dialog.h"
-#include "utilities/text_buffer.h"
-#include "story/story.h"
+#include "game_state.hpp"
+#include "audio_system.hpp"
+#include "printables/printable.hpp"
+#include "printables/printable_store.hpp"
+#include "printables/dialog.hpp"
+#include "story/story.hpp"
+#include "animation/translate.hpp"
 #include "tweeny.h"
 
 #define pointer(IT) (IT)->first
@@ -36,7 +36,7 @@ class page : public game_state, public sf::Drawable, public sf::Transformable {
 public:
     page(const resources_ptr &rptr, const story_ptr &sptr);
 
-    bool text_end() const;
+    bool can_advance() const;
 
     void advance();
 
@@ -62,7 +62,7 @@ private:
     mutable sf::VertexArray debug_bounds_vertices;
     mutable sf::VertexArray font_texture_vertices;
     mutable sf::FloatRect bounds;
-    mutable tweeny::tween<float> line_shift_tween;
+    mutable translate_vertical line_shift_animation;
     // Control flags
     mutable bool end_of_text;
     mutable bool needs_update;
@@ -75,7 +75,6 @@ private:
     mutable float min_y;
     mutable float max_x;
     mutable float max_y;
-    mutable size_t line_shift_tween_time;
     // Text properties
     mutable bool is_bold;
     mutable bool is_underlined;
@@ -120,11 +119,10 @@ private:
 
     float displacement_spacing(enum displacement d, float width) const;
 
-    void apply_line_shift();
-
     inline void new_line() const {
       y += resources->line_spacing;
       x = resources->margin_horizontal;
+      needs_line_shift = true;
     }
 
     inline auto find_printable(printable_id_t id) const {

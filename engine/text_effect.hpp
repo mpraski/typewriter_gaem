@@ -2,8 +2,8 @@
 // Created by marcin on 7/20/19.
 //
 
-#ifndef TYPEWRITER_GAEM_TEXT_EFFECT_H
-#define TYPEWRITER_GAEM_TEXT_EFFECT_H
+#ifndef TYPEWRITER_GAEM_TEXT_EFFECT_HPP
+#define TYPEWRITER_GAEM_TEXT_EFFECT_HPP
 
 #include <type_traits>
 #include <functional>
@@ -84,4 +84,4 @@ public:
 };
 };
 
-#endif //TYPEWRITER_GAEM_TEXT_EFFECT_H
+#endif //TYPEWRITER_GAEM_TEXT_EFFECT_HPP

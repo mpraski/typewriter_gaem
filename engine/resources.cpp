@@ -2,7 +2,7 @@
 // Created by marcin on 7/21/19.
 //
 
-#include "resources.h"
+#include "resources.hpp"
 
 engine::resources::resources(
     sf::VideoMode mode,
@@ -86,6 +86,10 @@ engine::resources::resources(
   underline_thickness = font->getUnderlineThickness(font_size);
 
   whitespace_width += letter_spacing;
+}
+
+void engine::resources::draw(const sf::Drawable& drawable) const {
+  window.draw(drawable);
 }
 
 void engine::resources::display(const std::function<void(sf::RenderWindow &)> &f) const {

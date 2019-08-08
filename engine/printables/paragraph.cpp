@@ -3,7 +3,7 @@
 //
 
 #include <algorithm>
-#include "paragraph.h"
+#include "paragraph.hpp"
 
 engine::paragraph::paragraph(
     const resources_ptr &rptr,

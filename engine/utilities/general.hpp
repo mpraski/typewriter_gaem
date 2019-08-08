@@ -2,8 +2,8 @@
 // Created by marcin on 7/30/19.
 //
 
-#ifndef TYPEWRITER_GAEM_GENERAL_H
-#define TYPEWRITER_GAEM_GENERAL_H
+#ifndef TYPEWRITER_GAEM_GENERAL_HPP
+#define TYPEWRITER_GAEM_GENERAL_HPP
 
 #include <sstream>
 #include <algorithm>
@@ -22,7 +22,7 @@ public:
     }
 
     template<class Base, class T>
-    static bool instanceof(const T *ptr) {
+    static constexpr bool instanceof(const T *ptr) {
       return dynamic_cast<const Base *>(ptr) != nullptr;
     }
 
@@ -84,12 +84,12 @@ public:
     }
 
     template<class T>
-    static inline auto last(const T &t) {
+    static constexpr auto last(const T &t) {
       return std::prev(std::cend(t));
     }
 
     template<class T>
-    static inline auto last(T &t) {
+    static constexpr auto last(T &t) {
       return std::prev(std::end(t));
     }
 
@@ -98,7 +98,13 @@ public:
       return static_cast<typename std::underlying_type<E>::type>(e);
     }
 
+    template<class T>
+    static constexpr auto is_zero(T t) {
+      static_assert(std::is_floating_point_v<T>);
+      const constexpr auto eps{1.0e-10};
+      return fabs(t) < eps;
+    }
 };
 }
 
-#endif //TYPEWRITER_GAEM_GENERAL_H
+#endif //TYPEWRITER_GAEM_GENERAL_HPP

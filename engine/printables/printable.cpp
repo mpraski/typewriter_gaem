@@ -2,7 +2,7 @@
 // Created by marcin on 7/24/19.
 //
 
-#include "printable.h"
+#include "printable.hpp"
 
 engine::printable::printable(const resources_ptr &rptr, const std::wstring &c)
     : game_state{rptr},

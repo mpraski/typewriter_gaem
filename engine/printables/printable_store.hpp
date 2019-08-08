@@ -2,13 +2,13 @@
 // Created by marcin on 8/1/19.
 //
 
-#ifndef TYPEWRITER_GAEM_PRINTABLE_STORE_H
-#define TYPEWRITER_GAEM_PRINTABLE_STORE_H
+#ifndef TYPEWRITER_GAEM_PRINTABLE_STORE_HPP
+#define TYPEWRITER_GAEM_PRINTABLE_STORE_HPP
 
 #include <functional>
-#include "printable.h"
-#include "paragraph.h"
-#include "../utilities/general.h"
+#include "printable.hpp"
+#include "paragraph.hpp"
+#include "../utilities/general.hpp"
 
 namespace engine {
 class printable_store {
@@ -48,4 +48,4 @@ private:
 };
 }
 
-#endif //TYPEWRITER_GAEM_PRINTABLE_STORE_H
+#endif //TYPEWRITER_GAEM_PRINTABLE_STORE_HPP
