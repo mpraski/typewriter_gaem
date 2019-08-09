@@ -158,64 +158,6 @@ void engine::page::advance() {
     rect(current_printable).width = max_x - rect(current_printable).left;
     rect(current_printable).height = max_y - rect(current_printable).top - system->line_spacing_margin;
 
-#ifdef DEBUG
-    auto trans{getTransform().transformRect(rect(current_printable))};
-    debug_bounds_vertices.append(
-        sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
-                   sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(trans.left, trans.top + trans.height),
-        sf::Color::Yellow, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(trans.left, trans.top + trans.height),
-        sf::Color::Yellow, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(trans.left + trans.width,
-                     trans.top + trans.height),
-        sf::Color::Yellow, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(trans.left + trans.width,
-                     trans.top + trans.height),
-        sf::Color::Yellow, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(trans.left + trans.width, trans.top),
-        sf::Color::Yellow, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(trans.left + trans.width, trans.top),
-        sf::Color::Yellow, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(
-        sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
-                   sf::Vector2f(1, 1)));
-
-    auto root_trans{global_bounds()};
-    debug_bounds_vertices.append(
-        sf::Vertex(sf::Vector2f(root_trans.left, root_trans.top), sf::Color::Magenta,
-                   sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(root_trans.left, root_trans.top + root_trans.height),
-        sf::Color::Magenta, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(root_trans.left, root_trans.top + root_trans.height),
-        sf::Color::Magenta, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(root_trans.left + root_trans.width,
-                     root_trans.top + root_trans.height),
-        sf::Color::Magenta, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(root_trans.left + root_trans.width,
-                     root_trans.top + root_trans.height),
-        sf::Color::Magenta, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(root_trans.left + root_trans.width, root_trans.top),
-        sf::Color::Magenta, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(sf::Vertex(
-        sf::Vector2f(root_trans.left + root_trans.width, root_trans.top),
-        sf::Color::Magenta, sf::Vector2f(1, 1)));
-    debug_bounds_vertices.append(
-        sf::Vertex(sf::Vector2f(root_trans.left, root_trans.top), sf::Color::Magenta,
-                   sf::Vector2f(1, 1)));
-#endif
-
     redraw();
   } else {
     if (current_character != pointer(current_printable)->length() - 1) {
@@ -223,36 +165,6 @@ void engine::page::advance() {
     } else {
       rect(current_printable).width = max_x - rect(current_printable).left;
       rect(current_printable).height = max_y - rect(current_printable).top - system->line_spacing_margin;
-
-#ifdef DEBUG
-      auto trans{getTransform().transformRect(rect(current_printable))};
-      debug_bounds_vertices.append(
-          sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
-                     sf::Vector2f(1, 1)));
-      debug_bounds_vertices.append(sf::Vertex(
-          sf::Vector2f(trans.left, trans.top + trans.height),
-          sf::Color::Yellow, sf::Vector2f(1, 1)));
-      debug_bounds_vertices.append(sf::Vertex(
-          sf::Vector2f(trans.left, trans.top + trans.height),
-          sf::Color::Yellow, sf::Vector2f(1, 1)));
-      debug_bounds_vertices.append(sf::Vertex(
-          sf::Vector2f(trans.left + trans.width,
-                       trans.top + trans.height),
-          sf::Color::Yellow, sf::Vector2f(1, 1)));
-      debug_bounds_vertices.append(sf::Vertex(
-          sf::Vector2f(trans.left + trans.width,
-                       trans.top + trans.height),
-          sf::Color::Yellow, sf::Vector2f(1, 1)));
-      debug_bounds_vertices.append(sf::Vertex(
-          sf::Vector2f(trans.left + trans.width, trans.top),
-          sf::Color::Yellow, sf::Vector2f(1, 1)));
-      debug_bounds_vertices.append(sf::Vertex(
-          sf::Vector2f(trans.left + trans.width, trans.top),
-          sf::Color::Yellow, sf::Vector2f(1, 1)));
-      debug_bounds_vertices.append(
-          sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
-                     sf::Vector2f(1, 1)));
-#endif
 
       current_printable = std::next(current_printable);
       current_character = 0;
@@ -279,6 +191,14 @@ void engine::page::input() {
 
 void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const {
   ensure_updated();
+
+#ifdef DEBUG
+  debug_bounds_vertices.clear();
+  draw_page_outline();
+  for (auto it{std::begin(printables)}; it != std::end(printables); ++it) {
+    draw_printable_outline(it);
+  }
+#endif
 
   states.transform *= getTransform();
   states.texture = &system->font->getTexture(system->font_size);
@@ -499,7 +419,8 @@ void engine::page::ensure_updated() const {
 
   if (displacement_mode_end && current_character == displacement_mode_end) {
     displacement_mode_end = 0;
-    new_line();
+    y += system->line_spacing;
+    x = system->margin_horizontal;
   }
 
   x += system->font->getKerning(prev_char, curr_char, system->font_size);
@@ -666,6 +587,14 @@ void engine::page::redraw() {
     return;
   needs_redraw = false;
 
+#ifdef DEBUG
+  debug_bounds_vertices.clear();
+  draw_page_outline();
+  for (auto it{std::begin(printables)}; it != std::next(current_printable); ++it) {
+    draw_printable_outline(it);
+  }
+#endif
+
   vertices.clear();
 
   x = system->margin_horizontal;
@@ -674,7 +603,17 @@ void engine::page::redraw() {
   for (auto it{std::begin(printables)}; it != std::next(current_printable); ++it) {
     const auto &printable{*pointer(it)};
 
-    auto p_end{current_character ? current_character + 1 : printable.length()};
+    /*
+     * In case we need to redraw in the middle of advancing
+     * a printable we need to redraw the last one only up to
+     * current_character
+     */
+    size_t p_end;
+    if (it == current_printable) {
+      p_end = current_character ? current_character + 1 : printable.length();
+    } else {
+      p_end = printable.length();
+    }
     sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};
     for (size_t i = 0; i < p_end; ++i) {
       apply_text_effects(printable, i);
@@ -770,6 +709,7 @@ float engine::page::displacement_spacing(enum displacement d, float width) const
 void engine::page::new_line() const {
   y += system->line_spacing;
   x = system->margin_horizontal;
+  std::cout << "y: " << y << ", ph: " << system->effective_page_height() << std::endl;
   if (end_of_page()) {
     line_shift_animation.prime();
   }
@@ -777,4 +717,64 @@ void engine::page::new_line() const {
 
 bool engine::page::end_of_page() const {
   return y >= system->effective_page_height();
+}
+
+void engine::page::draw_printable_outline(printable_iterator it) const {
+  auto trans{getTransform().transformRect(rect(it))};
+  debug_bounds_vertices.append(
+      sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
+                 sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(trans.left, trans.top + trans.height),
+      sf::Color::Yellow, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(trans.left, trans.top + trans.height),
+      sf::Color::Yellow, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(trans.left + trans.width,
+                   trans.top + trans.height),
+      sf::Color::Yellow, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(trans.left + trans.width,
+                   trans.top + trans.height),
+      sf::Color::Yellow, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(trans.left + trans.width, trans.top),
+      sf::Color::Yellow, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(trans.left + trans.width, trans.top),
+      sf::Color::Yellow, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(
+      sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
+                 sf::Vector2f(1, 1)));
+}
+
+void engine::page::draw_page_outline() const {
+  auto root_trans{global_bounds()};
+  debug_bounds_vertices.append(
+      sf::Vertex(sf::Vector2f(root_trans.left, root_trans.top), sf::Color::Magenta,
+                 sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(root_trans.left, root_trans.top + root_trans.height),
+      sf::Color::Magenta, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(root_trans.left, root_trans.top + root_trans.height),
+      sf::Color::Magenta, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(root_trans.left + root_trans.width,
+                   root_trans.top + root_trans.height),
+      sf::Color::Magenta, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(root_trans.left + root_trans.width,
+                   root_trans.top + root_trans.height),
+      sf::Color::Magenta, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(root_trans.left + root_trans.width, root_trans.top),
+      sf::Color::Magenta, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(sf::Vertex(
+      sf::Vector2f(root_trans.left + root_trans.width, root_trans.top),
+      sf::Color::Magenta, sf::Vector2f(1, 1)));
+  debug_bounds_vertices.append(
+      sf::Vertex(sf::Vector2f(root_trans.left, root_trans.top), sf::Color::Magenta,
+                 sf::Vector2f(1, 1)));
 }

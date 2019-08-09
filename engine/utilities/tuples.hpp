@@ -10,22 +10,22 @@
 
 namespace engine {
 template<class T, size_t N, size_t... I>
-decltype(auto) _as_tuple(const std::array<T, N> &arr, std::index_sequence<I...>) {
+constexpr decltype(auto) _as_tuple(const std::array<T, N> &arr, std::index_sequence<I...>) {
   return std::make_tuple(T{arr[I]}...);
 }
 
 template<class... Ts>
-decltype(auto) as_tuple(const std::tuple<Ts...> &tuple) {
+constexpr decltype(auto) as_tuple(const std::tuple<Ts...> &tuple) {
   return tuple;
 }
 
 template<class T>
-decltype(auto) as_tuple(T &&t) {
+constexpr decltype(auto) as_tuple(T &&t) {
   return std::make_tuple<T>(std::forward<T>(t));
 }
 
 template<class T, size_t N, size_t... I>
-decltype(auto) as_tuple(const std::array<T, N> &arr) {
+constexpr decltype(auto) as_tuple(const std::array<T, N> &arr) {
   return _as_tuple(arr, std::make_index_sequence<N>{});
 }
 

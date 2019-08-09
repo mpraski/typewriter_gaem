@@ -121,6 +121,10 @@ private:
 
     bool end_of_page() const;
 
+    void draw_printable_outline(printable_iterator it) const;
+
+    void draw_page_outline() const;
+
     inline auto find_printable(printable_id_t id) const {
       return gen::find(printables, [&](const auto &p) {
         return p.first->get_id() == id;

@@ -8,7 +8,7 @@ int main() {
   for (int i = 0; i < 100; i++) { printf("%f\n", tween.step(0.1f)); }*/
 
   auto resources{engine::make_system(
-      sf::VideoMode(460, 800),
+      sf::VideoMode(460, 400),
       "./res/fonts",
       "./res/sounds",
       "./res/textures"
@@ -127,8 +127,6 @@ int main() {
       resources,
       sample_story
   };
-
-  page.move(20.f, 20.f);
 
   resources->display([&](auto &window) {
     window.clear();
