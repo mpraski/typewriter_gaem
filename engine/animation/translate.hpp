@@ -9,34 +9,31 @@
 #include "animation.hpp"
 
 namespace engine {
-class translate : public drawable_animation<float, float> {
+class translate : public transformable_animation<float, float> {
 public:
-    using builder = animation<float, float>::builder;
-    using drawable_animation<float, float>::drawable_animation;
+    using transformable_animation<float, float>::transformable_animation;
 
-private:
+protected:
     void apply_step(float x, float y) const override {
       transformable.move(x, y);
     }
 };
 
-class translate_vertical : public drawable_animation<float> {
+class translate_vertical : public transformable_animation<float> {
 public:
-    using builder = animation<float>::builder;
-    using drawable_animation<float>::drawable_animation;
+    using transformable_animation<float>::transformable_animation;
 
-private:
+protected:
     void apply_step(float y) const override {
       transformable.move(0.f, y);
     }
 };
 
-class translate_horizontal : public drawable_animation<float> {
+class translate_horizontal : public transformable_animation<float> {
 public:
-    using builder = animation<float>::builder;
-    using drawable_animation<float>::drawable_animation;
+    using transformable_animation<float>::transformable_animation;
 
-private:
+protected:
     void apply_step(float x) const override {
       transformable.move(x, 0.f);
     }

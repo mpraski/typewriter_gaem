@@ -4,4 +4,4 @@
 
 #include "game_state.hpp"
 
-engine::game_state::game_state(const resources_ptr &rptr) : resources{rptr} {}
+engine::game_state::game_state(const system_ptr &rptr) : system{rptr} {}

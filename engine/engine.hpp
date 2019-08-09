@@ -17,7 +17,7 @@
 #include "utilities/text_buffer.hpp"
 #include "game_state.hpp"
 #include "page.hpp"
-#include "resources.hpp"
+#include "system.hpp"
 #include "audio_system.hpp"
 #include "text_effect.hpp"
 #include "audio_system.hpp"

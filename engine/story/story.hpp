@@ -28,6 +28,8 @@ private:
     decision_node_ptr curr_node;
 
     void add_printables(const decision_node_ptr &ptr);
+
+    void populate_printables(const decision_node_ptr &ptr);
 };
 
 using story_ptr = std::shared_ptr<story>;

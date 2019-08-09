@@ -5,7 +5,7 @@
 #include "dialog.hpp"
 
 engine::dialog::dialog(
-    const resources_ptr &rptr,
+    const system_ptr &rptr,
     const std::wstring &person,
     const std::wstring &speech
 ) : printable{rptr, person + L":\t" + speech},

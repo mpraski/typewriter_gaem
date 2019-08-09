@@ -4,10 +4,15 @@
 
 #include "audio_system.hpp"
 
-engine::audio_system::audio_system(const resources_ptr &rptr)
+engine::audio_system::audio_system(const system_ptr &rptr)
     : game_state{rptr},
-      sound_cache{} {
-  typewriter_clicks = &resources->get_sounds("typewriter_clicks");
+      sound_cache{},
+      rand_engine{},
+      rand_dist{0, RAND_MAX},
+      rand_fun{[&] {
+        return rand_dist(rand_engine);
+      }} {
+  typewriter_clicks = &system->get_sounds("typewriter_clicks");
 
   if (typewriter_clicks->empty()) {
     throw std::runtime_error("No typewriter click audio_system found");
@@ -23,7 +28,7 @@ void engine::audio_system::play_typewriter_click() const {
 
 void engine::audio_system::play_typewriter_space() const {
   constexpr auto key{"typewriter_spacebar"};
-  const auto &buf{resources->get_sounds(resources::ROOT_RESOURCE_CATEGORY).at(key)};
+  const auto &buf{system->get_sounds(system::ROOT_RESOURCE_CATEGORY).at(key)};
 
   play_with_cache(key, buf);
 }

@@ -17,19 +17,26 @@ namespace engine {
 template<class... Ts>
 class animation {
     using callback = std::function<void()>;
-public:
+    const constexpr static auto ANIMATION_END = std::numeric_limits<size_t>::max();
+protected:
     class builder {
     public:
         builder()
             : _loop{},
+              _prime{},
               _duration{},
               _on_finish{[] {}},
               _on_step{[] {}},
               _tween{} {
         }
 
-        builder &loop() {
-          _loop = true;
+        builder &loop(bool l = true) {
+          _loop = l;
+          return *this;
+        }
+
+        builder &prime(bool p = true) {
+          _prime = p;
           return *this;
         }
 
@@ -38,7 +45,7 @@ public:
           return *this;
         }
 
-        builder &to(Ts... to) {
+        builder &to(Ts &&... to) {
           _tween = _tween.to(std::forward<Ts>(to)...);
           return *this;
         }
@@ -55,13 +62,15 @@ public:
           return *this;
         }
 
-        builder &on_finish(const callback &cb) {
-          _on_finish = cb;
+        template<class C>
+        builder &on_finish(C &&cb) {
+          _on_finish = std::forward<C>(cb);
           return *this;
         }
 
-        builder &on_step(const callback &cb) {
-          _on_step = cb;
+        template<class C>
+        builder &on_step(C &&cb) {
+          _on_step = std::forward<C>(cb);
           return *this;
         }
 
@@ -69,15 +78,17 @@ public:
         friend class animation<Ts...>;
 
         bool _loop;
+        bool _prime;
         size_t _duration;
         callback _on_finish;
         callback _on_step;
         tweeny::tween<Ts...> _tween;
     };
 
+public:
     explicit animation(const builder &b)
         : _curr_delta{},
-          _curr_step{},
+          _curr_step{ANIMATION_END},
           _duration{b._duration},
           _on_finish{b._on_finish},
           _on_step{b._on_step},
@@ -86,14 +97,23 @@ public:
           _apply_step_fun{[&](Ts &&... ts) {
             apply_step(std::forward<Ts>(ts)...);
           }} {
-
+      if (!_duration) {
+        throw std::invalid_argument("Duration cannot be zero");
+      }
+      if (b._prime) {
+        prime();
+      }
     }
 
-    bool finished() const {
-      return _curr_step == std::numeric_limits<size_t>::max();
+    static builder from(Ts &&... from) {
+      return builder().from(std::forward<Ts>(from)...);
     }
 
-    void rewind() {
+    bool running() const {
+      return _curr_step != ANIMATION_END;
+    }
+
+    void prime() {
       _curr_step = 0;
       _curr_delta = std::tuple<Ts...>{};
       _tween.seek(0);
@@ -104,11 +124,11 @@ public:
         std::apply(_apply_step_fun, delta());
         _on_step();
         _curr_step++;
-      } else if (_curr_step != std::numeric_limits<size_t>::max()) {
-        _curr_step = std::numeric_limits<size_t>::max();
+      } else if (_curr_step != ANIMATION_END) {
+        _curr_step = ANIMATION_END;
         _on_finish();
         if (_loop) {
-          rewind();
+          prime();
         }
       }
     }
@@ -119,7 +139,7 @@ protected:
     std::tuple<Ts...> delta() {
       auto step{as_tuple(_tween.step(1u))};
       auto result{step - _curr_delta};
-      _curr_delta = step;
+      _curr_delta = std::move(step);
       return result;
     }
 
@@ -134,13 +154,13 @@ private:
     std::function<void(Ts &&...)> _apply_step_fun;
 };
 
-// The drawable referenced here must exist throughout the lifetime of
+// The transformable referenced here must exist throughout the lifetime of
 // this animation
 template<class... Ts>
-class drawable_animation : public animation<Ts...> {
+class transformable_animation : public animation<Ts...> {
     using builder = typename animation<Ts...>::builder;
 public:
-    drawable_animation(
+    transformable_animation(
         sf::Transformable &t,
         const builder &b
     ) : animation<Ts...>(b),

@@ -33,8 +33,9 @@ class page : public game_state, public sf::Drawable, public sf::Transformable {
     using printable_array = std::vector<std::pair<printable_ptr, sf::FloatRect>>;
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;
+    using effect_it = effect_array::const_iterator;
 public:
-    page(const resources_ptr &rptr, const story_ptr &sptr);
+    page(const system_ptr &rptr, const story_ptr &sptr);
 
     bool can_advance() const;
 
@@ -67,7 +68,6 @@ private:
     mutable bool end_of_text;
     mutable bool needs_update;
     mutable bool needs_redraw;
-    mutable bool needs_line_shift;
     // Text bounds
     mutable float x;
     mutable float y;
@@ -107,32 +107,28 @@ private:
 
     void remove_text_effects(size_t idx) const;
 
-    void delay(float duration, float delay_factor) const;
-
     void apply_mouse_hover(const sf::Vector2f &cursor);
 
     void apply_mouse_click(const sf::Vector2f &cursor);
 
     void redraw();
 
-    effect_array::const_iterator displacement_effect(enum displacement d) const;
+    effect_it displacement_effect(enum displacement d) const;
 
     float displacement_spacing(enum displacement d, float width) const;
 
-    inline void new_line() const {
-      y += resources->line_spacing;
-      x = resources->margin_horizontal;
-      needs_line_shift = true;
-    }
+    void new_line() const;
+
+    bool end_of_page() const;
 
     inline auto find_printable(printable_id_t id) const {
-      return general::find(printables, [&](const auto &p) {
+      return gen::find(printables, [&](const auto &p) {
         return p.first->get_id() == id;
       });
     }
 
     inline auto find_effect(enum text_effect::kind kind) const {
-      return general::find(active_effects, [&](const auto &e) {
+      return gen::find(active_effects, [&](const auto &e) {
         return e.kind == kind;
       });
     }

@@ -4,7 +4,7 @@
 
 #include "printable.hpp"
 
-engine::printable::printable(const resources_ptr &rptr, const std::wstring &c)
+engine::printable::printable(const system_ptr &rptr, const std::wstring &c)
     : game_state{rptr},
       id{boost::uuids::random_generator()()},
       contents{c},
@@ -38,7 +38,7 @@ void engine::printable::load_effects(size_t idx, engine::printable::back_inserte
 
 void engine::printable::break_line_at(size_t idx) {
   if (!std::iswblank(contents[idx])) {
-    throw std::runtime_error(general::str("Symbol ", contents[idx], " is not blank"));
+    throw std::runtime_error(gen::str("Symbol ", contents[idx], " is not blank"));
   }
   contents[idx] = L'\n';
 }

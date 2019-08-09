@@ -25,7 +25,7 @@ public:
     using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
     using back_inserter = std::back_insert_iterator<effect_map::mapped_type>;
 
-    printable(const resources_ptr &rptr, const std::wstring &c);
+    printable(const system_ptr &rptr, const std::wstring &c);
 
     // unique id of each printable
     printable_id_t get_id() const;
@@ -78,8 +78,8 @@ protected:
     effect_map effects;
     bool is_interactive;
 
-    inline resources_ptr get_resources() const {
-      return resources;
+    inline system_ptr get_resources() const {
+      return system;
     }
 
 private:
@@ -116,6 +116,13 @@ template<>
 struct hash<engine::printable> {
     size_t operator()(const engine::printable &p) const {
       return std::hash<boost::uuids::uuid>()(p.get_id());
+    }
+};
+
+template<>
+struct equal_to<engine::printable> {
+    bool operator()(const engine::printable &p1, const engine::printable &p2) const {
+      return p1.get_id() == p2.get_id();
     }
 };
 }

@@ -6,7 +6,7 @@
 #include "paragraph.hpp"
 
 engine::paragraph::paragraph(
-    const resources_ptr &rptr,
+    const system_ptr &rptr,
     const std::wstring &c,
     const std::vector<engine::text_effect> &es,
     bool with_tab

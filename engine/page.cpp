@@ -84,7 +84,7 @@ void add_glyph_quad(sf::VertexArray &vertices,
 }
 }
 
-engine::page::page(const resources_ptr &rptr, const story_ptr &sptr) :
+engine::page::page(const system_ptr &rptr, const story_ptr &sptr) :
     story{sptr},
     game_state{rptr},
     audio{rptr},
@@ -99,26 +99,20 @@ engine::page::page(const resources_ptr &rptr, const story_ptr &sptr) :
     bounds{},
     line_shift_animation{
         *this,
-        translate_vertical::builder()
-            .from(0.f)
-            .to(-resources->line_spacing)
+        translate_vertical::from(0.f)
+            .to(-system->line_spacing)
             .during(60)
             .via(tweeny::easing::quadraticInOut)
-            .loop()
             .on_step([&] {
               redraw();
-              delay(150000.f, 1.f);
-            })
-            .on_finish([&] {
-              needs_line_shift = false;
+              system->delay(system::DEFAULT_DELAY);
             })
     },
     end_of_text{},
     needs_update{true},
     needs_redraw{true},
-    needs_line_shift{},
-    x{resources->margin_horizontal},
-    y{resources->margin_vertical + static_cast<float>(resources->font_size)},
+    x{system->margin_horizontal},
+    y{system->margin_vertical + static_cast<float>(system->font_size)},
     min_x{},
     min_y{},
     max_x{},
@@ -143,7 +137,7 @@ engine::page::page(const resources_ptr &rptr, const story_ptr &sptr) :
   }
 
   current_printable = std::begin(printables);
-  rect(current_printable).top = resources->margin_vertical;
+  rect(current_printable).top = system->margin_vertical;
   rect(current_printable).left = x;
 
   preprocess(*pointer(current_printable));
@@ -154,7 +148,7 @@ bool engine::page::can_advance() const {
 }
 
 void engine::page::advance() {
-  if (needs_line_shift) {
+  if (line_shift_animation.running()) {
     line_shift_animation.step();
   } else if (current_character == pointer(current_printable)->length() - 1
              && std::next(current_printable) == std::end(printables)) {
@@ -162,7 +156,7 @@ void engine::page::advance() {
     current_character = 0;
 
     rect(current_printable).width = max_x - rect(current_printable).left;
-    rect(current_printable).height = max_y - rect(current_printable).top - resources->line_spacing_margin;
+    rect(current_printable).height = max_y - rect(current_printable).top - system->line_spacing_margin;
 
 #ifdef DEBUG
     auto trans{getTransform().transformRect(rect(current_printable))};
@@ -228,7 +222,7 @@ void engine::page::advance() {
       current_character++;
     } else {
       rect(current_printable).width = max_x - rect(current_printable).left;
-      rect(current_printable).height = max_y - rect(current_printable).top - resources->line_spacing_margin;
+      rect(current_printable).height = max_y - rect(current_printable).top - system->line_spacing_margin;
 
 #ifdef DEBUG
       auto trans{getTransform().transformRect(rect(current_printable))};
@@ -263,7 +257,7 @@ void engine::page::advance() {
       current_printable = std::next(current_printable);
       current_character = 0;
 
-      rect(current_printable).top = y - resources->line_spacing_margin;
+      rect(current_printable).top = y - system->line_spacing_margin;
       rect(current_printable).left = x;
 
       preprocess(*pointer(current_printable));
@@ -273,10 +267,10 @@ void engine::page::advance() {
 }
 
 void engine::page::input() {
-  if (const auto &mp{resources->mouse_position()}; global_bounds().contains(mp)) {
+  if (const auto &mp{system->mouse_position()}; global_bounds().contains(mp)) {
     apply_mouse_hover(mp);
-    if (resources->mouse_click_available()) {
-      apply_mouse_click(resources->mouse_click_position());
+    if (system->mouse_click_available()) {
+      apply_mouse_click(system->mouse_click_position());
     } else {
       redraw();
     }
@@ -287,7 +281,7 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
   ensure_updated();
 
   states.transform *= getTransform();
-  states.texture = &resources->font->getTexture(resources->font_size);
+  states.texture = &system->font->getTexture(system->font_size);
 
   // Update the vertex buffer if it is being used
   if (sf::VertexBuffer::isAvailable()) {
@@ -333,7 +327,7 @@ engine::printable_store engine::page::store() {
         printables.emplace_back(std::move(ptr), sf::FloatRect{});
         current_printable = find_printable(pid);
 
-        preprocess(*general::last(printables)->first);
+        preprocess(*gen::last(printables)->first);
 
 #ifdef DEBUG
         debug_bounds_vertices.clear();
@@ -349,7 +343,7 @@ engine::printable_store engine::page::store() {
         current_printable = find_printable(pid);
 
         if (current_printable == std::end(printables)) {
-          current_printable = general::last(printables);
+          current_printable = gen::last(printables);
         }
 
         y = rect(current_printable).top;
@@ -359,12 +353,12 @@ engine::printable_store engine::page::store() {
       },
       [this]() {
         rect(current_printable).width = max_x - rect(current_printable).left;
-        rect(current_printable).height = max_y - rect(current_printable).top - resources->line_spacing_margin;
+        rect(current_printable).height = max_y - rect(current_printable).top - system->line_spacing_margin;
 
         current_printable = std::next(current_printable);
         current_character = 0;
 
-        rect(current_printable).top = y - resources->line_spacing_margin;
+        rect(current_printable).top = y - system->line_spacing_margin;
         rect(current_printable).left = x;
 
         end_of_text = false;
@@ -379,30 +373,30 @@ engine::printable_store engine::page::store() {
 float engine::page::measure_text(const printable &printable, size_t begin, size_t end) const {
   float width{};
   sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[begin])};
-  for (size_t i{begin}; i < end; ++i) {
+  for (size_t i = begin; i < end; ++i) {
     apply_text_effects(printable, i);
     curr_char = sf::Utf32::decodeWide(printable[i]);
 
     if (curr_char == L'\r')
       continue;
 
-    width += resources->font->getKerning(prev_char, curr_char, resources->font_size);
+    width += system->font->getKerning(prev_char, curr_char, system->font_size);
 
     if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
       switch (curr_char) {
         case L' ':
-          width += resources->whitespace_width + letter_spacing_factor;
+          width += system->whitespace_width + letter_spacing_factor;
           break;
         case L'\t':
-          width += resources->whitespace_width * 4;
+          width += system->whitespace_width * 4;
           break;
         case L'\n':
           return width;
           break;
       }
     } else {
-      const auto &glyph{resources->font->getGlyph(curr_char, resources->font_size, is_bold)};
-      width += glyph.advance + resources->letter_spacing + letter_spacing_factor;
+      const auto &glyph{system->font->getGlyph(curr_char, system->font_size, is_bold)};
+      width += glyph.advance + system->letter_spacing + letter_spacing_factor;
     }
 
     prev_char = curr_char;
@@ -418,7 +412,7 @@ void engine::page::preprocess(printable &printable) {
   auto p_len{printable.length()};
   sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};
 
-  for (size_t i{0}; i < p_len; ++i) {
+  for (size_t i = 0; i < p_len; ++i) {
     apply_text_effects(printable, i);
     curr_char = sf::Utf32::decodeWide(printable[i]);
 
@@ -426,8 +420,8 @@ void engine::page::preprocess(printable &printable) {
       continue;
 
     if (displacement != displacement::NONE && !displacement_mode_end) {
-      auto disp_effect{displacement_effect(displacement)};
-      displacement_mode_end = disp_effect->end;
+      auto d_effect{displacement_effect(displacement)};
+      displacement_mode_end = d_effect->end;
       word_width = 0;
     }
 
@@ -437,16 +431,16 @@ void engine::page::preprocess(printable &printable) {
       displacement_mode_end = 0;
     }
 
-    word_width += resources->font->getKerning(prev_char, curr_char, resources->font_size);
+    word_width += system->font->getKerning(prev_char, curr_char, system->font_size);
 
     if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
       switch (curr_char) {
         case L' ':
-          word_width += resources->whitespace_width + letter_spacing_factor;
+          word_width += system->whitespace_width + letter_spacing_factor;
           if (i) last_blank = i;
           break;
         case L'\t':
-          word_width += resources->whitespace_width * 4;
+          word_width += system->whitespace_width * 4;
           if (i) last_blank = i;
           break;
         case L'\n':
@@ -454,14 +448,14 @@ void engine::page::preprocess(printable &printable) {
           break;
       }
     } else {
-      const auto &glyph{resources->font->getGlyph(curr_char, resources->font_size, is_bold)};
-      word_width += glyph.advance + resources->letter_spacing + letter_spacing_factor;
+      const auto &glyph{system->font->getGlyph(curr_char, system->font_size, is_bold)};
+      word_width += glyph.advance + system->letter_spacing + letter_spacing_factor;
     }
 
     prev_char = curr_char;
     remove_text_effects(i);
 
-    if (word_width > resources->effective_page_width()) {
+    if (word_width > system->effective_page_width()) {
       if (last_blank == std::numeric_limits<size_t>::max()) {
         printable.inject_line_at(i);
         p_len++;
@@ -490,15 +484,15 @@ void engine::page::ensure_updated() const {
     return;
 
   if (displacement != displacement::NONE && !displacement_mode_end) {
-    enum displacement disp = displacement;
-    auto disp_effect{displacement_effect(disp)};
-    displacement_mode_end = disp_effect->end + 1;
-    auto width{measure_text(printable, disp_effect->begin, disp_effect->end)};
-    auto spacing{displacement_spacing(disp, width)};
+    enum displacement d = displacement;
+    auto d_effect{displacement_effect(d)};
+    displacement_mode_end = d_effect->end + 1;
+    auto width{measure_text(printable, d_effect->begin, d_effect->end)};
+    auto spacing{displacement_spacing(d, width)};
     if (displacement_mode_end_prev != current_character - 1) {
-      y += resources->line_spacing;
+      y += system->line_spacing;
     }
-    x = resources->margin_horizontal + spacing;
+    x = system->margin_horizontal + spacing;
     apply_text_effects(printable, current_character);
     displacement_mode_end_prev = displacement_mode_end;
   }
@@ -508,7 +502,7 @@ void engine::page::ensure_updated() const {
     new_line();
   }
 
-  x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
+  x += system->font->getKerning(prev_char, curr_char, system->font_size);
 
   // Handle special characters
   if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
@@ -517,10 +511,10 @@ void engine::page::ensure_updated() const {
 
     switch (curr_char) {
       case L' ':
-        x += resources->whitespace_width + letter_spacing_factor;
+        x += system->whitespace_width + letter_spacing_factor;
         break;
       case L'\t':
-        x += resources->whitespace_width * 4;
+        x += system->whitespace_width * 4;
         break;
       case L'\n':
         new_line();
@@ -530,7 +524,7 @@ void engine::page::ensure_updated() const {
     max_x = std::max(max_x, x);
     max_y = std::max(max_y, y);
   } else {
-    const auto &glyph{resources->font->getGlyph(curr_char, resources->font_size, is_bold)};
+    const auto &glyph{system->font->getGlyph(curr_char, system->font_size, is_bold)};
 
     float left{glyph.bounds.left};
     float top{glyph.bounds.top};
@@ -546,17 +540,17 @@ void engine::page::ensure_updated() const {
     if (text_texture) {
       add_font_background(font_texture_vertices, sf::Vector2f(x, y), glyph, italic_shear);
     }
-    auto advance{glyph.advance + resources->letter_spacing + letter_spacing_factor};
+    auto advance{glyph.advance + system->letter_spacing + letter_spacing_factor};
 
     if (is_underlined) {
-      add_line(vertices, x, advance, y, text_color, resources->underline_offset, resources->underline_thickness);
+      add_line(vertices, x, advance, y, text_color, system->underline_offset, system->underline_thickness);
     }
 
-    auto x_bounds{resources->font->getGlyph(L'x', resources->font_size, is_bold).bounds};
+    auto x_bounds{system->font->getGlyph(L'x', system->font_size, is_bold).bounds};
     float strike_through_offset{x_bounds.top + x_bounds.height / 2.f};
 
     if (is_strike_through) {
-      add_line(vertices, x, advance, y, text_color, strike_through_offset, resources->underline_thickness);
+      add_line(vertices, x, advance, y, text_color, strike_through_offset, system->underline_thickness);
     }
 
     x += advance;
@@ -570,10 +564,10 @@ void engine::page::ensure_updated() const {
   bounds.width = max_x - min_x;
 
   bounds.height = std::max(bounds.height,
-                           bounds.height + resources->margin_vertical / 2 - resources->line_spacing_margin);
-  bounds.width = std::max(bounds.width, bounds.width + resources->margin_horizontal);
+                           bounds.height + system->margin_vertical / 2 - system->line_spacing_margin);
+  bounds.width = std::max(bounds.width, bounds.width + system->margin_horizontal);
 
-  delay(static_cast<float>(resources->typing_delay), typing_delay_factor);
+  system->delay(static_cast<float>(system->typing_delay), typing_delay_factor);
 }
 
 void engine::page::apply_text_effects(const printable &printable, size_t idx) const {
@@ -606,7 +600,7 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
         text_color = e.color;
         break;
       case text_effect::kind::TEXTURE:
-        text_texture = &resources->get_textures("text").at(e.texture);
+        text_texture = &system->get_textures("text").at(e.texture);
         break;
       case text_effect::kind::CENTER:
         displacement = displacement::CENTER;
@@ -619,7 +613,7 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
 }
 
 void engine::page::remove_text_effects(size_t idx) const {
-  general::remove_if(active_effects, [&](const auto &e) {
+  gen::remove_if(active_effects, [&](const auto &e) {
     return idx == e.end;
   });
 
@@ -633,15 +627,6 @@ void engine::page::remove_text_effects(size_t idx) const {
   letter_spacing_factor = 1.f;
   text_color = sf::Color::White;
   text_texture = nullptr;
-}
-
-void engine::page::delay(float duration, float delay_factor = 1) const {
-  sf::Clock clock;
-  sf::Time time;
-
-  while (time.asMilliseconds() < duration * delay_factor) {
-    time += clock.getElapsedTime();
-  }
 }
 
 void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
@@ -659,9 +644,9 @@ void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
     }
   }
 
-  resources->set_cursor(hovering
-                        ? resources::cursor::HAND
-                        : resources::cursor::ARROW);
+  system->set_cursor(hovering
+                     ? system::cursor::HAND
+                     : system::cursor::ARROW);
 }
 
 void engine::page::apply_mouse_click(const sf::Vector2f &cursor) {
@@ -669,7 +654,7 @@ void engine::page::apply_mouse_click(const sf::Vector2f &cursor) {
     if (printable->interactive()) {
       if (getTransform().transformRect(p_bounds).contains(cursor)) {
         story->act(printable->on_click());
-        resources->set_cursor(resources::cursor::ARROW);
+        system->set_cursor(system::cursor::ARROW);
         break;
       }
     }
@@ -683,15 +668,15 @@ void engine::page::redraw() {
 
   vertices.clear();
 
-  x = resources->margin_horizontal;
-  y = resources->margin_vertical + static_cast<float>(resources->font_size);
+  x = system->margin_horizontal;
+  y = system->margin_vertical + static_cast<float>(system->font_size);
 
   for (auto it{std::begin(printables)}; it != std::next(current_printable); ++it) {
     const auto &printable{*pointer(it)};
 
-    auto p_end{current_character ? current_character : printable.length()};
+    auto p_end{current_character ? current_character + 1 : printable.length()};
     sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};
-    for (size_t i{0}; i < p_end; ++i) {
+    for (size_t i = 0; i < p_end; ++i) {
       apply_text_effects(printable, i);
       curr_char = sf::Utf32::decodeWide(printable[i]);
 
@@ -699,54 +684,56 @@ void engine::page::redraw() {
         return;
 
       if (displacement != displacement::NONE && !displacement_mode_end) {
-        auto disp{displacement};
-        auto displ_effect{displacement_effect(disp)};
-        displacement_mode_end = displ_effect->end + 1;
+        auto d{displacement};
+        auto d_effect{displacement_effect(d)};
+        displacement_mode_end = d_effect->end + 1;
         // Call to measure_text invalidates iterators of active_effects,
         // so need to set displacement_mode_end before that
-        auto width{measure_text(printable, displ_effect->begin, displ_effect->end)};
-        auto spacing{displacement_spacing(disp, width)};
+        auto width{measure_text(printable, d_effect->begin, d_effect->end)};
+        auto spacing{displacement_spacing(d, width)};
         if (displacement_mode_end_prev != i - 1) {
-          y += resources->line_spacing;
+          y += system->line_spacing;
         }
-        x = resources->margin_horizontal + spacing;
+        x = system->margin_horizontal + spacing;
         apply_text_effects(printable, i);
         displacement_mode_end_prev = displacement_mode_end;
       }
 
       if (displacement_mode_end && i == displacement_mode_end) {
         displacement_mode_end = 0;
-        new_line();
+        y += system->line_spacing;
+        x = system->margin_horizontal;
       }
 
-      x += resources->font->getKerning(prev_char, curr_char, resources->font_size);
+      x += system->font->getKerning(prev_char, curr_char, system->font_size);
 
       if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
         switch (curr_char) {
           case L' ':
-            x += resources->whitespace_width + letter_spacing_factor;
+            x += system->whitespace_width + letter_spacing_factor;
             break;
           case L'\t':
-            x += resources->whitespace_width * 4;
+            x += system->whitespace_width * 4;
             break;
           case L'\n':
-            new_line();
+            y += system->line_spacing;
+            x = system->margin_horizontal;
             break;
         }
       } else {
-        const auto &glyph{resources->font->getGlyph(curr_char, resources->font_size, is_bold)};
+        const auto &glyph{system->font->getGlyph(curr_char, system->font_size, is_bold)};
         add_glyph_quad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
-        auto advance{glyph.advance + resources->letter_spacing + letter_spacing_factor};
+        auto advance{glyph.advance + system->letter_spacing + letter_spacing_factor};
 
         if (is_underlined) {
-          add_line(vertices, x, advance, y, text_color, resources->underline_offset, resources->underline_thickness);
+          add_line(vertices, x, advance, y, text_color, system->underline_offset, system->underline_thickness);
         }
 
-        auto x_bounds{resources->font->getGlyph(L'x', resources->font_size, is_bold).bounds};
+        auto x_bounds{system->font->getGlyph(L'x', system->font_size, is_bold).bounds};
         float strike_through_offset{x_bounds.top + x_bounds.height / 2.f};
 
         if (is_strike_through) {
-          add_line(vertices, x, advance, y, text_color, strike_through_offset, resources->underline_thickness);
+          add_line(vertices, x, advance, y, text_color, strike_through_offset, system->underline_thickness);
         }
 
         x += advance;
@@ -758,7 +745,7 @@ void engine::page::redraw() {
   }
 }
 
-engine::page::effect_array::const_iterator engine::page::displacement_effect(enum displacement d) const {
+engine::page::effect_it engine::page::displacement_effect(enum displacement d) const {
   switch (d) {
     case displacement::CENTER:
       return find_effect(text_effect::kind::CENTER);
@@ -772,10 +759,22 @@ engine::page::effect_array::const_iterator engine::page::displacement_effect(enu
 float engine::page::displacement_spacing(enum displacement d, float width) const {
   switch (d) {
     case displacement::CENTER:
-      return (resources->effective_page_width() - width) / 2;
+      return (system->effective_page_width() - width) / 2;
     case displacement::RIGHT:
-      return resources->effective_page_width() - width;
+      return system->effective_page_width() - width;
     default:
       throw std::runtime_error("Wrong displacement value");
   }
+}
+
+void engine::page::new_line() const {
+  y += system->line_spacing;
+  x = system->margin_horizontal;
+  if (end_of_page()) {
+    line_shift_animation.prime();
+  }
+}
+
+bool engine::page::end_of_page() const {
+  return y >= system->effective_page_height();
 }

@@ -2,8 +2,8 @@
 // Created by marcin on 7/21/19.
 //
 
-#ifndef TYPEWRITER_GAEM_RESOURCES_HPP
-#define TYPEWRITER_GAEM_RESOURCES_HPP
+#ifndef TYPEWRITER_GAEM_SYSTEM_HPP
+#define TYPEWRITER_GAEM_SYSTEM_HPP
 
 #include <memory>
 #include <unordered_map>
@@ -34,17 +34,18 @@ using resource_pack = std::unordered_map<std::string, T>;
 template<class T>
 using resource_map = std::unordered_map<std::string, resource_pack<T>>;
 
-class resources {
-    const constexpr static auto DEFAULT_FONT = "MonoSpatial";
+class system {
 public:
     const constexpr static auto ROOT_RESOURCE_CATEGORY = "<root>";
+    const constexpr static auto DEFAULT_FONT = "MonoSpatial";
+    const constexpr static auto DEFAULT_DELAY = 100000.f;
 
     enum class cursor {
         ARROW,
         HAND
     };
 
-    resources(
+    system(
         sf::VideoMode mode,
         const std::string &fonts_path,
         const std::string &sounds_path,
@@ -59,13 +60,13 @@ public:
         unsigned typing_delay = 500u
     );
 
-    resources(const resources &p) = delete;
+    system(const system &p) = delete;
 
-    resources(resources &&p) = delete;
+    system(system &&p) = delete;
 
-    resources &operator=(const resources &p) = delete;
+    system &operator=(const system &p) = delete;
 
-    resources &operator=(resources &&p) = delete;
+    system &operator=(system &&p) = delete;
 
     RESOURCE_GETTER(fonts);
 
@@ -73,9 +74,11 @@ public:
 
     RESOURCE_GETTER(textures);
 
-    void draw(const sf::Drawable& drawable) const;
+    void draw(const sf::Drawable &drawable) const;
 
     void display(const std::function<void(sf::RenderWindow &)> &f) const;
+
+    void delay(float duration, float delay_factor = 1.f) const;
 
     bool mouse_moved() const;
 
@@ -88,6 +91,8 @@ public:
     bool visible(sf::FloatRect bounds) const;
 
     float effective_page_width() const;
+
+    float effective_page_height() const;
 
     void set_cursor(cursor c) const;
 
@@ -124,13 +129,13 @@ private:
     static std::string get_sub_directory(const fs::path &path) {
       constexpr const auto separator{fs::path::preferred_separator};
       std::vector<std::string> parts;
-      general::split(path.string(), separator, std::back_inserter(parts));
+      gen::split(path.string(), separator, std::back_inserter(parts));
 
       if (parts.empty()) {
         throw std::runtime_error("Provided path does not contain sub directory: " + path.string());
       }
 
-      return parts[parts.size() - 1];
+      return *gen::last(parts);
     }
 
     template<class T>
@@ -172,12 +177,12 @@ private:
     }
 };
 
-using resources_ptr = std::shared_ptr<const resources>;
+using system_ptr = std::shared_ptr<const system>;
 
 template<class ...Ts>
-static auto make_resources(Ts &&... args) {
-  return std::make_shared<const resources>(std::forward<Ts>(args)...);
+static auto make_system(Ts &&... args) {
+  return std::make_shared<const system>(std::forward<Ts>(args)...);
 }
 }
 
-#endif //TYPEWRITER_GAEM_RESOURCES_HPP
+#endif //TYPEWRITER_GAEM_SYSTEM_HPP

@@ -7,7 +7,7 @@ int main() {
       .to(10.f).during(100);
   for (int i = 0; i < 100; i++) { printf("%f\n", tween.step(0.1f)); }*/
 
-  auto resources{engine::make_resources(
+  auto resources{engine::make_system(
       sf::VideoMode(460, 800),
       "./res/fonts",
       "./res/sounds",
@@ -21,7 +21,7 @@ int main() {
                   resources,
                   L"Some text that shouldget centered. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.",
                   {
-                      engine::text_effect{engine::text_effect::kind::COLOR, 0, 3}.with_color(sf::Color::Red),
+                      engine::text_effect{engine::text_effect::kind::COLOR, 0, 3}.with_color(sf::Color::Magenta),
                       engine::text_effect{engine::text_effect::kind::RIGHT, 5, 8},
                       engine::text_effect{engine::text_effect::kind::CENTER, 10, 13},
                       engine::text_effect{engine::text_effect::kind::BOLD, 10, 13},
@@ -41,7 +41,7 @@ int main() {
               ),
               new engine::paragraph(
                   resources,
-                  L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.",
+                  L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.",
                   {}
               )
           },

@@ -12,7 +12,7 @@ namespace engine {
 class dialog : public printable {
 public:
     dialog(
-        const resources_ptr &rptr,
+        const system_ptr &rptr,
         const std::wstring &person,
         const std::wstring &speech
     );

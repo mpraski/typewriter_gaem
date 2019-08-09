@@ -24,17 +24,11 @@ void engine::story::act(engine::action action) {
     case action::kind::NOOP:
       break;
     case action::kind::INITIAL:
-      for (const auto &p : curr_node->contents) {
-        store.populate(printable_store::safe_clone(p));
-      }
-
-      for (const auto&[p, d] : curr_node->choices) {
-        store.populate(printable_store::safe_clone(p));
-      }
+      populate_printables(curr_node);
       break;
     case action::kind::DIALOG:
       const auto &choices{curr_node->choices};
-      auto choice_it{general::find(choices, [&](const auto &p) {
+      auto choice_it{gen::find(choices, [&](const auto &p) {
         return p.first->get_id() == action.pid;
       })};
 
@@ -53,7 +47,7 @@ void engine::story::act(engine::action action) {
         add_printables(curr_node);
 
         // Advance once, then redraw, then advance once again
-        // This is because player should immediatelly see their selected dialog
+        // This is because player should immediately see their selected dialog
         // option be embedded in the page, and then character drawing should start from
         // the next non-dialog printable
         if (choice_it == std::begin(choices)) {
@@ -76,5 +70,15 @@ void engine::story::add_printables(const decision_node_ptr &ptr) {
 
   for (const auto &[p, d] : ptr->choices) {
     store.add(printable_store::safe_clone(p));
+  }
+}
+
+void engine::story::populate_printables(const decision_node_ptr &ptr) {
+  for (const auto &p : ptr->contents) {
+    store.populate(printable_store::safe_clone(p));
+  }
+
+  for (const auto&[p, d] : ptr->choices) {
+    store.populate(printable_store::safe_clone(p));
   }
 }

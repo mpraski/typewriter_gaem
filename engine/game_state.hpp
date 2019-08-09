@@ -5,15 +5,15 @@
 #ifndef TYPEWRITER_GAEM_GAME_STATE_HPP
 #define TYPEWRITER_GAEM_GAME_STATE_HPP
 
-#include "resources.hpp"
+#include "system.hpp"
 
 namespace engine {
 class game_state {
 public:
-    explicit game_state(const resources_ptr &rptr);
+    explicit game_state(const system_ptr &rptr);
 
 protected:
-    resources_ptr resources;
+    system_ptr system;
 };
 }
 

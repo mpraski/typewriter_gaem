@@ -2,9 +2,9 @@
 // Created by marcin on 7/21/19.
 //
 
-#include "resources.hpp"
+#include "system.hpp"
 
-engine::resources::resources(
+engine::system::system(
     sf::VideoMode mode,
     const std::string &fonts_path,
     const std::string &sounds_path,
@@ -88,11 +88,11 @@ engine::resources::resources(
   whitespace_width += letter_spacing;
 }
 
-void engine::resources::draw(const sf::Drawable& drawable) const {
+void engine::system::draw(const sf::Drawable &drawable) const {
   window.draw(drawable);
 }
 
-void engine::resources::display(const std::function<void(sf::RenderWindow &)> &f) const {
+void engine::system::display(const std::function<void(sf::RenderWindow &)> &f) const {
   bool holds_mouse{false};
 
   while (window.isOpen()) {
@@ -121,34 +121,47 @@ void engine::resources::display(const std::function<void(sf::RenderWindow &)> &f
   }
 }
 
-bool engine::resources::mouse_moved() const {
+void engine::system::delay(float duration, float delay_factor) const {
+  sf::Clock clock;
+  sf::Time time;
+
+  while (time.asMilliseconds() < duration * delay_factor) {
+    time += clock.getElapsedTime();
+  }
+}
+
+bool engine::system::mouse_moved() const {
   return curr_mouse != prev_mouse;
 }
 
-const sf::Vector2f &engine::resources::mouse_position() const {
+const sf::Vector2f &engine::system::mouse_position() const {
   prev_mouse = curr_mouse;
   curr_mouse = sf::Vector2f{sf::Mouse::getPosition(window)};
   return curr_mouse;
 }
 
-bool engine::resources::mouse_click_available() const {
+bool engine::system::mouse_click_available() const {
   return mouse_pressed;
 }
 
-const sf::Vector2f &engine::resources::mouse_click_position() const {
+const sf::Vector2f &engine::system::mouse_click_position() const {
   mouse_pressed = false;
   return mouse_pressed_position;
 }
 
-bool engine::resources::visible(sf::FloatRect bounds) const {
+bool engine::system::visible(sf::FloatRect bounds) const {
   return false;
 }
 
-float engine::resources::effective_page_width() const {
+float engine::system::effective_page_width() const {
   return page_width - 2 * margin_horizontal;
 }
 
-void engine::resources::set_cursor(cursor c) const {
+float engine::system::effective_page_height() const {
+  return page_height - 2 * margin_vertical;
+}
+
+void engine::system::set_cursor(cursor c) const {
   if (c == current_cursor) return;
   current_cursor = c;
   switch (c) {

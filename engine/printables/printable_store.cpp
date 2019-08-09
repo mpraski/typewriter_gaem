@@ -40,7 +40,7 @@ engine::printable_ptr engine::printable_store::without_effects(const printable_p
   cloned->is_interactive = false;
 
   for (auto&[pos, effects] : cloned->effects) {
-    general::remove_if(effects, [&](const auto &e) {
+    gen::remove_if(effects, [&](const auto &e) {
       return e.kind == kind;
     });
   }
@@ -53,7 +53,7 @@ engine::printable_ptr engine::printable_store::without_dynamic_effects(const pri
   cloned->is_interactive = false;
 
   for (auto&[pos, effects] : cloned->effects) {
-    general::remove_if(effects, [&](const auto &e) {
+    gen::remove_if(effects, [&](const auto &e) {
       return std::find(
           std::begin(STATIC_EFFECTS),
           std::end(STATIC_EFFECTS),
