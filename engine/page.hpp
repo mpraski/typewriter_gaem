@@ -65,7 +65,7 @@ private:
     mutable sf::FloatRect bounds;
     mutable translate_vertical line_shift_animation;
     // Control flags
-    mutable bool end_of_text;
+    mutable bool needs_advance;
     mutable bool needs_update;
     mutable bool needs_redraw;
     // Text bounds
@@ -120,6 +120,8 @@ private:
     void new_line() const;
 
     bool end_of_page() const;
+
+    bool end_of_text() const;
 
     void draw_printable_outline(printable_iterator it) const;
 

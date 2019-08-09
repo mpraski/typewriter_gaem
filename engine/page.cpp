@@ -102,13 +102,13 @@ engine::page::page(const system_ptr &rptr, const story_ptr &sptr) :
         translate_vertical::from(0.f)
             .to(-system->line_spacing)
             .during(60)
-            .via(tweeny::easing::quadraticInOut)
+            .via(tweeny::easing::sinusoidalInOut)
             .on_step([&] {
               redraw();
               system->delay(system::DEFAULT_DELAY);
             })
     },
-    end_of_text{},
+    needs_advance{true},
     needs_update{true},
     needs_redraw{true},
     x{system->margin_horizontal},
@@ -144,25 +144,28 @@ engine::page::page(const system_ptr &rptr, const story_ptr &sptr) :
 }
 
 bool engine::page::can_advance() const {
-  return !end_of_text;
+  return needs_advance;
 }
 
 void engine::page::advance() {
   if (line_shift_animation.running()) {
     line_shift_animation.step();
-  } else if (current_character == pointer(current_printable)->length() - 1
-             && std::next(current_printable) == std::end(printables)) {
-    end_of_text = true;
+  } else if (end_of_text()) {
+    needs_advance = false;
     current_character = 0;
 
     rect(current_printable).width = max_x - rect(current_printable).left;
     rect(current_printable).height = max_y - rect(current_printable).top - system->line_spacing_margin;
 
+    bounds.height = std::min(bounds.height, bounds.height - system->margin_vertical);
+
     redraw();
   } else {
     if (current_character != pointer(current_printable)->length() - 1) {
+      // Just advance to next character
       current_character++;
     } else {
+      // Switch to next printable
       rect(current_printable).width = max_x - rect(current_printable).left;
       rect(current_printable).height = max_y - rect(current_printable).top - system->line_spacing_margin;
 
@@ -248,10 +251,6 @@ engine::printable_store engine::page::store() {
         current_printable = find_printable(pid);
 
         preprocess(*gen::last(printables)->first);
-
-#ifdef DEBUG
-        debug_bounds_vertices.clear();
-#endif
       },
       [this](size_t n) {
         if (n >= printables.size()) {
@@ -273,7 +272,7 @@ engine::printable_store engine::page::store() {
       },
       [this]() {
         rect(current_printable).width = max_x - rect(current_printable).left;
-        rect(current_printable).height = max_y - rect(current_printable).top - system->line_spacing_margin;
+        rect(current_printable).height = max_y - rect(current_printable).top - system->line_spacing;
 
         current_printable = std::next(current_printable);
         current_character = 0;
@@ -281,7 +280,7 @@ engine::printable_store engine::page::store() {
         rect(current_printable).top = y - system->line_spacing_margin;
         rect(current_printable).left = x;
 
-        end_of_text = false;
+        needs_advance = true;
         needs_update = true;
       },
       [this]() {
@@ -485,7 +484,7 @@ void engine::page::ensure_updated() const {
   bounds.width = max_x - min_x;
 
   bounds.height = std::max(bounds.height,
-                           bounds.height + system->margin_vertical / 2 - system->line_spacing_margin);
+                           bounds.height + system->margin_vertical);
   bounds.width = std::max(bounds.width, bounds.width + system->margin_horizontal);
 
   system->delay(static_cast<float>(system->typing_delay), typing_delay_factor);
@@ -709,7 +708,6 @@ float engine::page::displacement_spacing(enum displacement d, float width) const
 void engine::page::new_line() const {
   y += system->line_spacing;
   x = system->margin_horizontal;
-  std::cout << "y: " << y << ", ph: " << system->effective_page_height() << std::endl;
   if (end_of_page()) {
     line_shift_animation.prime();
   }
@@ -717,6 +715,11 @@ void engine::page::new_line() const {
 
 bool engine::page::end_of_page() const {
   return y >= system->effective_page_height();
+}
+
+bool engine::page::end_of_text() const {
+  return current_character == pointer(current_printable)->length() - 1
+         && std::next(current_printable) == std::end(printables);
 }
 
 void engine::page::draw_printable_outline(printable_iterator it) const {
