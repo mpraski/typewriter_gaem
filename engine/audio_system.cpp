@@ -6,22 +6,21 @@
 
 engine::audio_system::audio_system(const system_ptr &rptr)
     : game_state{rptr},
+      typewriter_clicks{rptr->get_sounds("typewriter_clicks")},
       sound_cache{},
       rand_engine{},
       rand_dist{0, RAND_MAX},
       rand_fun{[&] {
         return rand_dist(rand_engine);
       }} {
-  typewriter_clicks = &system->get_sounds("typewriter_clicks");
-
-  if (typewriter_clicks->empty()) {
+  if (typewriter_clicks.empty()) {
     throw std::runtime_error("No typewriter click audio_system found");
   }
 }
 
 void engine::audio_system::play_typewriter_click() const {
-  auto rand_buf{random(std::begin(*typewriter_clicks),
-                       std::end(*typewriter_clicks))};
+  auto rand_buf{random(std::begin(typewriter_clicks),
+                       std::end(typewriter_clicks))};
 
   play_with_cache(rand_buf->first, rand_buf->second);
 }

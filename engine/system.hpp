@@ -12,11 +12,14 @@
 #include <sstream>
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "utilities/general.hpp"
 
 namespace fs = boost::filesystem;
+namespace pt = boost::property_tree;
 
 #define RESOURCE_GETTER(RMAP) \
 inline const auto &get_##RMAP(const std::string &res_category = ROOT_RESOURCE_CATEGORY) const { \
@@ -37,7 +40,6 @@ using resource_map = std::unordered_map<std::string, resource_pack<T>>;
 class system {
 public:
     const constexpr static auto ROOT_RESOURCE_CATEGORY = "<root>";
-    const constexpr static auto DEFAULT_FONT = "MonoSpatial";
     const constexpr static auto DEFAULT_DELAY = 100000.f;
 
     enum class cursor {
@@ -50,14 +52,7 @@ public:
         const std::string &fonts_path,
         const std::string &sounds_path,
         const std::string &textures_path,
-        unsigned font_size = 24u,
-        float page_width = 0.f,
-        float page_height = 0.f,
-        float margin_vertical = 20.f,
-        float margin_horizontal = 20.f,
-        float letter_spacing_factor = 1.f,
-        float line_spacing_factor = 1.f,
-        unsigned typing_delay = 500u
+        const std::string &configs_path
     );
 
     system(const system &p) = delete;
@@ -73,6 +68,8 @@ public:
     RESOURCE_GETTER(sounds);
 
     RESOURCE_GETTER(textures);
+
+    RESOURCE_GETTER(configs);
 
     void draw(const sf::Drawable &drawable) const;
 
@@ -118,6 +115,7 @@ private:
     resource_map<sf::Font> fonts;
     resource_map<sf::SoundBuffer> sounds;
     resource_map<sf::Texture> textures;
+    resource_map<pt::ptree> configs;
     mutable cursor current_cursor;
     mutable sf::Cursor arrow_cursor;
     mutable sf::Cursor grab_cursor;
@@ -154,7 +152,7 @@ private:
         auto name{resource_file_path.path().stem().string()};
 
         if (auto res{resource_builder(path)}; res) {
-          resources[resource_category].insert({name, std::move(*res)});
+          resources[resource_category].insert(std::make_pair(name, std::move(*res)));
         } else {
           throw std::runtime_error("Unable to load resource from path: " + path);
         }

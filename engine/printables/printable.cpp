@@ -4,12 +4,14 @@
 
 #include "printable.hpp"
 
-engine::printable::printable(const system_ptr &rptr, const std::wstring &c)
+#include <utility>
+
+engine::printable::printable(const system_ptr &rptr, std::wstring c, bool interactive)
     : game_state{rptr},
       id{boost::uuids::random_generator()()},
-      contents{c},
+      contents{std::move(c)},
       effects{},
-      is_interactive{} {
+      is_interactive{interactive} {
   if (contents.empty()) {
     throw std::invalid_argument("Contents cannot be empty");
   }
@@ -25,6 +27,15 @@ engine::printable_id_t engine::printable::get_id() const {
 
 const std::wstring &engine::printable::get_contents() const {
   return contents;
+}
+
+size_t engine::printable::length() const {
+  return contents.length();
+}
+
+
+bool engine::printable::interactive() const {
+  return is_interactive;
 }
 
 void engine::printable::load_effects(size_t idx, engine::printable::back_inserter it) const {

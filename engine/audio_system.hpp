@@ -18,7 +18,7 @@ public:
     void play_typewriter_space() const;
 
 private:
-    const resource_pack<sf::SoundBuffer> *typewriter_clicks;
+    const resource_pack<sf::SoundBuffer> &typewriter_clicks;
     mutable resource_pack<sf::Sound> sound_cache;
     std::default_random_engine rand_engine;
     std::uniform_int_distribution<unsigned> rand_dist;

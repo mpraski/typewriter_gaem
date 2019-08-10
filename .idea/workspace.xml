@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
       <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
+      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -13,12 +13,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/engine/page_container.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/page_container.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/res/configs/page.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/audio_system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/audio_system.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/dialog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/dialog.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/system.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -120,7 +124,8 @@
       <workItem from="1565166901987" duration="8645000" />
       <workItem from="1565175601029" duration="14421000" />
       <workItem from="1565251650335" duration="26909000" />
-      <workItem from="1565335823902" duration="19810000" />
+      <workItem from="1565335823902" duration="22521000" />
+      <workItem from="1565448859675" duration="4804000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -360,7 +365,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565364012435</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="fixed page bounds">
+      <created>1565384537306</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1565384537306</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -381,7 +393,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="added moar sound effects" />
     <MESSAGE value="maybe fixed build script for macos" />
     <MESSAGE value="typo" />
     <MESSAGE value="attempt to handle mouse input" />
@@ -406,6 +417,7 @@
     <MESSAGE value="created animation hierarchy to facilitate working with graphical transitions" />
     <MESSAGE value="fixed line shift animation" />
     <MESSAGE value="fixed debug bounds drawing" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed debug bounds drawing" />
+    <MESSAGE value="fixed page bounds" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed page bounds" />
   </component>
 </project>

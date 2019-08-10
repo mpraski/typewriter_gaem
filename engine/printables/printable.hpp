@@ -25,7 +25,7 @@ public:
     using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
     using back_inserter = std::back_insert_iterator<effect_map::mapped_type>;
 
-    printable(const system_ptr &rptr, const std::wstring &c);
+    printable(const system_ptr &rptr, std::wstring c, bool interactive = false);
 
     // unique id of each printable
     printable_id_t get_id() const;
@@ -39,14 +39,10 @@ public:
     }
 
     // Length of underlying string
-    inline size_t length() const {
-      return contents.length();
-    }
+    size_t length() const;
 
     // Can the player interact with this printable (mouse events)
-    inline bool interactive() const {
-      return is_interactive;
-    }
+    bool interactive() const;
 
     // Push the text effects starting range idx to the back insert iterator
     void load_effects(size_t idx, back_inserter it) const;
@@ -78,7 +74,7 @@ protected:
     effect_map effects;
     bool is_interactive;
 
-    inline system_ptr get_resources() const {
+    inline system_ptr get_system() const {
       return system;
     }
 

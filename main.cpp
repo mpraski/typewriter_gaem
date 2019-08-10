@@ -1,17 +1,13 @@
 #include <SFML/Graphics.hpp>
 #include "engine/engine.hpp"
-#include "tweeny.h"
 
 int main() {
-  /*auto tween = tweeny::from(0.f)
-      .to(10.f).during(100);
-  for (int i = 0; i < 100; i++) { printf("%f\n", tween.step(0.1f)); }*/
-
   auto resources{engine::make_system(
       sf::VideoMode(460, 400),
       "./res/fonts",
       "./res/sounds",
-      "./res/textures"
+      "./res/textures",
+      "./res/configs"
   )};
 
   auto sample_decision_tree{

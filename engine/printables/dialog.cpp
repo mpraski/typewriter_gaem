@@ -8,11 +8,25 @@ engine::dialog::dialog(
     const system_ptr &rptr,
     const std::wstring &person,
     const std::wstring &speech
-) : printable{rptr, person + L":\t" + speech},
+) : printable{rptr, person + L":\t" + speech, true},
     on{},
     update{},
-    effects_on_hover{},
-    effects_off_hover{} {
+    effects_on_hover{
+        {0,
+            {
+                text_effect{text_effect::kind::BOLD, 0, person.length() - 1},
+                text_effect{text_effect::kind::COLOR, 0, contents.length() - 1}.with_color(sf::Color::Cyan)
+            }
+        }
+    },
+    effects_off_hover{
+        {0,
+            {
+                text_effect{text_effect::kind::BOLD, 0, person.length() - 1},
+                text_effect{text_effect::kind::COLOR, 0, contents.length() - 1}.with_color(sf::Color::Yellow)
+            }
+        }
+    } {
   if (person.empty()) {
     throw std::invalid_argument("Person cannot be empty");
   }
@@ -20,17 +34,7 @@ engine::dialog::dialog(
     throw std::invalid_argument("Speech cannot be empty");
   }
 
-  effects_off_hover[0].push_back(text_effect{text_effect::kind::BOLD, 0, person.length() - 1});
-  effects_off_hover[0].push_back(
-      text_effect{text_effect::kind::COLOR, 0, contents.length() - 1}.with_color(sf::Color::Yellow));
-
-  effects_on_hover[0].push_back(text_effect{text_effect::kind::BOLD, 0, person.length() - 1});
-  effects_on_hover[0].push_back(
-      text_effect{text_effect::kind::COLOR, 0, contents.length() - 1}.with_color(sf::Color::Cyan));
-
   effects = effects_off_hover;
-
-  is_interactive = true;
 }
 
 engine::printable *engine::dialog::clone() const {

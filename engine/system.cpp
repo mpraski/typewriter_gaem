@@ -9,14 +9,8 @@ engine::system::system(
     const std::string &fonts_path,
     const std::string &sounds_path,
     const std::string &textures_path,
-    unsigned font_size,
-    float page_width,
-    float page_height,
-    float margin_vertical,
-    float margin_horizontal,
-    float letter_spacing_factor,
-    float line_spacing_factor,
-    unsigned typing_delay)
+    const std::string &configs_path
+)
     : mode{mode},
       current_cursor{cursor::ARROW},
       arrow_cursor{},
@@ -25,14 +19,6 @@ engine::system::system(
       prev_mouse{},
       window{mode, "Title"},
       font{},
-      font_size{font_size},
-      page_width{static_cast<float>(mode.width) - 2 * margin_horizontal},
-      page_height{static_cast<float>(mode.height) - 2 * margin_vertical},
-      margin_vertical{margin_vertical},
-      margin_horizontal{margin_horizontal},
-      letter_spacing_factor{letter_spacing_factor},
-      line_spacing_factor{line_spacing_factor},
-      typing_delay{typing_delay * 100000u},
       fonts{
           load_resources<sf::Font>(
               fonts_path,
@@ -66,9 +52,34 @@ engine::system::system(
               }
           )
       },
+      configs{
+          load_resources<pt::ptree>(
+              configs_path,
+              [](const auto &path) -> std::optional<pt::ptree> {
+                pt::ptree pt;
+                try {
+                  pt::json_parser::read_json(path, pt);
+                } catch (const pt::json_parser_error &e) {
+                  throw std::runtime_error("Could not parse JSON config file: " + path);
+                }
+                return pt;
+              }
+          )
+      },
       mouse_pressed{},
       mouse_pressed_position{} {
-  font = &fonts[ROOT_RESOURCE_CATEGORY][DEFAULT_FONT];
+  const auto &page_config{get_configs().at("page")};
+  font_size = page_config.get<unsigned>("page.font_size");
+  page_width = page_config.get<float>("page.page_width");
+  page_height = page_config.get<float>("page.page_height");
+  margin_vertical = page_config.get<float>("page.margin_vertical");
+  margin_horizontal = page_config.get<float>("page.margin_horizontal");
+  letter_spacing_factor = page_config.get<float>("page.letter_spacing_factor");
+  line_spacing_factor = page_config.get<float>("page.line_spacing_factor");
+  typing_delay = page_config.get<unsigned>("page.typing_delay") * 100000u;
+
+  auto page_font{page_config.get<std::string>("page.font")};
+  font = &fonts[ROOT_RESOURCE_CATEGORY][page_font];
 
   if (!arrow_cursor.loadFromSystem(sf::Cursor::Type::Arrow)) {
     throw std::runtime_error("Arrow cursor loading error");
