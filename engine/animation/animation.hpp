@@ -40,13 +40,15 @@ protected:
           return *this;
         }
 
-        builder &from(Ts &&... from) {
-          _tween = _tween.from(std::forward<Ts>(from)...);
+        template<class... Args>
+        builder &from(Args &&... from) {
+          _tween = _tween.from(std::forward<Args>(from)...);
           return *this;
         }
 
-        builder &to(Ts &&... to) {
-          _tween = _tween.to(std::forward<Ts>(to)...);
+        template<class... Args>
+        builder &to(Args &&... to) {
+          _tween = _tween.to(std::forward<Args>(to)...);
           return *this;
         }
 
@@ -95,7 +97,7 @@ public:
           _tween{b._tween},
           _loop{b._loop},
           _apply_step_fun{[&](Ts &&... ts) {
-            apply_step(std::forward<Ts>(ts)...);
+            apply_step(std::move(ts)...);
           }} {
       if (!_duration) {
         throw std::invalid_argument("Duration cannot be zero");
@@ -105,8 +107,9 @@ public:
       }
     }
 
-    static builder from(Ts &&... from) {
-      return builder().from(std::forward<Ts>(from)...);
+    template<class... Args>
+    static builder from(Args &&... from) {
+      return builder().from(std::forward<Args>(from)...);
     }
 
     bool running() const {

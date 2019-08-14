@@ -29,7 +29,7 @@ void engine::story::act(engine::action action) {
     case action::kind::DIALOG:
       const auto &choices{curr_node->choices};
       auto choice_it{gen::find(choices, [&](const auto &p) {
-        return p.first->get_id() == action.pid;
+        return *p.first == action.pid;
       })};
 
       if (choice_it != std::end(choices)) {

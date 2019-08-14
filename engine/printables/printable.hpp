@@ -9,26 +9,18 @@
 #include <cstddef>
 #include <unordered_map>
 #include <vector>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/functional/hash.hpp>
 #include "../text_effect.hpp"
-#include "../game_state.hpp"
+#include "../game_object.hpp"
 #include "../utilities/general.hpp"
 #include "../story/action.hpp"
 
 namespace engine {
-using printable_id_t = boost::uuids::uuid;
-
-class printable : public game_state {
+class printable : public game_object {
 public:
     using effect_map = std::unordered_map<size_t, std::vector<text_effect>>;
     using back_inserter = std::back_insert_iterator<effect_map::mapped_type>;
 
     printable(const system_ptr &rptr, std::wstring c, bool interactive = false);
-
-    // unique id of each printable
-    printable_id_t get_id() const;
 
     // To string
     const std::wstring &get_contents() const;
@@ -69,7 +61,6 @@ public:
 protected:
     friend class printable_store;
 
-    printable_id_t id;
     std::wstring contents;
     effect_map effects;
     bool is_interactive;
@@ -98,29 +89,6 @@ private:
 
 using printable_ptr = std::unique_ptr<printable>;
 
-}
-
-namespace std {
-template<>
-struct hash<boost::uuids::uuid> {
-    size_t operator()(const boost::uuids::uuid &uid) const {
-      return boost::hash<boost::uuids::uuid>()(uid);
-    }
-};
-
-template<>
-struct hash<engine::printable> {
-    size_t operator()(const engine::printable &p) const {
-      return std::hash<boost::uuids::uuid>()(p.get_id());
-    }
-};
-
-template<>
-struct equal_to<engine::printable> {
-    bool operator()(const engine::printable &p1, const engine::printable &p2) const {
-      return p1.get_id() == p2.get_id();
-    }
-};
 }
 
 #endif //TYPEWRITER_GAEM_PRINTABLE_HPP

@@ -17,6 +17,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "game_state.hpp"
+#include "game_object.hpp"
 #include "audio_system.hpp"
 #include "printables/printable.hpp"
 #include "printables/printable_store.hpp"
@@ -127,9 +128,9 @@ private:
 
     void draw_page_outline() const;
 
-    inline auto find_printable(printable_id_t id) const {
+    inline auto find_printable(id_t id) const {
       return gen::find(printables, [&](const auto &p) {
-        return p.first->get_id() == id;
+        return *p.first == id;
       });
     }
 

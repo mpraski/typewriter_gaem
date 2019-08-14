@@ -8,8 +8,7 @@
 #include <sstream>
 #include <algorithm>
 
-namespace engine {
-namespace gen {
+namespace engine::gen {
 template<typename T, typename ... Ts>
 auto str(T &&t, Ts &&... ts) {
   std::ostringstream os;
@@ -102,7 +101,6 @@ constexpr auto is_zero(T t) {
   static_assert(std::is_floating_point_v<T>);
   const constexpr auto eps{1.0e-10};
   return fabs(t) < eps;
-}
 }
 }
 

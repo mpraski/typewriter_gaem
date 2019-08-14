@@ -7,8 +7,7 @@
 #include <utility>
 
 engine::printable::printable(const system_ptr &rptr, std::wstring c, bool interactive)
-    : game_state{rptr},
-      id{boost::uuids::random_generator()()},
+    : game_object{rptr},
       contents{std::move(c)},
       effects{},
       is_interactive{interactive} {
@@ -21,10 +20,6 @@ engine::printable::printable(const system_ptr &rptr, std::wstring c, bool intera
   add_end_new_line(contents);
 }
 
-engine::printable_id_t engine::printable::get_id() const {
-  return id;
-}
-
 const std::wstring &engine::printable::get_contents() const {
   return contents;
 }
@@ -32,7 +27,6 @@ const std::wstring &engine::printable::get_contents() const {
 size_t engine::printable::length() const {
   return contents.length();
 }
-
 
 bool engine::printable::interactive() const {
   return is_interactive;

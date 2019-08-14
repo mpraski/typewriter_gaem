@@ -158,7 +158,7 @@ private:
         }
       }};
 
-      for (const auto &resource_dir_path : fs::directory_iterator(resource_path)) {
+      for (const auto &resource_dir_path : boost::make_iterator_range(fs::directory_iterator(resource_path), {})) {
         if (fs::is_directory(resource_dir_path)) {
           auto resource_category{get_sub_directory(resource_dir_path.path())};
 
