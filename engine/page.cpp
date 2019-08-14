@@ -84,9 +84,10 @@ void add_glyph_quad(sf::VertexArray &vertices,
 }
 }
 
-engine::page::page(const system_ptr &rptr, const story_ptr &sptr) :
+engine::page::page(const system_ptr &rptr, const story_ptr &sptr, check_visibility cv) :
+    visible{std::move(cv)},
     story{sptr},
-    game_state{rptr},
+    game_object{rptr},
     audio{rptr},
     printables{},
     active_effects{},
@@ -487,6 +488,9 @@ void engine::page::ensure_updated() const {
                            bounds.height + system->margin_vertical);
   bounds.width = std::max(bounds.width, bounds.width + system->margin_horizontal);
 
+  bounds.width = std::min(bounds.width,
+                          system->page_width);
+
   system->delay(static_cast<float>(system->typing_delay), typing_delay_factor);
 }
 
@@ -552,8 +556,9 @@ void engine::page::remove_text_effects(size_t idx) const {
 void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
   bool hovering{};
   for (auto &[printable, p_bounds] : printables) {
-    if (printable->interactive()) {
-      if (getTransform().transformRect(p_bounds).contains(cursor)) {
+    auto t{getTransform().transformRect(p_bounds)};
+    if (visible(t) && printable->interactive()) {
+      if (t.contains(cursor)) {
         printable->on_hover_start();
         hovering = true;
       } else {
@@ -571,8 +576,9 @@ void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
 
 void engine::page::apply_mouse_click(const sf::Vector2f &cursor) {
   for (auto &[printable, p_bounds] : printables) {
-    if (printable->interactive()) {
-      if (getTransform().transformRect(p_bounds).contains(cursor)) {
+    auto t{getTransform().transformRect(p_bounds)};
+    if (visible(t) && printable->interactive()) {
+      if (t.contains(cursor)) {
         story->act(printable->on_click());
         system->set_cursor(system::cursor::ARROW);
         break;
@@ -699,7 +705,7 @@ float engine::page::displacement_spacing(enum displacement d, float width) const
     case displacement::CENTER:
       return (system->effective_page_width() - width) / 2;
     case displacement::RIGHT:
-      return system->effective_page_width() - width;
+      return system->effective_page_width() - width - system->margin_horizontal / 2;
     default:
       throw std::runtime_error("Wrong displacement value");
   }
@@ -714,7 +720,7 @@ void engine::page::new_line() const {
 }
 
 bool engine::page::end_of_page() const {
-  return y >= system->effective_page_height();
+  return y >= system->page_height - system->margin_vertical;
 }
 
 bool engine::page::end_of_text() const {

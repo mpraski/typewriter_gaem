@@ -13,17 +13,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/engine/game_object.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/game_object.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/animation/animation.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/animation/animation.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/engine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/printable.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/story/story.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/system.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/utilities/general.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/general.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page_container.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page_container.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -127,7 +123,7 @@
       <workItem from="1565251650335" duration="26909000" />
       <workItem from="1565335823902" duration="22521000" />
       <workItem from="1565448859675" duration="5615000" />
-      <workItem from="1565800733927" duration="2333000" />
+      <workItem from="1565800733927" duration="6831000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -381,7 +377,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565458760238</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="minor improvements">
+      <created>1565804684733</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1565804684733</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -402,7 +405,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="typo" />
     <MESSAGE value="attempt to handle mouse input" />
     <MESSAGE value="fixed shome shit" />
     <MESSAGE value="fixed more shit" />
@@ -427,6 +429,7 @@
     <MESSAGE value="fixed debug bounds drawing" />
     <MESSAGE value="fixed page bounds" />
     <MESSAGE value="load json config" />
-    <option name="LAST_COMMIT_MESSAGE" value="load json config" />
+    <MESSAGE value="minor improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="minor improvements" />
   </component>
 </project>

@@ -30,13 +30,14 @@
 #define rect(IT) (IT)->second
 
 namespace engine {
-class page : public game_state, public sf::Drawable, public sf::Transformable {
+class page : public game_object, public sf::Drawable, public sf::Transformable {
     using printable_array = std::vector<std::pair<printable_ptr, sf::FloatRect>>;
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;
     using effect_it = effect_array::const_iterator;
+    using check_visibility = std::function<bool(const sf::FloatRect &)>;
 public:
-    page(const system_ptr &rptr, const story_ptr &sptr);
+    page(const system_ptr &rptr, const story_ptr &sptr, check_visibility cv);
 
     bool can_advance() const;
 
@@ -51,6 +52,7 @@ private:
         NONE
     };
 
+    check_visibility visible;
     story_ptr story;
     audio_system audio;
     // Core data

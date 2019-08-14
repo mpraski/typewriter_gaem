@@ -119,21 +119,17 @@ int main() {
 
   auto sample_story{std::make_shared<engine::story>(sample_decision_tree)};
 
-  engine::page page{
+  engine::page_container page_cont{
       resources,
       sample_story
   };
 
   resources->display([&](auto &window) {
     window.clear();
-    window.draw(page);
+    window.draw(page_cont);
     window.display();
 
-    if (page.can_advance()) {
-      page.advance();
-    } else {
-      page.input();
-    }
+    page_cont.run();
   });
 
   return 0;
