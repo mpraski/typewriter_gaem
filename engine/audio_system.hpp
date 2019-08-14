@@ -7,6 +7,7 @@
 
 #include "game_state.hpp"
 #include <random>
+#include <chrono>
 
 namespace engine {
 class audio_system : public game_state {

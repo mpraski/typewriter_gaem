@@ -14,11 +14,13 @@
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/engine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/audio_system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/audio_system.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page_container.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page_container.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/system.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/utilities/general.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/general.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -123,7 +125,7 @@
       <workItem from="1565251650335" duration="26909000" />
       <workItem from="1565335823902" duration="22521000" />
       <workItem from="1565448859675" duration="5615000" />
-      <workItem from="1565800733927" duration="6831000" />
+      <workItem from="1565800733927" duration="8240000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -384,7 +386,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565804684733</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="introduced page container to determine viewport">
+      <created>1565809334144</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1565809334144</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -405,7 +414,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="attempt to handle mouse input" />
     <MESSAGE value="fixed shome shit" />
     <MESSAGE value="fixed more shit" />
     <MESSAGE value="ditto" />
@@ -430,6 +438,7 @@
     <MESSAGE value="fixed page bounds" />
     <MESSAGE value="load json config" />
     <MESSAGE value="minor improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="minor improvements" />
+    <MESSAGE value="introduced page container to determine viewport" />
+    <option name="LAST_COMMIT_MESSAGE" value="introduced page container to determine viewport" />
   </component>
 </project>

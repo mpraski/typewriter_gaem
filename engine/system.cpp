@@ -68,7 +68,7 @@ engine::system::system(
       },
       mouse_pressed{},
       mouse_pressed_position{} {
-  const auto &page_config{get_configs().at("page")};
+  const auto &page_config{get_configs("page")};
   font_size = page_config.get<unsigned>("page.font_size");
   page_width = page_config.get<float>("page.page_width");
   page_height = page_config.get<float>("page.page_height");
@@ -79,7 +79,7 @@ engine::system::system(
   typing_delay = page_config.get<unsigned>("page.typing_delay") * 100000u;
 
   auto page_font{page_config.get<std::string>("page.font")};
-  font = &fonts[ROOT_RESOURCE_CATEGORY][page_font];
+  font = &get_fonts(page_font);
 
   if (!arrow_cursor.loadFromSystem(sf::Cursor::Type::Arrow)) {
     throw std::runtime_error("Arrow cursor loading error");

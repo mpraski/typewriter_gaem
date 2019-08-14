@@ -7,6 +7,7 @@
 
 #include <sstream>
 #include <algorithm>
+#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace engine::gen {
 template<typename T, typename ... Ts>
@@ -101,6 +102,11 @@ constexpr auto is_zero(T t) {
   static_assert(std::is_floating_point_v<T>);
   const constexpr auto eps{1.0e-10};
   return fabs(t) < eps;
+}
+
+template<class... Ts>
+constexpr void draw(sf::RenderTarget &target, const sf::RenderStates &states, Ts &&... ts) {
+  (target.draw(std::forward<Ts>(ts), states), ...);
 }
 }
 

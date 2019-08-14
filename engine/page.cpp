@@ -524,7 +524,7 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
         text_color = e.color;
         break;
       case text_effect::kind::TEXTURE:
-        text_texture = &system->get_textures("text").at(e.texture);
+        text_texture = &system->get_textures(e.texture, "text");
         break;
       case text_effect::kind::CENTER:
         displacement = displacement::CENTER;

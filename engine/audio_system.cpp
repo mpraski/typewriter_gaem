@@ -6,9 +6,9 @@
 
 engine::audio_system::audio_system(const system_ptr &rptr)
     : game_state{rptr},
-      typewriter_clicks{rptr->get_sounds("typewriter_clicks")},
+      typewriter_clicks{rptr->get_sounds_category("typewriter_clicks")},
       sound_cache{},
-      rand_engine{},
+      rand_engine{static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count())},
       rand_dist{0, RAND_MAX},
       rand_fun{[&] {
         return rand_dist(rand_engine);
@@ -27,7 +27,7 @@ void engine::audio_system::play_typewriter_click() const {
 
 void engine::audio_system::play_typewriter_space() const {
   constexpr auto key{"typewriter_spacebar"};
-  const auto &buf{system->get_sounds(system::ROOT_RESOURCE_CATEGORY).at(key)};
+  const auto &buf{system->get_sounds(key)};
 
   play_with_cache(key, buf);
 }

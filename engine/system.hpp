@@ -22,9 +22,16 @@ namespace fs = boost::filesystem;
 namespace pt = boost::property_tree;
 
 #define RESOURCE_GETTER(RMAP) \
-inline const auto &get_##RMAP(const std::string &res_category = ROOT_RESOURCE_CATEGORY) const { \
+inline const auto &get_##RMAP##_category(const std::string &res_category = ROOT_RESOURCE_CATEGORY) const { \
   try { \
     return (RMAP).at(res_category); \
+  } catch (const std::out_of_range &ex) { \
+    throw std::runtime_error(std::string{#RMAP} + " category not found: " + res_category); \
+  } \
+} \
+inline const auto &get_##RMAP(const std::string & res_id, const std::string &res_category = ROOT_RESOURCE_CATEGORY) const { \
+  try { \
+    return (RMAP).at(res_category).at(res_id); \
   } catch (const std::out_of_range &ex) { \
     throw std::runtime_error(std::string{#RMAP} + " category not found: " + res_category); \
   } \

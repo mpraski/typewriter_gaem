@@ -35,8 +35,7 @@ void engine::page_container::draw(sf::RenderTarget &target, sf::RenderStates sta
   draw_page_outline();
 
   states.transform *= getTransform();
-  target.draw(pg, states);
-  target.draw(debug_bounds_vertices, states);
+  gen::draw(target, states, pg, debug_bounds_vertices);
 }
 
 void engine::page_container::draw_page_outline() const {
