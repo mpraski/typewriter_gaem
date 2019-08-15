@@ -6,12 +6,10 @@
 
 engine::page_container::page_container(const system_ptr &rptr, const story_ptr &sptr)
     : game_object{rptr},
-      pg{rptr, sptr, [&](const auto &rect) {
-        return global_bounds().intersects(rect);
-      }},
-      bounds{0, 0, rptr->page_width, rptr->page_height},
+      layer{{0, 0, rptr->page_width, rptr->page_height}},
+      pg{rptr, sptr, this},
       debug_bounds_vertices{sf::Lines} {
-
+  add(&pg, &debug_bounds_vertices);
 }
 
 void engine::page_container::run() {
@@ -22,20 +20,9 @@ void engine::page_container::run() {
   }
 }
 
-sf::FloatRect engine::page_container::local_bounds() const {
-  return bounds;
-}
-
-sf::FloatRect engine::page_container::global_bounds() const {
-  return getTransform().transformRect(local_bounds());
-}
-
-void engine::page_container::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+void engine::page_container::render(sf::RenderTarget &target, sf::RenderStates &states) const {
   debug_bounds_vertices.clear();
   draw_page_outline();
-
-  states.transform *= getTransform();
-  gen::draw(target, states, pg, debug_bounds_vertices);
 }
 
 void engine::page_container::draw_page_outline() const {

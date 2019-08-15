@@ -84,10 +84,10 @@ void add_glyph_quad(sf::VertexArray &vertices,
 }
 }
 
-engine::page::page(const system_ptr &rptr, const story_ptr &sptr, check_visibility cv) :
-    visible{std::move(cv)},
-    story{sptr},
+engine::page::page(const system_ptr &rptr, const story_ptr &sptr, const layer *parent) :
     game_object{rptr},
+    layer{parent},
+    story{sptr},
     audio{rptr},
     printables{},
     active_effects{},
@@ -97,7 +97,6 @@ engine::page::page(const system_ptr &rptr, const story_ptr &sptr, check_visibili
     vertices_buffer{sf::Triangles, sf::VertexBuffer::Static},
     debug_bounds_vertices{sf::Lines},
     font_texture_vertices{sf::Triangles},
-    bounds{},
     line_shift_animation{
         *this,
         translate_vertical::from(0.f)
@@ -130,6 +129,9 @@ engine::page::page(const system_ptr &rptr, const story_ptr &sptr, check_visibili
     letter_spacing_factor{1.f},
     text_color{sf::Color::White},
     text_texture{} {
+  add_buffered(std::make_pair(&vertices_buffer, &vertices));
+  add(&debug_bounds_vertices);
+
   story->set_store(store());
   story->init();
 
@@ -193,8 +195,10 @@ void engine::page::input() {
   }
 }
 
-void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+void engine::page::render(sf::RenderTarget &target, sf::RenderStates &states) const {
   ensure_updated();
+
+  states.texture = &system->font->getTexture(system->font_size);
 
 #ifdef DEBUG
   debug_bounds_vertices.clear();
@@ -204,10 +208,6 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
   }
 #endif
 
-  states.transform *= getTransform();
-  states.texture = &system->font->getTexture(system->font_size);
-
-  // Update the vertex buffer if it is being used
   if (sf::VertexBuffer::isAvailable()) {
     if (vertices_buffer.getVertexCount() != vertices.getVertexCount())
       vertices_buffer.create(vertices.getVertexCount());
@@ -215,30 +215,14 @@ void engine::page::draw(sf::RenderTarget &target, sf::RenderStates states) const
     if (vertices.getVertexCount() > 0)
       vertices_buffer.update(&vertices[0]);
   }
+}
 
-  if (sf::VertexBuffer::isAvailable()) {
-    target.draw(vertices_buffer, states);
-  } else {
-    target.draw(vertices, states);
-  }
-
-#ifdef DEBUG
-  target.draw(debug_bounds_vertices);
-#endif
-
+void engine::page::post_render() const {
   if (needs_update) {
     remove_text_effects(current_character);
   }
 
   needs_update = false;
-}
-
-sf::FloatRect engine::page::local_bounds() const {
-  return bounds;
-}
-
-sf::FloatRect engine::page::global_bounds() const {
-  return getTransform().transformRect(local_bounds());
 }
 
 engine::printable_store engine::page::store() {
@@ -557,7 +541,7 @@ void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
   bool hovering{};
   for (auto &[printable, p_bounds] : printables) {
     auto t{getTransform().transformRect(p_bounds)};
-    if (visible(t) && printable->interactive()) {
+    if (parent_intersects(t) && printable->interactive()) {
       if (t.contains(cursor)) {
         printable->on_hover_start();
         hovering = true;
@@ -577,7 +561,7 @@ void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
 void engine::page::apply_mouse_click(const sf::Vector2f &cursor) {
   for (auto &[printable, p_bounds] : printables) {
     auto t{getTransform().transformRect(p_bounds)};
-    if (visible(t) && printable->interactive()) {
+    if (parent_intersects(t) && printable->interactive()) {
       if (t.contains(cursor)) {
         story->act(printable->on_click());
         system->set_cursor(system::cursor::ARROW);
@@ -703,7 +687,7 @@ engine::page::effect_it engine::page::displacement_effect(enum displacement d) c
 float engine::page::displacement_spacing(enum displacement d, float width) const {
   switch (d) {
     case displacement::CENTER:
-      return (system->effective_page_width() - width) / 2;
+      return (system->effective_page_width() - width) / 2 - system->margin_horizontal / 2;
     case displacement::RIGHT:
       return system->effective_page_width() - width - system->margin_horizontal / 2;
     default:

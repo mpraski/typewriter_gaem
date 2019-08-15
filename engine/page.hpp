@@ -18,6 +18,7 @@
 #include <SFML/Audio.hpp>
 #include "game_state.hpp"
 #include "game_object.hpp"
+#include "layer.hpp"
 #include "audio_system.hpp"
 #include "printables/printable.hpp"
 #include "printables/printable_store.hpp"
@@ -30,14 +31,13 @@
 #define rect(IT) (IT)->second
 
 namespace engine {
-class page : public game_object, public sf::Drawable, public sf::Transformable {
+class page : public game_object, public layer {
     using printable_array = std::vector<std::pair<printable_ptr, sf::FloatRect>>;
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;
     using effect_it = effect_array::const_iterator;
-    using check_visibility = std::function<bool(const sf::FloatRect &)>;
 public:
-    page(const system_ptr &rptr, const story_ptr &sptr, check_visibility cv);
+    page(const system_ptr &rptr, const story_ptr &sptr, const layer *parent);
 
     bool can_advance() const;
 
@@ -52,7 +52,6 @@ private:
         NONE
     };
 
-    check_visibility visible;
     story_ptr story;
     audio_system audio;
     // Core data
@@ -65,7 +64,6 @@ private:
     mutable sf::VertexBuffer vertices_buffer;
     mutable sf::VertexArray debug_bounds_vertices;
     mutable sf::VertexArray font_texture_vertices;
-    mutable sf::FloatRect bounds;
     mutable translate_vertical line_shift_animation;
     // Control flags
     mutable bool needs_advance;
@@ -92,11 +90,9 @@ private:
     mutable sf::Color text_color;
     mutable const sf::Texture *text_texture;
 
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+    void render(sf::RenderTarget &target, sf::RenderStates &states) const override;
 
-    sf::FloatRect local_bounds() const;
-
-    sf::FloatRect global_bounds() const;
+    void post_render() const override;
 
     printable_store store();
 
