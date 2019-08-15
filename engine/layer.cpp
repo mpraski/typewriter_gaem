@@ -41,7 +41,7 @@ sf::FloatRect engine::layer::local_bounds() const {
 }
 
 sf::FloatRect engine::layer::global_bounds() const {
-  return getTransform().transformRect(local_bounds());
+  return to_global(local_bounds());
 }
 
 bool engine::layer::is_root() const {
@@ -57,9 +57,7 @@ bool engine::layer::parent_contains(const sf::Vector2f &vert) const {
 }
 
 sf::FloatRect engine::layer::to_global(const sf::FloatRect &f) const {
-  return is_root()
-         ? getTransform().transformRect(f)
-         : getTransform().transformRect(parent->to_global(f));
+  return getTransform().transformRect(is_root() ? f : parent->to_global(f));
 }
 
 void engine::layer::draw(sf::RenderTarget &target, sf::RenderStates states) const {

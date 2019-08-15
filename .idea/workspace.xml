@@ -15,27 +15,7 @@
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/animation/translate.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/animation/translate.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/audio_system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/audio_system.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/audio_system.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/engine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/game_object.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game_object.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/game_object.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game_object.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/game_state.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/game_state.hpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/layer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/layer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/layer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/layer.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page_container.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page_container.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/dialog.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/dialog.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/paragraph.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/paragraph.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/printables/printable.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/story/story.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/story/story.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/system.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -139,7 +119,7 @@
       <workItem from="1565251650335" duration="26909000" />
       <workItem from="1565335823902" duration="22521000" />
       <workItem from="1565448859675" duration="5615000" />
-      <workItem from="1565800733927" duration="31778000" />
+      <workItem from="1565800733927" duration="33883000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -421,7 +401,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565876405371</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="fixed shit">
+      <created>1565902272831</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1565902272832</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -442,7 +429,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="ditto" />
     <MESSAGE value="simplified text model" />
     <MESSAGE value="added support for underline and strike-through formatting" />
     <MESSAGE value="fixed printable bounds setting and added debug bounds mode" />
@@ -467,6 +453,7 @@
     <MESSAGE value="introduced page container to determine viewport" />
     <MESSAGE value="cleanup" />
     <MESSAGE value="extracted common drawing routines into the layer class" />
-    <option name="LAST_COMMIT_MESSAGE" value="extracted common drawing routines into the layer class" />
+    <MESSAGE value="fixed shit" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed shit" />
   </component>
 </project>
