@@ -13,15 +13,19 @@
 namespace engine {
 class page_container : public game_object, public layer {
 public:
-    page_container(const system_ptr &rptr, const story_ptr &sptr);
+    page_container(
+        const system_ptr &rptr,
+        const audio_system_ptr &aptr,
+        const story_ptr &sptr
+    );
 
-    void run();
+    void animate();
 
 private:
     page pg;
     mutable sf::VertexArray debug_bounds_vertices;
 
-    void render(sf::RenderTarget &target, sf::RenderStates &states) const override;
+    void render(sf::RenderTarget &target, sf::RenderStates &states) const final;
 
     void draw_page_outline() const;
 };

@@ -16,7 +16,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "game_state.hpp"
 #include "game_object.hpp"
 #include "layer.hpp"
 #include "audio_system.hpp"
@@ -37,7 +36,7 @@ class page : public game_object, public layer {
     using effect_array = std::vector<text_effect>;
     using effect_it = effect_array::const_iterator;
 public:
-    page(const system_ptr &rptr, const story_ptr &sptr, const layer *parent);
+    page(const system_ptr &rptr, const audio_system_ptr &aptr, const story_ptr &sptr, const layer *parent);
 
     bool can_advance() const;
 
@@ -53,7 +52,7 @@ private:
     };
 
     story_ptr story;
-    audio_system audio;
+    audio_system_ptr audio;
     // Core data
     mutable printable_array printables;
     mutable effect_array active_effects;
@@ -90,9 +89,9 @@ private:
     mutable sf::Color text_color;
     mutable const sf::Texture *text_texture;
 
-    void render(sf::RenderTarget &target, sf::RenderStates &states) const override;
+    void render(sf::RenderTarget &target, sf::RenderStates &states) const final;
 
-    void post_render() const override;
+    void post_render() const final;
 
     printable_store store();
 

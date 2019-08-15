@@ -14,7 +14,7 @@ public:
     using transformable_animation<float, float>::transformable_animation;
 
 protected:
-    void apply_step(float x, float y) const override {
+    void apply_step(float x, float y) const final {
       transformable.move(x, y);
     }
 };
@@ -24,7 +24,7 @@ public:
     using transformable_animation<float>::transformable_animation;
 
 protected:
-    void apply_step(float y) const override {
+    void apply_step(float y) const final {
       transformable.move(0.f, y);
     }
 };
@@ -34,7 +34,7 @@ public:
     using transformable_animation<float>::transformable_animation;
 
 protected:
-    void apply_step(float x) const override {
+    void apply_step(float x) const final {
       transformable.move(x, 0.f);
     }
 };

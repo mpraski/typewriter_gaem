@@ -33,6 +33,11 @@ private:
 };
 
 using story_ptr = std::shared_ptr<story>;
+
+template<class ...Ts>
+static auto make_story(Ts &&... args) {
+  return std::make_shared<story>(std::forward<Ts>(args)...);
+}
 }
 
 #endif //TYPEWRITER_GAEM_STORY_HPP

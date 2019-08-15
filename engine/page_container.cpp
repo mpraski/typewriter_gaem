@@ -4,15 +4,15 @@
 
 #include "page_container.hpp"
 
-engine::page_container::page_container(const system_ptr &rptr, const story_ptr &sptr)
+engine::page_container::page_container(const system_ptr &rptr, const audio_system_ptr &aptr, const story_ptr &sptr)
     : game_object{rptr},
       layer{{0, 0, rptr->page_width, rptr->page_height}},
-      pg{rptr, sptr, this},
+      pg{rptr, aptr, sptr, this},
       debug_bounds_vertices{sf::Lines} {
   add(&pg, &debug_bounds_vertices);
 }
 
-void engine::page_container::run() {
+void engine::page_container::animate() {
   if (pg.can_advance()) {
     pg.advance();
   } else {

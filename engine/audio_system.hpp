@@ -5,12 +5,12 @@
 #ifndef TYPEWRITER_GAEM_AUDIO_SYSTEM_HPP
 #define TYPEWRITER_GAEM_AUDIO_SYSTEM_HPP
 
-#include "game_state.hpp"
+#include "game_object.hpp"
 #include <random>
 #include <chrono>
 
 namespace engine {
-class audio_system : public game_state {
+class audio_system : public game_object {
 public:
     explicit audio_system(const system_ptr &rptr);
 
@@ -38,6 +38,13 @@ private:
       return std::next(begin, k);
     }
 };
+
+using audio_system_ptr = std::shared_ptr<const audio_system>;
+
+template<class ...Ts>
+static auto make_audio_system(Ts &&... args) {
+  return std::make_shared<const audio_system>(std::forward<Ts>(args)...);
+}
 }
 
 #endif //TYPEWRITER_GAEM_AUDIO_SYSTEM_HPP

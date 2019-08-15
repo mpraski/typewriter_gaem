@@ -5,7 +5,7 @@
 #include "audio_system.hpp"
 
 engine::audio_system::audio_system(const system_ptr &rptr)
-    : game_state{rptr},
+    : game_object{rptr},
       typewriter_clicks{rptr->get_sounds_category("typewriter_clicks")},
       sound_cache{},
       rand_engine{static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count())},

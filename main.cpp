@@ -10,6 +10,8 @@ int main() {
       "./res/configs"
   )};
 
+  auto audio_system{engine::make_audio_system(game_system)};
+
   auto sample_decision_tree{
       std::make_shared<engine::decision_node>(
           std::vector<engine::printable *>{
@@ -22,7 +24,7 @@ int main() {
                       engine::text_effect{engine::text_effect::kind::CENTER, 10, 13},
                       engine::text_effect{engine::text_effect::kind::BOLD, 10, 13},
                       engine::text_effect{engine::text_effect::kind::DELAY, 10, 13}.with_delay(5.0f),
-                      engine::text_effect{engine::text_effect::kind::UNDERLINE, 15, 20},
+                      engine::text_effect{engine::text_effect::kind::ITALIC, 15, 20},
                       engine::text_effect{engine::text_effect::kind::CENTER, 15, 20}
                   },
                   false
@@ -117,19 +119,22 @@ int main() {
       )
   };
 
-  auto sample_story{std::make_shared<engine::story>(sample_decision_tree)};
+  auto sample_story{engine::make_story(sample_decision_tree)};
 
   engine::page_container page_cont{
       game_system,
+      audio_system,
       sample_story
   };
+
+  page_cont.move(20.f, 20.f);
 
   game_system->display([&](auto &window) {
     window.clear();
     window.draw(page_cont);
     window.display();
 
-    page_cont.run();
+    page_cont.animate();
   });
 
   return 0;

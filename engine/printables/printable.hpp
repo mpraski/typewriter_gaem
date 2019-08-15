@@ -65,10 +65,6 @@ protected:
     effect_map effects;
     bool is_interactive;
 
-    inline system_ptr get_system() const {
-      return system;
-    }
-
 private:
     static inline void trim_start(std::wstring &s) {
       s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wchar_t ch) {

@@ -23,13 +23,13 @@ private:
     effect_map effects_on_hover;
     effect_map effects_off_hover;
 
-    printable *clone() const override;
+    printable *clone() const final;
 
-    void on_hover_start() override;
+    void on_hover_start() final;
 
-    void on_hover_end() override;
+    void on_hover_end() final;
 
-    action on_click() override;
+    action on_click() final;
 };
 }
 

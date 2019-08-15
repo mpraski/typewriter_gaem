@@ -17,7 +17,7 @@ engine::system::system(
       grab_cursor{},
       curr_mouse{},
       prev_mouse{},
-      window{mode, "Title"},
+      window{mode, "Typewriter Gaem"},
       font{},
       fonts{
           load_resources<sf::Font>(
@@ -158,10 +158,6 @@ bool engine::system::mouse_click_available() const {
 const sf::Vector2f &engine::system::mouse_click_position() const {
   mouse_pressed = false;
   return mouse_pressed_position;
-}
-
-bool engine::system::visible(sf::FloatRect bounds) const {
-  return false;
 }
 
 float engine::system::effective_page_width() const {

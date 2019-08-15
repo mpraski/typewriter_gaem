@@ -10,25 +10,39 @@
 namespace engine {
 class layer : public sf::Drawable, public sf::Transformable {
     using drawable_ptr = const sf::Drawable *;
+    using layer_ptr = const layer *;
 public:
     explicit layer(const sf::FloatRect &bounds);
 
-    explicit layer(const layer *parent);
+    explicit layer(layer_ptr parent);
 
-    layer(const layer *parent, const sf::FloatRect &bounds);
+    layer(layer_ptr parent, const sf::FloatRect &bounds);
+
+    layer(const layer &p) = delete;
+
+    layer(layer &&p) = delete;
+
+    layer &operator=(const layer &p) = delete;
+
+    layer &operator=(layer &&p) = delete;
 
     sf::FloatRect local_bounds() const;
 
     sf::FloatRect global_bounds() const;
 
+    bool is_root() const;
+
     bool parent_intersects(const sf::FloatRect &rect) const;
 
+    bool parent_contains(const sf::Vector2f &vert) const;
+
+    sf::FloatRect to_global(const sf::FloatRect& f) const;
+
 protected:
-    const layer *parent;
     mutable sf::FloatRect bounds;
 
     template<class... Ts>
-    void add(Ts const *__restrict__ ... ts) {
+    void add(const Ts *... ts) {
       (drawables.push_back(ts), ...);
     }
 
@@ -42,10 +56,11 @@ protected:
     virtual void post_render() const;
 
 private:
+    layer_ptr parent;
     std::vector<drawable_ptr> drawables;
     std::vector<std::pair<drawable_ptr, drawable_ptr>> buffers;
 
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
 };
 }
 

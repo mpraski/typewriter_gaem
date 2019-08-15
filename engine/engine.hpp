@@ -15,7 +15,6 @@
 #include "utilities/converters.hpp"
 #include "utilities/general.hpp"
 #include "utilities/text_buffer.hpp"
-#include "game_state.hpp"
 #include "page.hpp"
 #include "page_container.hpp"
 #include "system.hpp"

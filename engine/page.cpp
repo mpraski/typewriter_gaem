@@ -84,11 +84,16 @@ void add_glyph_quad(sf::VertexArray &vertices,
 }
 }
 
-engine::page::page(const system_ptr &rptr, const story_ptr &sptr, const layer *parent) :
+engine::page::page(
+    const system_ptr &rptr,
+    const audio_system_ptr &aptr,
+    const story_ptr &sptr,
+    const layer *parent
+) :
     game_object{rptr},
     layer{parent},
     story{sptr},
-    audio{rptr},
+    audio{aptr},
     printables{},
     active_effects{},
     current_printable{},
@@ -198,6 +203,7 @@ void engine::page::input() {
 void engine::page::render(sf::RenderTarget &target, sf::RenderStates &states) const {
   ensure_updated();
 
+  states.transform *= getTransform();
   states.texture = &system->font->getTexture(system->font_size);
 
 #ifdef DEBUG
@@ -460,7 +466,7 @@ void engine::page::ensure_updated() const {
 
     x += advance;
 
-    audio.play_typewriter_click();
+    audio->play_typewriter_click();
   }
 
   bounds.top = min_y;
@@ -540,9 +546,9 @@ void engine::page::remove_text_effects(size_t idx) const {
 void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
   bool hovering{};
   for (auto &[printable, p_bounds] : printables) {
-    auto t{getTransform().transformRect(p_bounds)};
-    if (parent_intersects(t) && printable->interactive()) {
-      if (t.contains(cursor)) {
+    if (printable->interactive()) {
+      auto t{to_global(p_bounds)};
+      if (parent_intersects(t) && t.contains(cursor)) {
         printable->on_hover_start();
         hovering = true;
       } else {
@@ -560,9 +566,9 @@ void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
 
 void engine::page::apply_mouse_click(const sf::Vector2f &cursor) {
   for (auto &[printable, p_bounds] : printables) {
-    auto t{getTransform().transformRect(p_bounds)};
-    if (parent_intersects(t) && printable->interactive()) {
-      if (t.contains(cursor)) {
+    if (printable->interactive()) {
+      auto t{to_global(p_bounds)};
+      if (parent_intersects(t) && t.contains(cursor)) {
         story->act(printable->on_click());
         system->set_cursor(system::cursor::ARROW);
         break;
@@ -713,7 +719,7 @@ bool engine::page::end_of_text() const {
 }
 
 void engine::page::draw_printable_outline(printable_iterator it) const {
-  auto trans{getTransform().transformRect(rect(it))};
+  auto trans{rect(it)};
   debug_bounds_vertices.append(
       sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
                  sf::Vector2f(1, 1)));
@@ -743,7 +749,7 @@ void engine::page::draw_printable_outline(printable_iterator it) const {
 }
 
 void engine::page::draw_page_outline() const {
-  auto root_trans{global_bounds()};
+  auto root_trans{local_bounds()};
   debug_bounds_vertices.append(
       sf::Vertex(sf::Vector2f(root_trans.left, root_trans.top), sf::Color::Magenta,
                  sf::Vector2f(1, 1)));

@@ -92,8 +92,6 @@ public:
 
     const sf::Vector2f &mouse_click_position() const;
 
-    bool visible(sf::FloatRect bounds) const;
-
     float effective_page_width() const;
 
     float effective_page_height() const;

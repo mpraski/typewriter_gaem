@@ -5,7 +5,6 @@
 #ifndef TYPEWRITER_GAEM_PARAGRAPH_HPP
 #define TYPEWRITER_GAEM_PARAGRAPH_HPP
 
-
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
