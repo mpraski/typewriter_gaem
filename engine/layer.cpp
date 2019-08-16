@@ -12,7 +12,7 @@ engine::layer::layer(const sf::FloatRect &bounds)
 
 }
 
-engine::layer::layer(const layer *parent)
+engine::layer::layer(layer_ptr parent)
     : bounds{},
       parent{parent},
       drawables{},
@@ -20,7 +20,7 @@ engine::layer::layer(const layer *parent)
 
 }
 
-engine::layer::layer(const layer *parent, const sf::FloatRect &bounds)
+engine::layer::layer(layer_ptr parent, const sf::FloatRect &bounds)
     : bounds{bounds},
       parent{parent},
       drawables{},
@@ -56,8 +56,14 @@ bool engine::layer::parent_contains(const sf::Vector2f &vert) const {
   return parent ? parent->global_bounds().contains(vert) : false;
 }
 
-sf::FloatRect engine::layer::to_global(const sf::FloatRect &f) const {
-  return getTransform().transformRect(is_root() ? f : parent->to_global(f));
+sf::FloatRect engine::layer::to_global(sf::FloatRect rect) const {
+  auto p{parent};
+  auto t{getTransform()};
+  while (p) {
+    t *= p->getTransform();
+    p = p->parent;
+  }
+  return t.transformRect(rect);
 }
 
 void engine::layer::draw(sf::RenderTarget &target, sf::RenderStates states) const {

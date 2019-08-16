@@ -8,7 +8,7 @@
 #include <SFML/Graphics.hpp>
 
 namespace engine {
-class layer : public sf::Drawable, public sf::Transformable {
+class layer : public sf::Drawable, public sf::Transformable, private sf::NonCopyable {
     using drawable_ptr = const sf::Drawable *;
     using layer_ptr = const layer *;
 public:
@@ -17,14 +17,6 @@ public:
     explicit layer(layer_ptr parent);
 
     layer(layer_ptr parent, const sf::FloatRect &bounds);
-
-    layer(const layer &p) = delete;
-
-    layer(layer &&p) = delete;
-
-    layer &operator=(const layer &p) = delete;
-
-    layer &operator=(layer &&p) = delete;
 
     sf::FloatRect local_bounds() const;
 
@@ -36,7 +28,7 @@ public:
 
     bool parent_contains(const sf::Vector2f &vert) const;
 
-    sf::FloatRect to_global(const sf::FloatRect& f) const;
+    sf::FloatRect to_global(sf::FloatRect rect) const;
 
 protected:
     mutable sf::FloatRect bounds;

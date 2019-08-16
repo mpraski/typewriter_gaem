@@ -3,7 +3,7 @@
 
 int main() {
   auto game_system{engine::make_system(
-      sf::VideoMode(460, 400),
+      sf::VideoMode(500, 400),
       "./res/fonts",
       "./res/sounds",
       "./res/textures",
@@ -127,7 +127,7 @@ int main() {
       sample_story
   };
 
-  page_cont.move(20.f, 20.f);
+  //page_cont.move(20.f, 20.f);
 
   game_system->display([&](auto &window) {
     window.clear();
