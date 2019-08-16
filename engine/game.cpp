@@ -17,7 +17,9 @@ engine::game::game(
       scene_graph{},
       scene_layers{},
       holds_mouse{} {
-  scene_graph.attach_child(make_page_container(rptr, aptr, sptr));
+  auto pc{make_page_container(rptr, aptr, sptr)};
+  pc->move(20.f, 20.f);
+  scene_graph.attach_child(std::move(pc));
 }
 
 void engine::game::run() {

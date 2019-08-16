@@ -22,7 +22,7 @@ public:
 private:
     mutable sf::VertexArray debug_bounds_vertices;
 
-    void draw_self(sf::RenderTarget &target, sf::RenderStates &states) const final;
+    void draw_self(sf::RenderTarget &target, sf::RenderStates states) const final;
 
     void draw_page_outline() const;
 };

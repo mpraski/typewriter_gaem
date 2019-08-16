@@ -5,7 +5,9 @@
 #ifndef SFML_GAME_PAGE_H
 #define SFML_GAME_PAGE_H
 
+#ifndef DEBUG
 #define DEBUG
+#endif
 
 #include <vector>
 #include <string>
@@ -38,12 +40,6 @@ class page : public game_object, public scene_node {
 public:
     page(const system_ptr &rptr, const audio_system_ptr &aptr, const story_ptr &sptr);
 
-    bool can_advance() const;
-
-    void advance();
-
-    void input();
-
 private:
     enum class displacement {
         CENTER,
@@ -51,47 +47,15 @@ private:
         NONE
     };
 
-    story_ptr story;
-    audio_system_ptr audio;
-    // Core data
-    mutable printable_array printables;
-    mutable effect_array active_effects;
-    printable_iterator current_printable;
-    size_t current_character;
-    // SFML buffers
-    mutable sf::VertexArray vertices;
-    mutable sf::VertexBuffer vertices_buffer;
-    mutable sf::VertexArray debug_bounds_vertices;
-    mutable sf::VertexArray font_texture_vertices;
-    mutable translate_vertical line_shift_animation;
-    // Control flags
-    mutable bool needs_advance;
-    mutable bool needs_update;
-    mutable bool needs_redraw;
-    // Text bounds
-    mutable float x;
-    mutable float y;
-    mutable float min_x;
-    mutable float min_y;
-    mutable float max_x;
-    mutable float max_y;
-    // Text properties
-    mutable bool is_bold;
-    mutable bool is_underlined;
-    mutable bool is_strike_through;
-    mutable bool is_uppercase;
-    mutable displacement displacement;
-    mutable size_t displacement_mode_end;
-    mutable size_t displacement_mode_end_prev;
-    mutable float italic_shear;
-    mutable float typing_delay_factor;
-    mutable float letter_spacing_factor;
-    mutable sf::Color text_color;
-    mutable const sf::Texture *text_texture;
+    bool can_advance() const;
+
+    void advance();
+
+    void input();
 
     void update_self(sf::Time dt) final;
 
-    void draw_self(sf::RenderTarget &target, sf::RenderStates &states) const final;
+    void draw_self(sf::RenderTarget &target, sf::RenderStates states) const final;
 
     printable_store store();
 
@@ -136,6 +100,45 @@ private:
         return e.kind == kind;
       });
     }
+
+private:
+    story_ptr story;
+    audio_system_ptr audio;
+    // Core data
+    mutable printable_array printables;
+    mutable effect_array active_effects;
+    printable_iterator current_printable;
+    size_t current_character;
+    // SFML buffers
+    mutable sf::VertexArray vertices;
+    mutable sf::VertexBuffer vertices_buffer;
+    mutable sf::VertexArray debug_bounds_vertices;
+    mutable sf::VertexArray font_texture_vertices;
+    mutable translate_vertical line_shift_animation;
+    // Control flags
+    mutable bool needs_advance;
+    mutable bool needs_update;
+    mutable bool needs_redraw;
+    // Text bounds
+    mutable float x;
+    mutable float y;
+    mutable float min_x;
+    mutable float min_y;
+    mutable float max_x;
+    mutable float max_y;
+    // Text properties
+    mutable bool is_bold;
+    mutable bool is_underlined;
+    mutable bool is_strike_through;
+    mutable bool is_uppercase;
+    mutable displacement displacement;
+    mutable size_t displacement_mode_end;
+    mutable size_t displacement_mode_end_prev;
+    mutable float italic_shear;
+    mutable float typing_delay_factor;
+    mutable float letter_spacing_factor;
+    mutable sf::Color text_color;
+    mutable const sf::Texture *text_texture;
 };
 
 template<class ...Ts>

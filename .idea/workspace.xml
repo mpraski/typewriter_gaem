@@ -13,19 +13,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/engine/game.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/game.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/engine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/layer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene_node.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/layer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene_node.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/game.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page_container.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page_container.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/system.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/scene_node.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene_node.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/scene_node.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene_node.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -131,7 +126,7 @@
       <workItem from="1565335823902" duration="22521000" />
       <workItem from="1565448859675" duration="5615000" />
       <workItem from="1565800733927" duration="34017000" />
-      <workItem from="1565940229086" duration="9429000" />
+      <workItem from="1565940229086" duration="19623000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -434,7 +429,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565952302886</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="rewrote scene layering system">
+      <created>1565962682661</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1565962682661</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -455,7 +457,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="added support for underline and strike-through formatting" />
     <MESSAGE value="fixed printable bounds setting and added debug bounds mode" />
     <MESSAGE value="Fixed type mismatch, changed line breaks computation" />
     <MESSAGE value="downgraded minimal cmake version" />
@@ -480,6 +481,7 @@
     <MESSAGE value="extracted common drawing routines into the layer class" />
     <MESSAGE value="fixed shit" />
     <MESSAGE value="fixed more shit" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed more shit" />
+    <MESSAGE value="rewrote scene layering system" />
+    <option name="LAST_COMMIT_MESSAGE" value="rewrote scene layering system" />
   </component>
 </project>

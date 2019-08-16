@@ -6,12 +6,12 @@
 
 engine::page_container::page_container(const system_ptr &rptr, const audio_system_ptr &aptr, const story_ptr &sptr)
     : game_object{rptr},
-      scene_node{{0, 0, system->page_width, system->page_height}},
+      scene_node{{0, 0, rptr->page_width, rptr->page_height}},
       debug_bounds_vertices{sf::Lines} {
   attach_child(make_page(rptr, aptr, sptr));
 }
 
-void engine::page_container::draw_self(sf::RenderTarget &target, sf::RenderStates &states) const {
+void engine::page_container::draw_self(sf::RenderTarget &target, sf::RenderStates states) const {
   debug_bounds_vertices.clear();
   draw_page_outline();
 

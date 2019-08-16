@@ -23,6 +23,9 @@ public:
 
     scene_node_ptr detach_child(const scene_node &node);
 
+protected:
+    mutable sf::FloatRect bounds;
+
     sf::Transform global_transform() const;
 
     sf::FloatRect local_bounds() const;
@@ -35,22 +38,20 @@ public:
 
     bool parent_contains(const sf::Vector2f &vert) const;
 
-protected:
-    mutable sf::FloatRect bounds;
-
     void update_children(sf::Time dt);
 
-    void draw_children(sf::RenderTarget &target, sf::RenderStates &states) const;
+    void draw_children(sf::RenderTarget &target, sf::RenderStates states) const;
 
     virtual void update_self(sf::Time dt);
 
-    virtual void draw_self(sf::RenderTarget &target, sf::RenderStates &states) const;
+    virtual void draw_self(sf::RenderTarget &target, sf::RenderStates states) const;
+
+private:
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
 
 private:
     const scene_node *parent;
     std::vector<scene_node_ptr> children;
-
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
 };
 
 using scene_node_ptr = scene_node::scene_node_ptr;

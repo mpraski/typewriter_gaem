@@ -38,7 +38,7 @@ engine::scene_node_ptr engine::scene_node::detach_child(const engine::scene_node
 sf::Transform engine::scene_node::global_transform() const {
   auto transform{sf::Transform::Identity};
   for (const auto *ptr{this}; ptr != nullptr; ptr = ptr->parent) {
-    transform *= parent->getTransform();
+    transform *= ptr->getTransform();
   }
   return transform;
 }
@@ -72,7 +72,7 @@ void engine::scene_node::update_self(sf::Time dt) {
 
 }
 
-void engine::scene_node::draw_self(sf::RenderTarget &target, sf::RenderStates &states) const {
+void engine::scene_node::draw_self(sf::RenderTarget &target, sf::RenderStates states) const {
 
 }
 
@@ -82,7 +82,7 @@ void engine::scene_node::update_children(sf::Time dt) {
   }
 }
 
-void engine::scene_node::draw_children(sf::RenderTarget &target, sf::RenderStates &states) const {
+void engine::scene_node::draw_children(sf::RenderTarget &target, sf::RenderStates states) const {
   for (const auto &ptr : children) {
     ptr->draw(target, states);
   }

@@ -130,7 +130,7 @@ int main() {
 
     game.run();
   } catch (std::exception &e) {
-    std::cout << "\nEXCEPTION: " << e.what() << std::endl;
+    throw std::runtime_error(engine::gen::str("Game error ", e.what()));
   }
 
   return 0;

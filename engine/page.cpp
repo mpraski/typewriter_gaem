@@ -105,8 +105,8 @@ engine::page::page(
         *this,
         translate_vertical::from(0.f)
             .to(-system->line_spacing)
-            .during(60)
-            .via(tweeny::easing::sinusoidalInOut)
+            .during(30)
+            .via(tweeny::easing::quadraticInOut)
             .on_step([&] {
               redraw();
             })
@@ -203,8 +203,10 @@ void engine::page::update_self(sf::Time dt) {
   }
 }
 
-void engine::page::draw_self(sf::RenderTarget &target, sf::RenderStates &states) const {
+void engine::page::draw_self(sf::RenderTarget &target, sf::RenderStates states) const {
   ensure_updated();
+
+  states.texture = &system->font->getTexture(system->font_size);
 
 #ifdef DEBUG
   debug_bounds_vertices.clear();
@@ -213,9 +215,6 @@ void engine::page::draw_self(sf::RenderTarget &target, sf::RenderStates &states)
     draw_printable_outline(it);
   }
 #endif
-
-  states.transform *= getTransform();
-  states.texture = &system->font->getTexture(system->font_size);
 
   // Update the vertex buffer if it is being used
   if (sf::VertexBuffer::isAvailable()) {
@@ -330,6 +329,7 @@ float engine::page::measure_text(const printable &printable, size_t begin, size_
 
 void engine::page::preprocess(printable &printable) {
   float word_width{};
+  float from_last_blank{};
   auto last_blank{std::numeric_limits<size_t>::max()};
   auto p_len{printable.length()};
   sf::Uint32 curr_char, prev_char{sf::Utf32::decodeWide(printable[0])};
@@ -359,11 +359,17 @@ void engine::page::preprocess(printable &printable) {
       switch (curr_char) {
         case L' ':
           word_width += system->whitespace_width + letter_spacing_factor;
-          if (i) last_blank = i;
+          if (i) {
+            last_blank = i;
+            from_last_blank = word_width;
+          }
           break;
         case L'\t':
           word_width += system->whitespace_width * 4;
-          if (i) last_blank = i;
+          if (i) {
+            last_blank = i;
+            from_last_blank = word_width;
+          }
           break;
         case L'\n':
           word_width = 0;
@@ -381,10 +387,12 @@ void engine::page::preprocess(printable &printable) {
       if (last_blank == std::numeric_limits<size_t>::max()) {
         printable.inject_line_at(i);
         p_len++;
+        word_width = 0;
       } else {
         printable.break_line_at(last_blank);
+        word_width -= from_last_blank;
+        from_last_blank = 0;
       }
-      word_width = 0;
       last_blank = std::numeric_limits<size_t>::max();
     }
   }
@@ -729,7 +737,7 @@ bool engine::page::end_of_text() const {
 }
 
 void engine::page::draw_printable_outline(printable_iterator it) const {
-  auto trans{rect(it)};
+  auto trans{global_transform().transformRect(rect(it))};
   debug_bounds_vertices.append(
       sf::Vertex(sf::Vector2f(trans.left, trans.top), sf::Color::Yellow,
                  sf::Vector2f(1, 1)));
@@ -759,7 +767,7 @@ void engine::page::draw_printable_outline(printable_iterator it) const {
 }
 
 void engine::page::draw_page_outline() const {
-  auto root_trans{local_bounds()};
+  auto root_trans{global_bounds()};
   debug_bounds_vertices.append(
       sf::Vertex(sf::Vector2f(root_trans.left, root_trans.top), sf::Color::Magenta,
                  sf::Vector2f(1, 1)));
