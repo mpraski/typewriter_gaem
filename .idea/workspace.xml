@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
       <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
+      <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -13,11 +13,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/engine/game.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/game.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/layer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/layer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/layer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/layer.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/engine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/layer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene_node.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/layer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene_node.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page_container.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page_container.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/system.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/configs/page.json" beforeDir="false" afterPath="$PROJECT_DIR$/res/configs/page.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -122,7 +131,7 @@
       <workItem from="1565335823902" duration="22521000" />
       <workItem from="1565448859675" duration="5615000" />
       <workItem from="1565800733927" duration="34017000" />
-      <workItem from="1565940229086" duration="2849000" />
+      <workItem from="1565940229086" duration="9429000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -418,7 +427,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565904045200</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="fixed more shit">
+      <created>1565952302886</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1565952302886</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

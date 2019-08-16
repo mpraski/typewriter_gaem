@@ -17,7 +17,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "game_object.hpp"
-#include "layer.hpp"
+#include "scene_node.hpp"
 #include "audio_system.hpp"
 #include "printables/printable.hpp"
 #include "printables/printable_store.hpp"
@@ -30,13 +30,13 @@
 #define rect(IT) (IT)->second
 
 namespace engine {
-class page : public game_object, public layer {
+class page : public game_object, public scene_node {
     using printable_array = std::vector<std::pair<printable_ptr, sf::FloatRect>>;
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;
     using effect_it = effect_array::const_iterator;
 public:
-    page(const system_ptr &rptr, const audio_system_ptr &aptr, const story_ptr &sptr, const layer *parent);
+    page(const system_ptr &rptr, const audio_system_ptr &aptr, const story_ptr &sptr);
 
     bool can_advance() const;
 
@@ -89,9 +89,9 @@ private:
     mutable sf::Color text_color;
     mutable const sf::Texture *text_texture;
 
-    void render(sf::RenderTarget &target, sf::RenderStates &states) const final;
+    void update_self(sf::Time dt) final;
 
-    void post_render() const final;
+    void draw_self(sf::RenderTarget &target, sf::RenderStates &states) const final;
 
     printable_store store();
 
@@ -137,6 +137,11 @@ private:
       });
     }
 };
+
+template<class ...Ts>
+static auto make_page(Ts &&... args) {
+  return std::make_unique<page>(std::forward<Ts>(args)...);
+}
 }
 
 #endif //SFML_GAME_PAGE_H

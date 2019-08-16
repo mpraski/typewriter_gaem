@@ -99,39 +99,6 @@ engine::system::system(
   whitespace_width += letter_spacing;
 }
 
-void engine::system::draw(const sf::Drawable &drawable) const {
-  window.draw(drawable);
-}
-
-void engine::system::display(const std::function<void(sf::RenderWindow &)> &f) const {
-  bool holds_mouse{false};
-
-  while (window.isOpen()) {
-    sf::Event event;
-    while (window.pollEvent(event)) {
-      switch (event.type) {
-        case sf::Event::Closed:
-          window.close();
-          break;
-        case sf::Event::MouseButtonPressed:
-          holds_mouse = true;
-          break;
-        case sf::Event::MouseButtonReleased:
-          if (holds_mouse) {
-            mouse_pressed = true;
-            mouse_pressed_position = sf::Vector2f{sf::Mouse::getPosition(window)};
-            holds_mouse = false;
-          }
-          break;
-        default:
-          break;
-      }
-    }
-
-    f(window);
-  }
-}
-
 void engine::system::delay(float duration, float delay_factor) const {
   sf::Clock clock;
   sf::Time time;
@@ -149,6 +116,11 @@ const sf::Vector2f &engine::system::mouse_position() const {
   prev_mouse = curr_mouse;
   curr_mouse = sf::Vector2f{sf::Mouse::getPosition(window)};
   return curr_mouse;
+}
+
+void engine::system::set_mouse_click(const sf::Vector2f &pos) const {
+  mouse_pressed = true;
+  mouse_pressed_position = pos;
 }
 
 bool engine::system::mouse_click_available() const {
@@ -179,4 +151,8 @@ void engine::system::set_cursor(cursor c) const {
       window.setMouseCursor(grab_cursor);
       break;
   }
+}
+
+sf::RenderWindow &engine::system::get_window() const {
+  return window;
 }

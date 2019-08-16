@@ -21,5 +21,6 @@
 #include "audio_system.hpp"
 #include "text_effect.hpp"
 #include "audio_system.hpp"
+#include "game.hpp"
 
 #endif //TYPEWRITER_GAEM_ENGINE_HPP

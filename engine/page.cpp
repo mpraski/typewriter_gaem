@@ -87,11 +87,10 @@ void add_glyph_quad(sf::VertexArray &vertices,
 engine::page::page(
     const system_ptr &rptr,
     const audio_system_ptr &aptr,
-    const story_ptr &sptr,
-    const layer *parent
+    const story_ptr &sptr
 ) :
     game_object{rptr},
-    layer{parent},
+    scene_node{},
     story{sptr},
     audio{aptr},
     printables{},
@@ -110,7 +109,6 @@ engine::page::page(
             .via(tweeny::easing::sinusoidalInOut)
             .on_step([&] {
               redraw();
-              system->delay(system::DEFAULT_DELAY);
             })
     },
     needs_advance{true},
@@ -134,9 +132,6 @@ engine::page::page(
     letter_spacing_factor{1.f},
     text_color{sf::Color::White},
     text_texture{} {
-  add_buffered(std::make_pair(&vertices_buffer, &vertices));
-  add(&debug_bounds_vertices);
-
   story->set_store(store());
   story->init();
 
@@ -200,11 +195,16 @@ void engine::page::input() {
   }
 }
 
-void engine::page::render(sf::RenderTarget &target, sf::RenderStates &states) const {
-  ensure_updated();
+void engine::page::update_self(sf::Time dt) {
+  if (can_advance()) {
+    advance();
+  } else {
+    input();
+  }
+}
 
-  states.transform *= getTransform();
-  states.texture = &system->font->getTexture(system->font_size);
+void engine::page::draw_self(sf::RenderTarget &target, sf::RenderStates &states) const {
+  ensure_updated();
 
 #ifdef DEBUG
   debug_bounds_vertices.clear();
@@ -214,6 +214,10 @@ void engine::page::render(sf::RenderTarget &target, sf::RenderStates &states) co
   }
 #endif
 
+  states.transform *= getTransform();
+  states.texture = &system->font->getTexture(system->font_size);
+
+  // Update the vertex buffer if it is being used
   if (sf::VertexBuffer::isAvailable()) {
     if (vertices_buffer.getVertexCount() != vertices.getVertexCount())
       vertices_buffer.create(vertices.getVertexCount());
@@ -221,9 +225,17 @@ void engine::page::render(sf::RenderTarget &target, sf::RenderStates &states) co
     if (vertices.getVertexCount() > 0)
       vertices_buffer.update(&vertices[0]);
   }
-}
 
-void engine::page::post_render() const {
+  if (sf::VertexBuffer::isAvailable()) {
+    target.draw(vertices_buffer, states);
+  } else {
+    target.draw(vertices, states);
+  }
+
+#ifdef DEBUG
+  target.draw(debug_bounds_vertices);
+#endif
+
   if (needs_update) {
     remove_text_effects(current_character);
   }
@@ -480,8 +492,6 @@ void engine::page::ensure_updated() const {
 
   bounds.width = std::min(bounds.width,
                           system->page_width);
-
-  system->delay(static_cast<float>(system->typing_delay), typing_delay_factor);
 }
 
 void engine::page::apply_text_effects(const printable &printable, size_t idx) const {
@@ -547,7 +557,7 @@ void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
   bool hovering{};
   for (auto &[printable, p_bounds] : printables) {
     if (printable->interactive()) {
-      auto t{to_global(p_bounds)};
+      auto t{global_transform().transformRect(p_bounds)};
       if (parent_intersects(t) && t.contains(cursor)) {
         printable->on_hover_start();
         hovering = true;
@@ -567,7 +577,7 @@ void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
 void engine::page::apply_mouse_click(const sf::Vector2f &cursor) {
   for (auto &[printable, p_bounds] : printables) {
     if (printable->interactive()) {
-      auto t{to_global(p_bounds)};
+      auto t{global_transform().transformRect(p_bounds)};
       if (parent_intersects(t) && t.contains(cursor)) {
         story->act(printable->on_click());
         system->set_cursor(system::cursor::ARROW);

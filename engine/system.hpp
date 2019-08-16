@@ -78,15 +78,13 @@ public:
 
     RESOURCE_GETTER(configs);
 
-    void draw(const sf::Drawable &drawable) const;
-
-    void display(const std::function<void(sf::RenderWindow &)> &f) const;
-
     void delay(float duration, float delay_factor = 1.f) const;
 
     bool mouse_moved() const;
 
     const sf::Vector2f &mouse_position() const;
+
+    void set_mouse_click(const sf::Vector2f &pos) const;
 
     bool mouse_click_available() const;
 
@@ -97,6 +95,8 @@ public:
     float effective_page_height() const;
 
     void set_cursor(cursor c) const;
+
+    sf::RenderWindow &get_window() const;
 
     sf::VideoMode mode;
     const sf::Font *font;
