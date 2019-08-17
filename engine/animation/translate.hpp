@@ -15,7 +15,7 @@ public:
 
 protected:
     void apply_step(float x, float y) const final {
-      transformable.move(x, y);
+      transformable->move(x, y);
     }
 };
 
@@ -25,7 +25,7 @@ public:
 
 protected:
     void apply_step(float y) const final {
-      transformable.move(0.f, y);
+      transformable->move(0.f, y);
     }
 };
 
@@ -35,7 +35,7 @@ public:
 
 protected:
     void apply_step(float x) const final {
-      transformable.move(x, 0.f);
+      transformable->move(x, 0.f);
     }
 };
 }

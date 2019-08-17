@@ -47,7 +47,6 @@ using resource_map = std::unordered_map<std::string, resource_pack<T>>;
 class system {
 public:
     const constexpr static auto ROOT_RESOURCE_CATEGORY = "<root>";
-    const constexpr static auto DEFAULT_DELAY = 100000.f;
 
     enum class cursor {
         ARROW,
@@ -77,8 +76,6 @@ public:
     RESOURCE_GETTER(textures);
 
     RESOURCE_GETTER(configs);
-
-    void delay(float duration, float delay_factor = 1.f) const;
 
     bool mouse_moved() const;
 

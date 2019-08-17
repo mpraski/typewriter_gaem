@@ -4,11 +4,15 @@
 
 #include "page_container.hpp"
 
-engine::page_container::page_container(const system_ptr &rptr, const audio_system_ptr &aptr, const story_ptr &sptr)
-    : game_object{rptr},
-      scene_node{{0, 0, rptr->page_width, rptr->page_height}},
+engine::page_container::page_container(
+    system_ptr sys_ptr,
+    audio_system_ptr audio_ptr,
+    story_ptr story_ptr
+)
+    : game_object{sys_ptr},
+      scene_node{{0, 0, system->page_width, system->page_height}},
       debug_bounds_vertices{sf::Lines} {
-  attach_child(make_page(rptr, aptr, sptr));
+  attach_child(make_page(sys_ptr, audio_ptr, story_ptr));
 }
 
 void engine::page_container::draw_self(sf::RenderTarget &target, sf::RenderStates states) const {

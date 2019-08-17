@@ -14,9 +14,9 @@ namespace engine {
 class page_container : public game_object, public scene_node {
 public:
     page_container(
-        const system_ptr &rptr,
-        const audio_system_ptr &aptr,
-        const story_ptr &sptr
+        system_ptr sys_ptr,
+        audio_system_ptr audio_ptr,
+        story_ptr story_ptr
     );
 
 private:

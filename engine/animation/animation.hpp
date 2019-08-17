@@ -9,13 +9,30 @@
 #include <functional>
 #include <tuple>
 #include <utility>
-#include <iostream>
 #include "../utilities/tuples.hpp"
 #include "tweeny.h"
 
 namespace engine {
+class animable {
+public:
+    virtual ~animable() = default;
+
+    virtual bool running() const = 0;
+
+    virtual void prime() = 0;
+
+    virtual void step() = 0;
+};
+
+class positional_animable {
+public:
+    virtual ~positional_animable() = default;
+
+    virtual void set_transformable(sf::Transformable *trans) = 0;
+};
+
 template<class... Ts>
-class animation {
+class animation : public animable {
     using callback = std::function<void()>;
     const constexpr static auto ANIMATION_END = std::numeric_limits<size_t>::max();
 protected:
@@ -65,14 +82,14 @@ protected:
         }
 
         template<class C>
-        builder &on_finish(C &&cb) {
-          _on_finish = std::forward<C>(cb);
+        builder &on_finish(C &&callback) {
+          _on_finish = std::forward<C>(callback);
           return *this;
         }
 
         template<class C>
-        builder &on_step(C &&cb) {
-          _on_step = std::forward<C>(cb);
+        builder &on_step(C &&callback) {
+          _on_step = std::forward<C>(callback);
           return *this;
         }
 
@@ -107,22 +124,24 @@ public:
       }
     }
 
+    ~animation() override = default;
+
     template<class... Args>
     static builder from(Args &&... from) {
       return builder().from(std::forward<Args>(from)...);
     }
 
-    bool running() const {
+    bool running() const final {
       return _curr_step != ANIMATION_END;
     }
 
-    void prime() {
+    void prime() final {
       _curr_step = 0;
       _curr_delta = std::tuple<Ts...>{};
       _tween.seek(0);
     }
 
-    void step() {
+    void step() final {
       if (_curr_step < _duration) {
         std::apply(_apply_step_fun, delta());
         _on_step();
@@ -160,19 +179,24 @@ private:
 // The transformable referenced here must exist throughout the lifetime of
 // this animation
 template<class... Ts>
-class transformable_animation : public animation<Ts...> {
+class transformable_animation : public animation<Ts...>, public positional_animable {
     using builder = typename animation<Ts...>::builder;
 public:
-    transformable_animation(
-        sf::Transformable &t,
+    explicit transformable_animation(
         const builder &b
     ) : animation<Ts...>(b),
-        transformable{t} {
+        transformable{nullptr} {
 
     };
 
+    ~transformable_animation() override = default;
+
+    void set_transformable(sf::Transformable *trans) final {
+      transformable = trans;
+    }
+
 protected:
-    sf::Transformable &transformable;
+    sf::Transformable *transformable;
 };
 }
 

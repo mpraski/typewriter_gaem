@@ -85,14 +85,14 @@ void add_glyph_quad(sf::VertexArray &vertices,
 }
 
 engine::page::page(
-    const system_ptr &rptr,
-    const audio_system_ptr &aptr,
-    const story_ptr &sptr
+    system_ptr sys_ptr,
+    audio_system_ptr audio_ptr,
+    story_ptr story_ptr
 ) :
-    game_object{rptr},
+    game_object{std::move(sys_ptr)},
     scene_node{},
-    story{sptr},
-    audio{aptr},
+    story{std::move(story_ptr)},
+    audio{std::move(audio_ptr)},
     printables{},
     active_effects{},
     current_printable{},
@@ -101,16 +101,6 @@ engine::page::page(
     vertices_buffer{sf::Triangles, sf::VertexBuffer::Static},
     debug_bounds_vertices{sf::Lines},
     font_texture_vertices{sf::Triangles},
-    line_shift_animation{
-        *this,
-        translate_vertical::from(0.f)
-            .to(-system->line_spacing)
-            .during(30)
-            .via(tweeny::easing::quadraticInOut)
-            .on_step([&] {
-              redraw();
-            })
-    },
     needs_advance{true},
     needs_update{true},
     needs_redraw{true},
@@ -132,6 +122,17 @@ engine::page::page(
     letter_spacing_factor{1.f},
     text_color{sf::Color::White},
     text_texture{} {
+  attach_animation<translate_vertical>(
+      LINE_SHIFT,
+      translate_vertical::from(0.f)
+          .to(-system->line_spacing)
+          .during(30)
+          .via(tweeny::easing::quadraticInOut)
+          .on_step([&] {
+            redraw();
+          })
+  );
+
   story->set_store(store());
   story->init();
 
@@ -151,8 +152,8 @@ bool engine::page::can_advance() const {
 }
 
 void engine::page::advance() {
-  if (line_shift_animation.running()) {
-    line_shift_animation.step();
+  if (get_animation(LINE_SHIFT).running()) {
+    get_animation(LINE_SHIFT).step();
   } else if (end_of_text()) {
     needs_advance = false;
     current_character = 0;
@@ -195,9 +196,16 @@ void engine::page::input() {
   }
 }
 
+// Both branches of "if" lead to advance(), but has_elapsed makes sure
+// the typing delay is simulated. If the animation is running there is no
+// need to slow it down though.
 void engine::page::update_self(sf::Time dt) {
   if (can_advance()) {
-    advance();
+    if (get_animation(LINE_SHIFT).running()) {
+      advance();
+    } else if (has_elapsed(sf::milliseconds(system->typing_delay))) {
+      advance();
+    }
   } else {
     input();
   }
@@ -723,7 +731,7 @@ void engine::page::new_line() const {
   y += system->line_spacing;
   x = system->margin_horizontal;
   if (end_of_page()) {
-    line_shift_animation.prime();
+    get_animation(LINE_SHIFT).prime();
   }
 }
 

@@ -6,15 +6,21 @@
 
 engine::scene_node::scene_node()
     : bounds{},
+      parent{nullptr},
       children{},
-      parent{nullptr} {
+      animations{},
+      clock{},
+      since_last_update{sf::Time::Zero} {
 
 }
 
 engine::scene_node::scene_node(sf::FloatRect bounds)
     : bounds{bounds},
+      parent{nullptr},
       children{},
-      parent{nullptr} {
+      animations{},
+      clock{},
+      since_last_update{sf::Time::Zero} {
 
 }
 
@@ -35,6 +41,19 @@ engine::scene_node_ptr engine::scene_node::detach_child(const engine::scene_node
   return evicted;
 }
 
+void engine::scene_node::detach_animation(const std::string &name) {
+  auto child{animations.find(name)};
+  if (child == std::end(animations)) {
+    throw std::runtime_error("Animation not present");
+  }
+
+  animations.erase(child);
+}
+
+engine::animable &engine::scene_node::get_animation(const std::string &name) const {
+  return *animations.at(name).get();
+}
+
 sf::Transform engine::scene_node::global_transform() const {
   auto transform{sf::Transform::Identity};
   for (const auto *ptr{this}; ptr != nullptr; ptr = ptr->parent) {
@@ -49,6 +68,15 @@ sf::FloatRect engine::scene_node::local_bounds() const {
 
 sf::FloatRect engine::scene_node::global_bounds() const {
   return global_transform().transformRect(local_bounds());
+}
+
+bool engine::scene_node::has_elapsed(sf::Time dt) {
+  if (since_last_update > dt) {
+    since_last_update = sf::Time::Zero;
+    return true;
+  }
+
+  return false;
 }
 
 bool engine::scene_node::is_root() const {
@@ -93,4 +121,7 @@ void engine::scene_node::draw(sf::RenderTarget &target, sf::RenderStates states)
 
   draw_self(target, states);
   draw_children(target, states);
+
+  sf::Time elapsed{clock.restart()};
+  since_last_update += elapsed;
 }

@@ -37,8 +37,14 @@ class page : public game_object, public scene_node {
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;
     using effect_it = effect_array::const_iterator;
+
+    const constexpr static auto LINE_SHIFT = "line_shift";
 public:
-    page(const system_ptr &rptr, const audio_system_ptr &aptr, const story_ptr &sptr);
+    page(
+        system_ptr sys_ptr,
+        audio_system_ptr audio_ptr,
+        story_ptr story_ptr
+    );
 
 private:
     enum class displacement {
@@ -114,7 +120,6 @@ private:
     mutable sf::VertexBuffer vertices_buffer;
     mutable sf::VertexArray debug_bounds_vertices;
     mutable sf::VertexArray font_texture_vertices;
-    mutable translate_vertical line_shift_animation;
     // Control flags
     mutable bool needs_advance;
     mutable bool needs_update;

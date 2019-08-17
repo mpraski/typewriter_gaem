@@ -76,7 +76,7 @@ engine::system::system(
   margin_horizontal = page_config.get<float>("page.margin_horizontal");
   letter_spacing_factor = page_config.get<float>("page.letter_spacing_factor");
   line_spacing_factor = page_config.get<float>("page.line_spacing_factor");
-  typing_delay = page_config.get<unsigned>("page.typing_delay") * 100000u;
+  typing_delay = page_config.get<unsigned>("page.typing_delay");
 
   auto page_font{page_config.get<std::string>("page.font")};
   font = &get_fonts(page_font);
@@ -97,15 +97,6 @@ engine::system::system(
   underline_thickness = font->getUnderlineThickness(font_size);
 
   whitespace_width += letter_spacing;
-}
-
-void engine::system::delay(float duration, float delay_factor) const {
-  sf::Clock clock;
-  sf::Time time;
-
-  while (time.asMilliseconds() < duration * delay_factor) {
-    time += clock.getElapsedTime();
-  }
 }
 
 bool engine::system::mouse_moved() const {

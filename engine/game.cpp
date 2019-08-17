@@ -24,14 +24,14 @@ engine::game::game(
 
 void engine::game::run() {
   sf::Clock clock;
-  sf::Time timeSinceLastUpdate = sf::Time::Zero;
+  sf::Time since_last_update = sf::Time::Zero;
 
   while (window.isOpen()) {
-    sf::Time elapsedTime = clock.restart();
-    timeSinceLastUpdate += elapsedTime;
+    sf::Time elapsed = clock.restart();
+    since_last_update += elapsed;
 
-    while (timeSinceLastUpdate > time_per_frame) {
-      timeSinceLastUpdate -= time_per_frame;
+    while (since_last_update > time_per_frame) {
+      since_last_update -= time_per_frame;
       process_events();
       update(time_per_frame);
     }

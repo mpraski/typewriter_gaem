@@ -7,6 +7,7 @@
 
 #include <sstream>
 #include <algorithm>
+#include <variant>
 #include <SFML/Graphics/RenderTarget.hpp>
 
 namespace engine::gen {
