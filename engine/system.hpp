@@ -33,7 +33,7 @@ inline const auto &get_##RMAP(const std::string & res_id, const std::string &res
   try { \
     return (RMAP).at(res_category).at(res_id); \
   } catch (const std::out_of_range &ex) { \
-    throw std::runtime_error(std::string{#RMAP} + " category not found: " + res_category); \
+    throw std::runtime_error(std::string{#RMAP} + " category or resource not found: (" + res_category + ", " + res_id + ")"); \
   } \
 }
 
@@ -77,19 +77,13 @@ public:
 
     RESOURCE_GETTER(configs);
 
-    bool mouse_moved() const;
-
-    const sf::Vector2f &mouse_position() const;
+    sf::Vector2f mouse_position() const;
 
     void set_mouse_click(const sf::Vector2f &pos) const;
 
     bool mouse_click_available() const;
 
     const sf::Vector2f &mouse_click_position() const;
-
-    float effective_page_width() const;
-
-    float effective_page_height() const;
 
     void set_cursor(cursor c) const;
 
@@ -121,7 +115,6 @@ private:
     mutable cursor current_cursor;
     mutable sf::Cursor arrow_cursor;
     mutable sf::Cursor grab_cursor;
-    mutable sf::Vector2f curr_mouse, prev_mouse;
     mutable sf::RenderWindow window;
     mutable bool mouse_pressed;
     mutable sf::Vector2f mouse_pressed_position;

@@ -182,10 +182,9 @@ template<class... Ts>
 class transformable_animation : public animation<Ts...>, public positional_animable {
     using builder = typename animation<Ts...>::builder;
 public:
-    explicit transformable_animation(
-        const builder &b
-    ) : animation<Ts...>(b),
-        transformable{nullptr} {
+    explicit transformable_animation(const builder &b)
+        : animation<Ts...>(b),
+          transformable{nullptr} {
 
     };
 

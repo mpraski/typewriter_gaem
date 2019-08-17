@@ -5,7 +5,6 @@
 #ifndef TYPEWRITER_GAEM_PRINTABLE_HPP
 #define TYPEWRITER_GAEM_PRINTABLE_HPP
 
-#include <iostream>
 #include <cstddef>
 #include <unordered_map>
 #include <vector>

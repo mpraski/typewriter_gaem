@@ -3,7 +3,7 @@
 
 int main() {
   auto game_system{engine::make_system(
-      sf::VideoMode(500, 400),
+      sf::VideoMode(500, 500),
       "./res/fonts",
       "./res/sounds",
       "./res/textures",
@@ -130,7 +130,7 @@ int main() {
 
     game.run();
   } catch (std::exception &e) {
-    throw std::runtime_error(engine::gen::str("Game error ", e.what()));
+    throw std::runtime_error(engine::gen::str("Main loop error: ", e.what()));
   }
 
   return 0;

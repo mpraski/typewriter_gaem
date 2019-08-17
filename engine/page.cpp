@@ -104,6 +104,7 @@ engine::page::page(
     needs_advance{true},
     needs_update{true},
     needs_redraw{true},
+    needs_first_preprocess{true},
     x{system->margin_horizontal},
     y{system->margin_vertical + static_cast<float>(system->font_size)},
     min_x{},
@@ -120,6 +121,7 @@ engine::page::page(
     italic_shear{},
     typing_delay_factor{1.f},
     letter_spacing_factor{1.f},
+    typing_delay_effective{system->typing_delay},
     text_color{sf::Color::White},
     text_texture{} {
   attach_animation<translate_vertical>(
@@ -143,8 +145,6 @@ engine::page::page(
   current_printable = std::begin(printables);
   rect(current_printable).top = system->margin_vertical;
   rect(current_printable).left = x;
-
-  preprocess(*pointer(current_printable));
 }
 
 bool engine::page::can_advance() const {
@@ -203,7 +203,7 @@ void engine::page::update_self(sf::Time dt) {
   if (can_advance()) {
     if (get_animation(LINE_SHIFT).running()) {
       advance();
-    } else if (has_elapsed(sf::milliseconds(system->typing_delay))) {
+    } else if (has_elapsed(sf::milliseconds(typing_delay_effective))) {
       advance();
     }
   } else {
@@ -317,7 +317,7 @@ float engine::page::measure_text(const printable &printable, size_t begin, size_
           width += system->whitespace_width + letter_spacing_factor;
           break;
         case L'\t':
-          width += system->whitespace_width * 4;
+          width += system->whitespace_width * 4.f;
           break;
         case L'\n':
           return width;
@@ -335,7 +335,7 @@ float engine::page::measure_text(const printable &printable, size_t begin, size_
   return width;
 }
 
-void engine::page::preprocess(printable &printable) {
+void engine::page::preprocess(printable &printable) const {
   float word_width{};
   float from_last_blank{};
   auto last_blank{std::numeric_limits<size_t>::max()};
@@ -373,7 +373,7 @@ void engine::page::preprocess(printable &printable) {
           }
           break;
         case L'\t':
-          word_width += system->whitespace_width * 4;
+          word_width += system->whitespace_width * 4.f;
           if (i) {
             last_blank = i;
             from_last_blank = word_width;
@@ -391,7 +391,7 @@ void engine::page::preprocess(printable &printable) {
     prev_char = curr_char;
     remove_text_effects(i);
 
-    if (word_width > system->effective_page_width()) {
+    if (word_width > parent_local_bounds().width - 2.f * system->margin_horizontal) {
       if (last_blank == std::numeric_limits<size_t>::max()) {
         printable.inject_line_at(i);
         p_len++;
@@ -409,6 +409,11 @@ void engine::page::preprocess(printable &printable) {
 void engine::page::ensure_updated() const {
   if (!needs_update)
     return;
+
+  if (needs_first_preprocess) {
+    preprocess(*pointer(current_printable));
+    needs_first_preprocess = false;
+  }
 
   const auto &printable{*pointer(current_printable)};
 
@@ -453,7 +458,7 @@ void engine::page::ensure_updated() const {
         x += system->whitespace_width + letter_spacing_factor;
         break;
       case L'\t':
-        x += system->whitespace_width * 4;
+        x += system->whitespace_width * 4.f;
         break;
       case L'\n':
         new_line();
@@ -502,16 +507,16 @@ void engine::page::ensure_updated() const {
   bounds.height = max_y - min_y;
   bounds.width = max_x - min_x;
 
-  bounds.height = std::max(bounds.height,
-                           bounds.height + system->margin_vertical);
+  bounds.height = std::max(bounds.height, bounds.height + system->margin_vertical);
   bounds.width = std::max(bounds.width, bounds.width + system->margin_horizontal);
 
-  bounds.width = std::min(bounds.width,
-                          system->page_width);
+  bounds.width = std::min(bounds.width, parent_local_bounds().width);
 }
 
 void engine::page::apply_text_effects(const printable &printable, size_t idx) const {
   printable.load_effects(idx, std::back_inserter(active_effects));
+
+  typing_delay_effective = system->typing_delay;
 
   for (const auto &e : active_effects) {
     switch (e.kind) {
@@ -532,6 +537,7 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
         break;
       case text_effect::kind::DELAY:
         typing_delay_factor = e.delay_factor;
+        typing_delay_effective = system->typing_delay * std::lround(typing_delay_factor);
         break;
       case text_effect::kind::SPACING:
         letter_spacing_factor = e.letter_spacing_factor;
@@ -673,7 +679,7 @@ void engine::page::redraw() {
             x += system->whitespace_width + letter_spacing_factor;
             break;
           case L'\t':
-            x += system->whitespace_width * 4;
+            x += system->whitespace_width * 4.f;
             break;
           case L'\n':
             y += system->line_spacing;
@@ -719,9 +725,9 @@ engine::page::effect_it engine::page::displacement_effect(enum displacement d) c
 float engine::page::displacement_spacing(enum displacement d, float width) const {
   switch (d) {
     case displacement::CENTER:
-      return (system->effective_page_width() - width) / 2 - system->margin_horizontal / 2;
+      return parent_local_bounds().width / 2.f - system->margin_horizontal * 1.5f - width / 2.f;
     case displacement::RIGHT:
-      return system->effective_page_width() - width - system->margin_horizontal / 2;
+      return parent_local_bounds().width - 2.5f * system->margin_horizontal - width;
     default:
       throw std::runtime_error("Wrong displacement value");
   }
@@ -736,7 +742,7 @@ void engine::page::new_line() const {
 }
 
 bool engine::page::end_of_page() const {
-  return y >= system->page_height - system->margin_vertical;
+  return y >= parent_local_bounds().height - system->margin_vertical;
 }
 
 bool engine::page::end_of_text() const {

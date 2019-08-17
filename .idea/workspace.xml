@@ -15,17 +15,14 @@
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/animation/animation.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/animation/animation.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/animation/translate.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/animation/translate.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/game.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/page.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page_container.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page_container.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/printables/printable.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/printables/printable.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/scene_node.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene_node.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/scene_node.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene_node.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/system.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/system.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/utilities/general.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/general.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/res/configs/page.json" beforeDir="false" afterPath="$PROJECT_DIR$/res/configs/page.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -59,7 +56,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="database.main" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.C/C++" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -132,7 +129,8 @@
       <workItem from="1565448859675" duration="5615000" />
       <workItem from="1565800733927" duration="34017000" />
       <workItem from="1565940229086" duration="35925000" />
-      <workItem from="1566028686912" duration="4914000" />
+      <workItem from="1566028686912" duration="5120000" />
+      <workItem from="1566047447930" duration="7180000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -449,7 +447,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565971399868</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="added scene node animations">
+      <created>1566037189620</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1566037189621</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -470,7 +475,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Fixed type mismatch, changed line breaks computation" />
     <MESSAGE value="downgraded minimal cmake version" />
     <MESSAGE value="using boost:filesystem instead of std::filesystem now because of gcc-8 fuckery (see https://bugs.launchpad.net/ubuntu/+source/gcc-8/+bug/1824721)" />
     <MESSAGE value="made an attempt to blend font texture with a background overlay to achieve coloured text" />
@@ -495,6 +499,7 @@
     <MESSAGE value="fixed more shit" />
     <MESSAGE value="rewrote scene layering system" />
     <MESSAGE value="fixed stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed stuff" />
+    <MESSAGE value="added scene node animations" />
+    <option name="LAST_COMMIT_MESSAGE" value="added scene node animations" />
   </component>
 </project>

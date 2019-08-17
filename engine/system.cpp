@@ -15,8 +15,6 @@ engine::system::system(
       current_cursor{cursor::ARROW},
       arrow_cursor{},
       grab_cursor{},
-      curr_mouse{},
-      prev_mouse{},
       window{mode, "Typewriter Gaem"},
       font{},
       fonts{
@@ -99,14 +97,8 @@ engine::system::system(
   whitespace_width += letter_spacing;
 }
 
-bool engine::system::mouse_moved() const {
-  return curr_mouse != prev_mouse;
-}
-
-const sf::Vector2f &engine::system::mouse_position() const {
-  prev_mouse = curr_mouse;
-  curr_mouse = sf::Vector2f{sf::Mouse::getPosition(window)};
-  return curr_mouse;
+sf::Vector2f engine::system::mouse_position() const {
+  return sf::Vector2f{sf::Mouse::getPosition(window)};
 }
 
 void engine::system::set_mouse_click(const sf::Vector2f &pos) const {
@@ -121,14 +113,6 @@ bool engine::system::mouse_click_available() const {
 const sf::Vector2f &engine::system::mouse_click_position() const {
   mouse_pressed = false;
   return mouse_pressed_position;
-}
-
-float engine::system::effective_page_width() const {
-  return page_width - 2 * margin_horizontal;
-}
-
-float engine::system::effective_page_height() const {
-  return page_height - 2 * margin_vertical;
 }
 
 void engine::system::set_cursor(cursor c) const {

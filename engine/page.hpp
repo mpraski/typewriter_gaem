@@ -15,7 +15,6 @@
 #include <memory>
 #include <cmath>
 #include <unordered_set>
-#include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "game_object.hpp"
@@ -67,7 +66,7 @@ private:
 
     float measure_text(const printable &printable, size_t begin, size_t end) const;
 
-    void preprocess(printable &printable);
+    void preprocess(printable &printable) const;
 
     void ensure_updated() const;
 
@@ -124,6 +123,7 @@ private:
     mutable bool needs_advance;
     mutable bool needs_update;
     mutable bool needs_redraw;
+    mutable bool needs_first_preprocess;
     // Text bounds
     mutable float x;
     mutable float y;
@@ -142,6 +142,7 @@ private:
     mutable float italic_shear;
     mutable float typing_delay_factor;
     mutable float letter_spacing_factor;
+    mutable unsigned typing_delay_effective;
     mutable sf::Color text_color;
     mutable const sf::Texture *text_texture;
 };

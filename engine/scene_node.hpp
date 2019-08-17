@@ -5,7 +5,6 @@
 #ifndef TYPEWRITER_GAEM_SCENE_NODE_HPP
 #define TYPEWRITER_GAEM_SCENE_NODE_HPP
 
-#include <any>
 #include <SFML/Graphics.hpp>
 #include "utilities/general.hpp"
 #include "animation/translate.hpp"
@@ -49,6 +48,10 @@ protected:
     sf::FloatRect local_bounds() const;
 
     sf::FloatRect global_bounds() const;
+
+    sf::FloatRect parent_local_bounds() const;
+
+    sf::FloatRect parent_global_bounds() const;
 
     bool has_elapsed(sf::Time dt);
 
