@@ -96,26 +96,21 @@ public:
       using CE = typename std::remove_const<typename std::remove_reference<E>::type>::type;
       using typed_container_t = synchronous_callback_container<CE>;
 
-      static_assert(!std::is_const<CE>::value, "Class must not be const");
       static_assert(!std::is_volatile<CE>::value, "Class must not be volatile");
-      static_assert(!std::is_reference<CE>::value, "Class must not be a reference");
       static_assert(!std::is_pointer<CE>::value, "Class must not be a pointer");
 
       auto tid{gen::type_id<CE>()};
       auto &chan{callbacks[channel]};
-      if (auto it{chan.find(tid)}; it == std::end(chan)) {
-        return;
+      if (auto container_it{chan.find(tid)}; container_it != std::end(chan)) {
+        auto *typed_container{static_cast<typed_container_t *>(container_it->second.get())};
+        typed_container->notify(std::forward<E>(event));
       }
-
-      auto &container{chan[tid]};
-      auto *typed_container{static_cast<typed_container_t *>(container.get())};
-      typed_container->notify(std::forward<E>(event));
     }
 
     void deliver() {
       for (auto&[chan, cbs] : callbacks) {
-        for (auto&[id, vect] : cbs) {
-          vect->deliver();
+        for (auto&[id, cont] : cbs) {
+          cont->deliver();
         }
       }
     }

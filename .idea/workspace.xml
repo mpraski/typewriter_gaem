@@ -13,18 +13,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/engine/event_bus/callback_container.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/event_bus/event_bus.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/event_bus/synchronous_callback_container.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/animation/animation.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/animation/animation.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page_container.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/page_container.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/page_container.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/scene_node.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene_node.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/scene_node.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene_node.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/utilities/general.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/general.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/event_bus/event_bus.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/event_bus/event_bus.hpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -134,7 +124,7 @@
       <workItem from="1566028686912" duration="5120000" />
       <workItem from="1566047447930" duration="8828000" />
       <workItem from="1566073023207" duration="3559000" />
-      <workItem from="1566113246576" duration="8805000" />
+      <workItem from="1566113246576" duration="10455000" />
     </task>
     <task id="LOCAL-00001" summary="Implement own drawable to render text on a typewriter page">
       <created>1563635421844</created>
@@ -465,7 +455,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566062958323</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="added clock-driven event bus for indirect scene node communication">
+      <created>1566122702428</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1566122702429</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -486,7 +483,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="using boost:filesystem instead of std::filesystem now because of gcc-8 fuckery (see https://bugs.launchpad.net/ubuntu/+source/gcc-8/+bug/1824721)" />
     <MESSAGE value="made an attempt to blend font texture with a background overlay to achieve coloured text" />
     <MESSAGE value="Prototyped decision tree and player actions" />
     <MESSAGE value="Further prototyped decision trees" />
@@ -511,6 +507,7 @@
     <MESSAGE value="fixed stuff" />
     <MESSAGE value="added scene node animations" />
     <MESSAGE value="fixed typing delay" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed typing delay" />
+    <MESSAGE value="added clock-driven event bus for indirect scene node communication" />
+    <option name="LAST_COMMIT_MESSAGE" value="added clock-driven event bus for indirect scene node communication" />
   </component>
 </project>
