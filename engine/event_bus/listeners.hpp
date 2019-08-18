@@ -2,17 +2,17 @@
 // Created by marcin on 8/18/19.
 //
 
-#ifndef TYPEWRITER_GAEM_CALLBACK_CONTAINER_HPP
-#define TYPEWRITER_GAEM_CALLBACK_CONTAINER_HPP
+#ifndef TYPEWRITER_GAEM_LISTENERS_HPP
+#define TYPEWRITER_GAEM_LISTENERS_HPP
 
 #include <cstdint>
 
 namespace engine {
 using callback_id_t = std::uintptr_t;
 
-class callback_container {
+class listeners {
 public:
-    virtual ~callback_container() = default;
+    virtual ~listeners() = default;
 
     virtual void deliver() = 0;
 
@@ -20,4 +20,4 @@ public:
 };
 }
 
-#endif //TYPEWRITER_GAEM_CALLBACK_CONTAINER_HPP
+#endif //TYPEWRITER_GAEM_LISTENERS_HPP

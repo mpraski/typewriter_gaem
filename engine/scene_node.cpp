@@ -120,9 +120,12 @@ bool engine::scene_node::parent_contains(const sf::Vector2f &vert) const {
 }
 
 void engine::scene_node::update(sf::Time dt) {
-  event_bus::get_instance().deliver();
+  // if there is an animation in progress,
+  // just step it without updating self
+  if (!animation_in_progress()) {
+    update_self(dt);
+  }
 
-  update_self(dt);
   update_children(dt);
 }
 
@@ -147,6 +150,8 @@ void engine::scene_node::draw_children(sf::RenderTarget &target, sf::RenderState
 }
 
 void engine::scene_node::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+  event_bus::get_instance().deliver();
+
   states.transform *= getTransform();
 
   draw_self(target, states);
@@ -154,4 +159,15 @@ void engine::scene_node::draw(sf::RenderTarget &target, sf::RenderStates states)
 
   sf::Time elapsed{clock.restart()};
   since_last_update += elapsed;
+}
+
+bool engine::scene_node::animation_in_progress() {
+  bool anim_running{};
+  for (auto &[name, anim] : animations) {
+    if (anim->running()) {
+      anim_running = true;
+      anim->step();
+    }
+  }
+  return anim_running;
 }

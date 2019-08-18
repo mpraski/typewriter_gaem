@@ -43,6 +43,14 @@ public:
 
     animable &get_animation(const std::string &name) const;
 
+    template<class T>
+    T &cast_animation(const std::string &name) const {
+      auto *anim{animations.at(name).get()};
+      assert(dynamic_cast<T *>(anim));
+      auto *typed_anim{static_cast<T *>(anim)};
+      return *typed_anim;
+    }
+
 protected:
     mutable sf::FloatRect bounds;
 
@@ -110,6 +118,8 @@ protected:
 
 private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
+
+    bool animation_in_progress();
 
 private:
     const scene_node *parent;

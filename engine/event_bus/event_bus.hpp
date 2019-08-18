@@ -9,8 +9,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
-#include "callback_container.hpp"
-#include "synchronous_callback_container.hpp"
+#include "listeners.hpp"
+#include "synchronous_listeners.hpp"
 
 // Add event bus for indirect communication between
 // scene nodes and such. May be useful to coordinate
@@ -18,7 +18,7 @@
 namespace engine {
 class event_bus {
     using type_id_t = std::size_t;
-    using callback_container_ptr = std::unique_ptr<callback_container>;
+    using listeners_prt = std::unique_ptr<listeners>;
     const constexpr static auto DEFAULT_CHANNEL = "default_channel";
 public:
     static event_bus &get_instance() {
@@ -46,17 +46,17 @@ public:
       static_assert(!std::is_reference<E>::value, "Class must not be a reference");
       static_assert(!std::is_pointer<E>::value, "Class must not be a pointer");
 
-      using typed_container_t = synchronous_callback_container<E>;
+      using typed_listeners_t = synchronous_listeners<E>;
 
       auto tid{gen::type_id<E>()};
       auto &chan{callbacks[channel]};
       if (chan.find(tid) == std::end(chan)) {
-        chan.insert(std::make_pair(tid, std::make_unique<typed_container_t>()));
+        chan.insert(std::make_pair(tid, std::make_unique<typed_listeners_t>()));
       }
 
-      auto &container{chan[tid]};
-      auto *typed_container{static_cast<typed_container_t *>(container.get())};
-      typed_container->add(cbid, std::forward<F>(cb));
+      auto &listeners{chan[tid]};
+      auto *typed_listeners{static_cast<typed_listeners_t *>(listeners.get())};
+      typed_listeners->add(cbid, std::forward<F>(cb));
     }
 
     template<class E>
@@ -74,7 +74,7 @@ public:
       auto tid{gen::type_id<E>()};
       auto &chan{callbacks[channel]};
       if (auto it{chan.find(tid)}; it != std::end(chan)) {
-        it->remove(cbid);
+        it->second.remove(cbid);
       }
     }
 
@@ -94,23 +94,23 @@ public:
     template<class E>
     void notify(const std::string &channel, E &&event) {
       using CE = typename std::remove_const<typename std::remove_reference<E>::type>::type;
-      using typed_container_t = synchronous_callback_container<CE>;
+      using typed_listeners_t = synchronous_listeners<CE>;
 
       static_assert(!std::is_volatile<CE>::value, "Class must not be volatile");
       static_assert(!std::is_pointer<CE>::value, "Class must not be a pointer");
 
       auto tid{gen::type_id<CE>()};
       auto &chan{callbacks[channel]};
-      if (auto container_it{chan.find(tid)}; container_it != std::end(chan)) {
-        auto *typed_container{static_cast<typed_container_t *>(container_it->second.get())};
-        typed_container->notify(std::forward<E>(event));
+      if (auto it{chan.find(tid)}; it != std::end(chan)) {
+        auto *typed_listeners{static_cast<typed_listeners_t *>(it->second.get())};
+        typed_listeners->notify(std::forward<E>(event));
       }
     }
 
     void deliver() {
-      for (auto&[chan, cbs] : callbacks) {
-        for (auto&[id, cont] : cbs) {
-          cont->deliver();
+      for (auto&[name, channel] : callbacks) {
+        for (auto&[id, listeners] : channel) {
+          listeners->deliver();
         }
       }
     }
@@ -120,7 +120,7 @@ private:
 
 private:
     std::unordered_map<std::string,
-        std::unordered_map<type_id_t, callback_container_ptr>
+        std::unordered_map<type_id_t, listeners_prt>
     > callbacks;
 };
 }

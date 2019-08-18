@@ -14,7 +14,7 @@ engine::page_container::page_container(
       debug_bounds_vertices{sf::Lines} {
   attach_child(make_page(sys_ptr, audio_ptr, story_ptr));
 
-  listen<std::string>([](const auto &message) {
+  listen<std::string>([&](const auto &message) {
     std::cout << "got message: " << message << std::endl;
   });
 }

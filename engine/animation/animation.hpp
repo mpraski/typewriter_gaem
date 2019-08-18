@@ -155,6 +155,11 @@ public:
       }
     }
 
+    template<class... Args>
+    void to(Args &&... to) {
+      _tween = _tween.to(std::forward<Args>(to)...);
+    }
+
 protected:
     virtual void apply_step(Ts... vals) const = 0;
 

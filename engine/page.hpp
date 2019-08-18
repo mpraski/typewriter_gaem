@@ -142,7 +142,6 @@ private:
     mutable float italic_shear;
     mutable float typing_delay_factor;
     mutable float letter_spacing_factor;
-    mutable unsigned typing_delay_effective;
     mutable sf::Color text_color;
     mutable const sf::Texture *text_texture;
 };

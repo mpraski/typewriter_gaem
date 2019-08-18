@@ -121,7 +121,6 @@ engine::page::page(
     italic_shear{},
     typing_delay_factor{1.f},
     letter_spacing_factor{1.f},
-    typing_delay_effective{system->typing_delay},
     text_color{sf::Color::White},
     text_texture{} {
   attach_animation<translate_vertical>(
@@ -152,9 +151,7 @@ bool engine::page::can_advance() const {
 }
 
 void engine::page::advance() {
-  if (get_animation(LINE_SHIFT).running()) {
-    get_animation(LINE_SHIFT).step();
-  } else if (end_of_text()) {
+  if (end_of_text()) {
     needs_advance = false;
     current_character = 0;
 
@@ -198,16 +195,9 @@ void engine::page::input() {
   }
 }
 
-// Both branches of "if" lead to advance(), but has_elapsed makes sure
-// the typing delay is simulated. If the animation is running there is no
-// need to slow it down though.
 void engine::page::update_self(sf::Time dt) {
-  if (can_advance()) {
-    if (get_animation(LINE_SHIFT).running()) {
-      advance();
-    } else if (has_elapsed(sf::milliseconds(typing_delay_effective))) {
-      advance();
-    }
+  if (can_advance() && has_elapsed(sf::milliseconds(typing_delay_factor))) {
+    advance();
   } else {
     input();
   }
@@ -518,7 +508,7 @@ void engine::page::ensure_updated() const {
 void engine::page::apply_text_effects(const printable &printable, size_t idx) const {
   printable.load_effects(idx, std::back_inserter(active_effects));
 
-  typing_delay_effective = system->typing_delay;
+  typing_delay_factor = static_cast<float>(system->typing_delay);
 
   for (const auto &e : active_effects) {
     switch (e.kind) {
@@ -538,8 +528,7 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
         is_uppercase = true;
         break;
       case text_effect::kind::DELAY:
-        typing_delay_factor = e.delay_factor;
-        typing_delay_effective = system->typing_delay * std::lround(typing_delay_factor);
+        typing_delay_factor = static_cast<float>(system->typing_delay) * e.delay_factor;
         break;
       case text_effect::kind::SPACING:
         letter_spacing_factor = e.letter_spacing_factor;
@@ -571,7 +560,6 @@ void engine::page::remove_text_effects(size_t idx) const {
   is_uppercase = false;
   displacement = displacement::NONE;
   italic_shear = 0.f;
-  typing_delay_factor = 1.f;
   letter_spacing_factor = 1.f;
   text_color = sf::Color::White;
   text_texture = nullptr;

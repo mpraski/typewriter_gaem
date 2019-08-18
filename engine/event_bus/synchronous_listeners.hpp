@@ -2,18 +2,18 @@
 // Created by marcin on 8/18/19.
 //
 
-#ifndef TYPEWRITER_GAEM_SYNCHRONOUS_CALLBACK_CONTAINER_HPP
-#define TYPEWRITER_GAEM_SYNCHRONOUS_CALLBACK_CONTAINER_HPP
+#ifndef TYPEWRITER_GAEM_SYNCHRONOUS_LISTENERS_HPP
+#define TYPEWRITER_GAEM_SYNCHRONOUS_LISTENERS_HPP
 
 #include <vector>
 #include <queue>
 #include <functional>
-#include "callback_container.hpp"
+#include "listeners.hpp"
 #include "../utilities/general.hpp"
 
 namespace engine {
 template<class E>
-class synchronous_callback_container : public callback_container {
+class synchronous_listeners : public listeners {
     using callback_t = std::function<void(const E &)>;
 public:
     void remove(callback_id_t cbid) final {
@@ -27,8 +27,9 @@ public:
       callbacks.push_back(std::make_pair(cbid, std::forward<F>(cb)));
     }
 
-    void notify(E &&event) {
-      to_deliver.push(std::move(event));
+    template<class I>
+    void notify(I &&event) {
+      to_deliver.push(std::forward<I>(event));
     }
 
     void deliver() final {
@@ -47,4 +48,4 @@ private:
 };
 }
 
-#endif //TYPEWRITER_GAEM_SYNCHRONOUS_CALLBACK_CONTAINER_HPP
+#endif //TYPEWRITER_GAEM_SYNCHRONOUS_LISTENERS_HPP
