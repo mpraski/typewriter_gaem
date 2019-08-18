@@ -24,6 +24,10 @@ engine::scene_node::scene_node(sf::FloatRect bounds)
 
 }
 
+engine::scene_node::~scene_node() {
+  event_bus::get_instance().unlisten_all(gen::to_uintptr(this));
+}
+
 void engine::scene_node::attach_child(scene_node_ptr ptr) {
   ptr->parent = this;
   children.push_back(std::move(ptr));
@@ -71,9 +75,9 @@ sf::FloatRect engine::scene_node::global_bounds() const {
 }
 
 sf::FloatRect engine::scene_node::parent_local_bounds() const {
-  //if (is_root()) {
-  //  throw std::runtime_error("Trying to get parent bounds as root node 1");
-  //}
+  if (is_root()) {
+    throw std::runtime_error("Trying to get parent bounds as root node 1");
+  }
 
   return parent->local_bounds();
 }
@@ -116,6 +120,8 @@ bool engine::scene_node::parent_contains(const sf::Vector2f &vert) const {
 }
 
 void engine::scene_node::update(sf::Time dt) {
+  event_bus::get_instance().deliver();
+
   update_self(dt);
   update_children(dt);
 }

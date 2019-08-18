@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include "utilities/general.hpp"
 #include "animation/translate.hpp"
+#include "event_bus/event_bus.hpp"
 
 namespace engine {
 class scene_node : public sf::Drawable, public sf::Transformable, private sf::NonCopyable {
@@ -16,6 +17,8 @@ public:
     using animation_ptr = std::unique_ptr<animable>;
 
     scene_node();
+
+    ~scene_node();
 
     explicit scene_node(sf::FloatRect bounds);
 
@@ -68,6 +71,42 @@ protected:
     virtual void update_self(sf::Time dt);
 
     virtual void draw_self(sf::RenderTarget &target, sf::RenderStates states) const;
+
+    template<class E, class F>
+    void listen(const std::string &channel, F &&cb) {
+      auto &bus{event_bus::get_instance()};
+      bus.listen<E>(channel, gen::to_uintptr(this), std::forward<F>(cb));
+    }
+
+    template<class E, class F>
+    void listen(F &&cb) {
+      auto &bus{event_bus::get_instance()};
+      bus.listen<E>(gen::to_uintptr(this), std::forward<F>(cb));
+    }
+
+    template<class E>
+    void notify(E &&event) {
+      auto &bus{event_bus::get_instance()};
+      bus.notify(std::forward<E>(event));
+    }
+
+    template<class E>
+    void notify(const std::string &channel, E &&event) {
+      auto &bus{event_bus::get_instance()};
+      bus.notify(channel, std::forward<E>(event));
+    }
+
+    template<class E>
+    void unlisten() {
+      auto &bus{event_bus::get_instance()};
+      bus.unlisten<E>(gen::to_uintptr(this));
+    }
+
+    template<class E>
+    void unlisten(const std::string &channel) {
+      auto &bus{event_bus::get_instance()};
+      bus.unlisten<E>(channel, gen::to_uintptr(this));
+    }
 
 private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const final;

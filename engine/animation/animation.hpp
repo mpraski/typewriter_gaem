@@ -19,7 +19,7 @@ public:
 
     virtual bool running() const = 0;
 
-    virtual void prime() = 0;
+    virtual void start() = 0;
 
     virtual void step() = 0;
 };
@@ -120,7 +120,7 @@ public:
         throw std::invalid_argument("Duration cannot be zero");
       }
       if (b._prime) {
-        prime();
+        start();
       }
     }
 
@@ -135,7 +135,7 @@ public:
       return _curr_step != ANIMATION_END;
     }
 
-    void prime() final {
+    void start() final {
       _curr_step = 0;
       _curr_delta = std::tuple<Ts...>{};
       _tween.seek(0);
@@ -150,7 +150,7 @@ public:
         _curr_step = ANIMATION_END;
         _on_finish();
         if (_loop) {
-          prime();
+          start();
         }
       }
     }

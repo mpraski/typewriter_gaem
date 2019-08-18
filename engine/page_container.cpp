@@ -13,6 +13,10 @@ engine::page_container::page_container(
       scene_node{{0, 0, system->page_width, system->page_height}},
       debug_bounds_vertices{sf::Lines} {
   attach_child(make_page(sys_ptr, audio_ptr, story_ptr));
+
+  listen<std::string>([](const auto &message) {
+    std::cout << "got message: " << message << std::endl;
+  });
 }
 
 void engine::page_container::draw_self(sf::RenderTarget &target, sf::RenderStates states) const {

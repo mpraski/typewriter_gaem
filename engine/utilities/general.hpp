@@ -109,6 +109,16 @@ template<class... Ts>
 constexpr void draw(sf::RenderTarget &target, const sf::RenderStates &states, Ts &&... ts) {
   (target.draw(std::forward<Ts>(ts), states), ...);
 }
+
+template<class T>
+constexpr auto type_id() {
+  return typeid(T).hash_code();
+}
+
+template<class T>
+constexpr auto to_uintptr(const T *t) {
+  return reinterpret_cast<std::uintptr_t>(t);
+}
 }
 
 #endif //TYPEWRITER_GAEM_GENERAL_HPP

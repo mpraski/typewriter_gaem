@@ -169,6 +169,8 @@ void engine::page::advance() {
       // Just advance to next character
       current_character++;
     } else {
+      notify<std::string>("new printable");
+
       // Switch to next printable
       rect(current_printable).width = max_x - rect(current_printable).left;
       rect(current_printable).height = max_y - rect(current_printable).top - system->line_spacing_margin;
@@ -737,7 +739,7 @@ void engine::page::new_line() const {
   y += system->line_spacing;
   x = system->margin_horizontal;
   if (end_of_page()) {
-    get_animation(LINE_SHIFT).prime();
+    get_animation(LINE_SHIFT).start();
   }
 }
 

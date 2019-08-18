@@ -5,6 +5,7 @@
 #ifndef TYPEWRITER_GAEM_PAGE_CONTAINER_HPP
 #define TYPEWRITER_GAEM_PAGE_CONTAINER_HPP
 
+#include <iostream>
 #include "game_object.hpp"
 #include "scene_node.hpp"
 #include "story/story.hpp"
