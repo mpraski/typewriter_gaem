@@ -23,7 +23,8 @@ public:
         COLOR,
         TEXTURE,
         CENTER,
-        RIGHT
+        RIGHT,
+        FONT_SIZE
     };
 
     text_effect(
@@ -33,7 +34,8 @@ public:
         float delay_factor = 1.f,
         float letter_spacing_factor = 0.f,
         sf::Color color = sf::Color::White,
-        std::string texture = ""
+        std::string texture = "",
+        float font_size_factor = 1.f
     );
 
     text_effect &with_delay(float df);
@@ -43,6 +45,8 @@ public:
     text_effect &with_color(sf::Color c);
 
     text_effect &with_texture(std::string t);
+
+    text_effect &with_font_size(float fz);
 
     inline bool operator==(const text_effect &other) const noexcept {
       return kind == other.kind
@@ -57,6 +61,7 @@ public:
     float letter_spacing_factor;
     sf::Color color;
     std::string texture;
+    float font_size_factor;
 };
 }
 
@@ -82,6 +87,6 @@ public:
       return l == r;
     }
 };
-};
+}
 
 #endif //TYPEWRITER_GAEM_TEXT_EFFECT_HPP

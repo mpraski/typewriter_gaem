@@ -9,6 +9,7 @@
 #define DEBUG
 #endif
 
+#include <iostream>
 #include <vector>
 #include <string>
 #include <cwctype>
@@ -28,11 +29,30 @@
 #include "tweeny.h"
 
 #define pointer(IT) (IT)->first
-#define rect(IT) (IT)->second
+#define rect(IT) (IT)->second.bounds
+#define verts(IT) (IT)->second.vertices
+#define buf_verts(IT) (IT)->second.vertices_buffer
+#define fsize(IT) (IT)->second.font_size
 
 namespace engine {
 class page : public game_object, public scene_node {
-    using printable_array = std::vector<std::pair<printable_ptr, sf::FloatRect>>;
+    enum class displacement {
+        CENTER,
+        RIGHT,
+        NONE
+    };
+
+    struct render_info {
+        render_info();
+        explicit render_info(unsigned font_size);
+
+        sf::FloatRect bounds;
+        sf::VertexArray vertices;
+        sf::VertexBuffer vertices_buffer;
+        unsigned font_size;
+    };
+
+    using printable_array = std::vector<std::pair<printable_ptr, render_info>>;
     using printable_iterator = printable_array::iterator;
     using effect_array = std::vector<text_effect>;
     using effect_it = effect_array::const_iterator;
@@ -46,12 +66,6 @@ public:
     );
 
 private:
-    enum class displacement {
-        CENTER,
-        RIGHT,
-        NONE
-    };
-
     bool can_advance() const;
 
     void advance();
@@ -94,6 +108,8 @@ private:
 
     void draw_page_outline() const;
 
+    void clear_printable_vertices() const;
+
     inline auto find_printable(id_t id) const {
       return gen::find(printables, [&](const auto &p) {
         return *p.first == id;
@@ -132,6 +148,8 @@ private:
     mutable float max_x;
     mutable float max_y;
     // Text properties
+    mutable unsigned font_size;
+    mutable float line_spacing;
     mutable bool is_bold;
     mutable bool is_underlined;
     mutable bool is_strike_through;

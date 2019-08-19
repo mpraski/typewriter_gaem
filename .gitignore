@@ -1,3 +1,6 @@
 typewriter_gaem
 cmake-build-debug/
 .idea/workspace.xml
+build/
+.vscode/
+.idea/

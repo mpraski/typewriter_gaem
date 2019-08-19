@@ -7,7 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "utilities/general.hpp"
-#include "animation/translate.hpp"
+#include "animation/animable.hpp"
 #include "event_bus/event_bus.hpp"
 
 namespace engine {
@@ -32,10 +32,10 @@ public:
     template<class T, class... Ts>
     void attach_animation(const std::string &name, Ts &&... args) {
       static_assert(std::is_convertible_v<T *, animable *>);
-      static_assert(std::is_convertible_v<T *, positional_animable *>);
+      static_assert(std::is_convertible_v<T *, scene_node_animable *>);
 
       auto animation{std::make_unique<T>(std::forward<Ts>(args)...)};
-      animation->set_transformable(this);
+      animation->set_scene_node(this);
       animations.insert(std::make_pair(name, std::move(animation)));
     }
 

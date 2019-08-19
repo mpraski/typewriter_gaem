@@ -10,27 +10,10 @@
 #include <tuple>
 #include <utility>
 #include "../utilities/tuples.hpp"
+#include "animable.hpp"
 #include "tweeny.h"
 
 namespace engine {
-class animable {
-public:
-    virtual ~animable() = default;
-
-    virtual bool running() const = 0;
-
-    virtual void start() = 0;
-
-    virtual void step() = 0;
-};
-
-class positional_animable {
-public:
-    virtual ~positional_animable() = default;
-
-    virtual void set_transformable(sf::Transformable *trans) = 0;
-};
-
 template<class... Ts>
 class animation : public animable {
     using callback = std::function<void()>;
@@ -179,28 +162,6 @@ private:
     tweeny::tween<Ts...> _tween;
     bool _loop;
     std::function<void(Ts &&...)> _apply_step_fun;
-};
-
-// The transformable referenced here must exist throughout the lifetime of
-// this animation
-template<class... Ts>
-class transformable_animation : public animation<Ts...>, public positional_animable {
-    using builder = typename animation<Ts...>::builder;
-public:
-    explicit transformable_animation(const builder &b)
-        : animation<Ts...>(b),
-          transformable{nullptr} {
-
-    };
-
-    ~transformable_animation() override = default;
-
-    void set_transformable(sf::Transformable *trans) final {
-      transformable = trans;
-    }
-
-protected:
-    sf::Transformable *transformable;
 };
 }
 

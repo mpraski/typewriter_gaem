@@ -35,6 +35,6 @@ public:
 private:
     std::vector<wchar_t> data;
 };
-};
+}
 
 #endif //TYPEWRITER_GAEM_TEXT_BUFFER_HPP

@@ -6,36 +6,37 @@
 #define TYPEWRITER_GAEM_TRANSLATE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "animation.hpp"
+#include "scene_node_animation.hpp"
+#include "../scene_node.hpp"
 
 namespace engine {
-class translate : public transformable_animation<float, float> {
+class translate : public scene_node_animation<float, float> {
 public:
-    using transformable_animation<float, float>::transformable_animation;
+    using scene_node_animation<float, float>::scene_node_animation;
 
 protected:
     void apply_step(float x, float y) const final {
-      transformable->move(x, y);
+      node->move(x, y);
     }
 };
 
-class translate_vertical : public transformable_animation<float> {
+class translate_vertical : public scene_node_animation<float> {
 public:
-    using transformable_animation<float>::transformable_animation;
+    using scene_node_animation<float>::scene_node_animation;
 
 protected:
     void apply_step(float y) const final {
-      transformable->move(0.f, y);
+      node->move(0.f, y);
     }
 };
 
-class translate_horizontal : public transformable_animation<float> {
+class translate_horizontal : public scene_node_animation<float> {
 public:
-    using transformable_animation<float>::transformable_animation;
+    using scene_node_animation<float>::scene_node_animation;
 
 protected:
     void apply_step(float x) const final {
-      transformable->move(x, 0.f);
+      node->move(x, 0.f);
     }
 };
 }

@@ -84,6 +84,22 @@ void add_glyph_quad(sf::VertexArray &vertices,
 }
 }
 
+engine::page::render_info::render_info()
+    : bounds{},
+      vertices{sf::Triangles},
+      vertices_buffer{sf::Triangles, sf::VertexBuffer::Static},
+      font_size{} {
+
+}
+
+engine::page::render_info::render_info(unsigned font_size)
+    : bounds{},
+      vertices{sf::Triangles},
+      vertices_buffer{sf::Triangles, sf::VertexBuffer::Static},
+      font_size{font_size} {
+
+}
+
 engine::page::page(
     system_ptr sys_ptr,
     audio_system_ptr audio_ptr,
@@ -111,6 +127,8 @@ engine::page::page(
     min_y{},
     max_x{},
     max_y{},
+    font_size{system->font_size},
+    line_spacing{system->line_spacing},
     is_bold{},
     is_underlined{},
     is_strike_through{},
@@ -196,8 +214,10 @@ void engine::page::input() {
 }
 
 void engine::page::update_self(sf::Time dt) {
-  if (can_advance() && has_elapsed(sf::milliseconds(typing_delay_factor))) {
-    advance();
+  if (can_advance()) {
+    if (has_elapsed(sf::milliseconds(typing_delay_factor))) {
+      advance();
+    }
   } else {
     input();
   }
@@ -205,8 +225,6 @@ void engine::page::update_self(sf::Time dt) {
 
 void engine::page::draw_self(sf::RenderTarget &target, sf::RenderStates states) const {
   ensure_updated();
-
-  states.texture = &system->font->getTexture(system->font_size);
 
 #ifdef DEBUG
   debug_bounds_vertices.clear();
@@ -216,8 +234,28 @@ void engine::page::draw_self(sf::RenderTarget &target, sf::RenderStates states) 
   }
 #endif
 
-  // Update the vertex buffer if it is being used
-  if (sf::VertexBuffer::isAvailable()) {
+  for (auto &[printable, info] : printables) {
+    auto &verts{info.vertices};
+    auto &verts_buf{info.vertices_buffer};
+
+    if (sf::VertexBuffer::isAvailable()) {
+      if (verts_buf.getVertexCount() != verts.getVertexCount())
+        verts_buf.create(verts.getVertexCount());
+
+      if (verts.getVertexCount() > 0)
+        verts_buf.update(&verts[0]);
+    }
+
+    states.texture = &system->font->getTexture(info.font_size);
+
+    if (sf::VertexBuffer::isAvailable()) {
+      target.draw(verts_buf, states);
+    } else {
+      target.draw(verts, states);
+    }
+  }
+
+  /*if (sf::VertexBuffer::isAvailable()) {
     if (vertices_buffer.getVertexCount() != vertices.getVertexCount())
       vertices_buffer.create(vertices.getVertexCount());
 
@@ -229,7 +267,7 @@ void engine::page::draw_self(sf::RenderTarget &target, sf::RenderStates states) 
     target.draw(vertices_buffer, states);
   } else {
     target.draw(vertices, states);
-  }
+  }*/
 
 #ifdef DEBUG
   target.draw(debug_bounds_vertices);
@@ -245,11 +283,11 @@ void engine::page::draw_self(sf::RenderTarget &target, sf::RenderStates states) 
 engine::printable_store engine::page::store() {
   return {
       [this](printable_ptr &&ptr) {
-        printables.emplace_back(std::move(ptr), sf::FloatRect{});
+        printables.emplace_back(std::move(ptr), system->font_size);
       },
       [this](printable_ptr &&ptr) {
         auto pid{pointer(current_printable)->get_id()};
-        printables.emplace_back(std::move(ptr), sf::FloatRect{});
+        printables.emplace_back(std::move(ptr), system->font_size);
         current_printable = find_printable(pid);
 
         preprocess(*gen::last(printables)->first);
@@ -301,7 +339,7 @@ float engine::page::measure_text(const printable &printable, size_t begin, size_
     if (curr_char == L'\r')
       continue;
 
-    width += system->font->getKerning(prev_char, curr_char, system->font_size);
+    width += system->font->getKerning(prev_char, curr_char, font_size);
 
     if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
       switch (curr_char) {
@@ -316,7 +354,7 @@ float engine::page::measure_text(const printable &printable, size_t begin, size_
           break;
       }
     } else {
-      const auto &glyph{system->font->getGlyph(curr_char, system->font_size, is_bold)};
+      const auto &glyph{system->font->getGlyph(curr_char, font_size, is_bold)};
       width += glyph.advance + system->letter_spacing + letter_spacing_factor;
     }
 
@@ -353,7 +391,7 @@ void engine::page::preprocess(printable &printable) const {
       displacement_mode_end = 0;
     }
 
-    word_width += system->font->getKerning(prev_char, curr_char, system->font_size);
+    word_width += system->font->getKerning(prev_char, curr_char, font_size);
 
     if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
       switch (curr_char) {
@@ -376,7 +414,7 @@ void engine::page::preprocess(printable &printable) const {
           break;
       }
     } else {
-      const auto &glyph{system->font->getGlyph(curr_char, system->font_size, is_bold)};
+      const auto &glyph{system->font->getGlyph(curr_char, font_size, is_bold)};
       word_width += glyph.advance + system->letter_spacing + letter_spacing_factor;
     }
 
@@ -408,6 +446,7 @@ void engine::page::ensure_updated() const {
   }
 
   const auto &printable{*pointer(current_printable)};
+  auto &verts{verts(current_printable)};
 
   apply_text_effects(printable, current_character);
 
@@ -438,7 +477,7 @@ void engine::page::ensure_updated() const {
     x = system->margin_horizontal;
   }
 
-  x += system->font->getKerning(prev_char, curr_char, system->font_size);
+  x += system->font->getKerning(prev_char, curr_char, font_size);
 
   // Handle special characters
   if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
@@ -460,7 +499,7 @@ void engine::page::ensure_updated() const {
     max_x = std::max(max_x, x);
     max_y = std::max(max_y, y);
   } else {
-    const auto &glyph{system->font->getGlyph(curr_char, system->font_size, is_bold)};
+    const auto &glyph{system->font->getGlyph(curr_char, font_size, is_bold)};
 
     float left{glyph.bounds.left};
     float top{glyph.bounds.top};
@@ -472,21 +511,21 @@ void engine::page::ensure_updated() const {
     min_y = std::min(min_y, y + top);
     max_y = std::max(max_y, y + bottom);
 
-    add_glyph_quad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
+    add_glyph_quad(verts, sf::Vector2f(x, y), text_color, glyph, italic_shear);
     if (text_texture) {
       add_font_background(font_texture_vertices, sf::Vector2f(x, y), glyph, italic_shear);
     }
     auto advance{glyph.advance + system->letter_spacing + letter_spacing_factor};
 
     if (is_underlined) {
-      add_line(vertices, x, advance, y, text_color, system->underline_offset, system->underline_thickness);
+      add_line(verts, x, advance, y, text_color, system->underline_offset, system->underline_thickness);
     }
 
-    auto x_bounds{system->font->getGlyph(L'x', system->font_size, is_bold).bounds};
+    auto x_bounds{system->font->getGlyph(L'x', font_size, is_bold).bounds};
     float strike_through_offset{x_bounds.top + x_bounds.height / 2.f};
 
     if (is_strike_through) {
-      add_line(vertices, x, advance, y, text_color, strike_through_offset, system->underline_thickness);
+      add_line(verts, x, advance, y, text_color, strike_through_offset, system->underline_thickness);
     }
 
     x += advance;
@@ -509,6 +548,7 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
   printable.load_effects(idx, std::back_inserter(active_effects));
 
   typing_delay_factor = static_cast<float>(system->typing_delay);
+  font_size = system->font_size;
 
   for (const auto &e : active_effects) {
     switch (e.kind) {
@@ -545,6 +585,10 @@ void engine::page::apply_text_effects(const printable &printable, size_t idx) co
       case text_effect::kind::RIGHT:
         displacement = displacement::RIGHT;
         break;
+      case text_effect::kind::FONT_SIZE:
+        font_size = std::lround(static_cast<float>(system->font_size) * e.font_size_factor);
+        fsize(current_printable) = font_size;
+        break;
     }
   }
 }
@@ -567,9 +611,9 @@ void engine::page::remove_text_effects(size_t idx) const {
 
 void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
   bool hovering{};
-  for (auto &[printable, p_bounds] : printables) {
+  for (auto &[printable, info] : printables) {
     if (printable->interactive()) {
-      auto t{global_transform().transformRect(p_bounds)};
+      auto t{global_transform().transformRect(info.bounds)};
       if (parent_intersects(t) && t.contains(cursor)) {
         printable->on_hover_start();
         hovering = true;
@@ -587,9 +631,9 @@ void engine::page::apply_mouse_hover(const sf::Vector2f &cursor) {
 }
 
 void engine::page::apply_mouse_click(const sf::Vector2f &cursor) {
-  for (auto &[printable, p_bounds] : printables) {
+  for (auto &[printable, info] : printables) {
     if (printable->interactive()) {
-      auto t{global_transform().transformRect(p_bounds)};
+      auto t{global_transform().transformRect(info.bounds)};
       if (parent_intersects(t) && t.contains(cursor)) {
         story->act(printable->on_click());
         system->set_cursor(system::cursor::ARROW);
@@ -612,14 +656,14 @@ void engine::page::redraw() {
   }
 #endif
 
-  vertices.clear();
+  clear_printable_vertices();
 
   x = system->margin_horizontal;
-  y = system->margin_vertical + static_cast<float>(system->font_size);
+  y = system->margin_vertical + static_cast<float>(font_size);
 
   for (auto it{std::begin(printables)}; it != std::next(current_printable); ++it) {
     const auto &printable{*pointer(it)};
-
+    auto &verts{verts(it)};
     /*
      * In case we need to redraw in the middle of advancing
      * a printable we need to redraw the last one only up to
@@ -661,7 +705,7 @@ void engine::page::redraw() {
         x = system->margin_horizontal;
       }
 
-      x += system->font->getKerning(prev_char, curr_char, system->font_size);
+      x += system->font->getKerning(prev_char, curr_char, font_size);
 
       if ((curr_char == L' ') || (curr_char == L'\n') || (curr_char == L'\t')) {
         switch (curr_char) {
@@ -677,19 +721,19 @@ void engine::page::redraw() {
             break;
         }
       } else {
-        const auto &glyph{system->font->getGlyph(curr_char, system->font_size, is_bold)};
-        add_glyph_quad(vertices, sf::Vector2f(x, y), text_color, glyph, italic_shear);
+        const auto &glyph{system->font->getGlyph(curr_char, font_size, is_bold)};
+        add_glyph_quad(verts, sf::Vector2f(x, y), text_color, glyph, italic_shear);
         auto advance{glyph.advance + system->letter_spacing + letter_spacing_factor};
 
         if (is_underlined) {
-          add_line(vertices, x, advance, y, text_color, system->underline_offset, system->underline_thickness);
+          add_line(verts, x, advance, y, text_color, system->underline_offset, system->underline_thickness);
         }
 
-        auto x_bounds{system->font->getGlyph(L'x', system->font_size, is_bold).bounds};
+        auto x_bounds{system->font->getGlyph(L'x', font_size, is_bold).bounds};
         float strike_through_offset{x_bounds.top + x_bounds.height / 2.f};
 
         if (is_strike_through) {
-          add_line(vertices, x, advance, y, text_color, strike_through_offset, system->underline_thickness);
+          add_line(verts, x, advance, y, text_color, strike_through_offset, system->underline_thickness);
         }
 
         x += advance;
@@ -798,4 +842,10 @@ void engine::page::draw_page_outline() const {
   debug_bounds_vertices.append(
       sf::Vertex(sf::Vector2f(root_trans.left, root_trans.top), sf::Color::Magenta,
                  sf::Vector2f(1, 1)));
+}
+
+void engine::page::clear_printable_vertices() const {
+  for (auto &[printable, info] : printables) {
+    info.vertices.clear();
+  }
 }

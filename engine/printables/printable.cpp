@@ -28,6 +28,14 @@ size_t engine::printable::length() const {
   return contents.length();
 }
 
+size_t engine::printable::effective_length() const {
+  if (contents.empty()) return 0;
+  if (contents.back() == L'\n') {
+    return contents.length() - 1;
+  }
+  return contents.length();
+}
+
 bool engine::printable::interactive() const {
   return is_interactive;
 }

@@ -31,6 +31,14 @@ int main() {
               ),
               new engine::paragraph(
                   game_system,
+                  L"Fuck this shite",
+                  {
+                      engine::text_effect{engine::text_effect::kind::FONT_SIZE, 0, 14}.with_font_size(2.f),
+                  },
+                  false
+              ),
+              new engine::paragraph(
+                  game_system,
                   L"Through the darkness of future past, the magician longs to see, one chance out between two worlds, fire walk with me!",
                   {
                       engine::text_effect{engine::text_effect::kind::DELAY, 99, 117}.with_delay(5.0f),

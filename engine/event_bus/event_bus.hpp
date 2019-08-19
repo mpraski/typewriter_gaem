@@ -51,7 +51,10 @@ public:
       auto tid{gen::type_id<E>()};
       auto &chan{callbacks[channel]};
       if (chan.find(tid) == std::end(chan)) {
-        chan.insert(std::make_pair(tid, std::make_unique<typed_listeners_t>()));
+        auto[it, ok]{chan.insert(std::make_pair(tid, std::make_unique<typed_listeners_t>()))};
+        if (ok) {
+          flattened_listeners.push_back(it->second);
+        }
       }
 
       auto &listeners{chan[tid]};
@@ -79,10 +82,8 @@ public:
     }
 
     void unlisten_all(callback_id_t cbid) {
-      for (auto&[chan, cbs] : callbacks) {
-        for (auto&[id, vect] : cbs) {
-          vect->remove(cbid);
-        }
+      for (auto &ptr : flattened_listeners) {
+        ptr.get()->remove(cbid);
       }
     }
 
@@ -108,10 +109,8 @@ public:
     }
 
     void deliver() {
-      for (auto&[name, channel] : callbacks) {
-        for (auto&[id, listeners] : channel) {
-          listeners->deliver();
-        }
+      for (auto &ptr : flattened_listeners) {
+        ptr.get()->deliver();
       }
     }
 
@@ -122,6 +121,7 @@ private:
     std::unordered_map<std::string,
         std::unordered_map<type_id_t, listeners_prt>
     > callbacks;
+    std::vector<std::reference_wrapper<listeners_prt>> flattened_listeners;
 };
 }
 

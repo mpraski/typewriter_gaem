@@ -32,6 +32,9 @@ public:
     // Length of underlying string
     size_t length() const;
 
+    // Length of underlying string without newline
+    size_t effective_length() const;
+
     // Can the player interact with this printable (mouse events)
     bool interactive() const;
 
