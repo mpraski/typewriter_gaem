@@ -7,17 +7,16 @@
 
 
 #include <SFML/System/Time.hpp>
-#include "scene_node.hpp"
-#include "game_object.hpp"
-#include "scene_node.hpp"
+#include "Entity.hpp"
+#include "Entity.hpp"
 #include "story/story.hpp"
 #include "page_container.hpp"
 
 namespace engine {
-class game : game_object {
+class game : GameObject {
 public:
     game(
-        const system_ptr &rptr,
+        const SystemPtr &rptr,
         const audio_system_ptr &aptr,
         const story_ptr &sptr
     );
@@ -37,8 +36,8 @@ private:
 
     sf::RenderWindow &window;
     sf::View world_view;
-    scene_node scene_graph;
-    std::array<scene_node *, layer_count> scene_layers;
+    Entity scene_graph;
+    std::array<Entity *, layer_count> scene_layers;
 
     bool holds_mouse;
 };

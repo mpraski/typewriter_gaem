@@ -5,25 +5,28 @@
 #include "dialog.hpp"
 
 engine::dialog::dialog(
-    const system_ptr &rptr,
+    printable::builder &b,
     const std::wstring &person,
     const std::wstring &speech
-) : printable{rptr, person + L":\t" + speech, true},
+) : printable{
+    b.interactive(true)
+        .with_contents(person + L":\t" + speech)
+},
     on{},
     update{},
     effects_on_hover{
         {0,
             {
-                text_effect{text_effect::kind::BOLD, 0, person.length() - 1},
-                text_effect{text_effect::kind::COLOR, 0, contents.length() - 1}.with_color(sf::Color::Cyan)
+                TextEffect{TextEffect::Kind::BOLD, 0, person.length() - 1},
+                TextEffect{TextEffect::Kind::COLOR, 0, contents.length() - 1}.withColor(sf::Color::Cyan)
             }
         }
     },
     effects_off_hover{
         {0,
             {
-                text_effect{text_effect::kind::BOLD, 0, person.length() - 1},
-                text_effect{text_effect::kind::COLOR, 0, contents.length() - 1}.with_color(sf::Color::Yellow)
+                TextEffect{TextEffect::Kind::BOLD, 0, person.length() - 1},
+                TextEffect{TextEffect::Kind::COLOR, 0, contents.length() - 1}.withColor(sf::Color::Yellow)
             }
         }
     } {
@@ -64,5 +67,5 @@ void engine::dialog::on_hover_end() {
 }
 
 engine::action engine::dialog::on_click() {
-  return {action::kind::DIALOG, id};
+  return {action::kind::DIALOG, mUID};
 }

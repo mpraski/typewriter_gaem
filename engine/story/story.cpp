@@ -28,7 +28,7 @@ void engine::story::act(engine::action action) {
       break;
     case action::kind::DIALOG:
       const auto &choices{curr_node->choices};
-      auto choice_it{gen::find(choices, [&](const auto &p) {
+      auto choice_it{gen::find_if(choices, [&](const auto &p) {
         return *p.first == action.pid;
       })};
 

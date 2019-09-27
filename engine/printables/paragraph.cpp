@@ -6,17 +6,9 @@
 #include "paragraph.hpp"
 
 engine::paragraph::paragraph(
-    const system_ptr &rptr,
-    const std::wstring &c,
-    const std::vector<engine::text_effect> &es,
+    printable::builder &b,
     bool with_tab
-) : printable{rptr, c} {
-  for (const auto &e: es) {
-    if (e.end >= contents.length()) {
-      throw std::runtime_error("Effect lasts longer than its content");
-    }
-    effects[e.begin].push_back(e);
-  }
+) : printable{b} {
   if (with_tab) {
     add_tab(contents);
     offset_effects();

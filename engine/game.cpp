@@ -7,11 +7,11 @@
 const sf::Time engine::game::time_per_frame = sf::seconds(1.f / 60.f);
 
 engine::game::game(
-    const system_ptr &rptr,
+    const SystemPtr &rptr,
     const audio_system_ptr &aptr,
     const story_ptr &sptr
 )
-    : game_object{rptr},
+    : GameObject{rptr},
       window{rptr->get_window()},
       world_view{window.getDefaultView()},
       scene_graph{},
@@ -19,7 +19,7 @@ engine::game::game(
       holds_mouse{} {
   auto pc{make_page_container(rptr, aptr, sptr)};
   pc->move(20.f, 20.f);
-  scene_graph.attach_child(std::move(pc));
+  scene_graph.addChild(std::move(pc));
 }
 
 void engine::game::run() {
@@ -52,7 +52,7 @@ void engine::game::process_events() {
         break;
       case sf::Event::MouseButtonReleased:
         if (holds_mouse) {
-          system->set_mouse_click(sf::Vector2f{sf::Mouse::getPosition(window)});
+          mSystem->set_mouse_click(sf::Vector2f{sf::Mouse::getPosition(window)});
           holds_mouse = false;
         }
         break;

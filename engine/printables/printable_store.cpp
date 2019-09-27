@@ -35,7 +35,7 @@ engine::printable_ptr engine::printable_store::without_effects(const printable_p
   return cloned;
 }
 
-engine::printable_ptr engine::printable_store::without_effects(const printable_ptr &ptr, enum text_effect::kind kind) {
+engine::printable_ptr engine::printable_store::without_effects(const printable_ptr &ptr, enum TextEffect::Kind kind) {
   auto cloned{safe_clone(ptr)};
   cloned->is_interactive = false;
 

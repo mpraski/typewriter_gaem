@@ -8,7 +8,7 @@
 #include <functional>
 #include "printable.hpp"
 #include "paragraph.hpp"
-#include "../utilities/general.hpp"
+#include "../utilities/General.hpp"
 
 namespace engine {
 class printable_store {
@@ -35,15 +35,15 @@ public:
 
     static printable_ptr without_effects(const printable_ptr &ptr);
 
-    static printable_ptr without_effects(const printable_ptr &ptr, enum text_effect::kind kind);
+    static printable_ptr without_effects(const printable_ptr &ptr, enum TextEffect::Kind kind);
 
     static printable_ptr without_dynamic_effects(const printable_ptr &ptr);
 
 private:
-    const constexpr static enum text_effect::kind STATIC_EFFECTS[] = {
-        text_effect::kind::BOLD,
-        text_effect::kind::ITALIC,
-        text_effect::kind::UPPERCASE
+    const constexpr static enum TextEffect::Kind STATIC_EFFECTS[] = {
+        TextEffect::Kind::BOLD,
+        TextEffect::Kind::ITALIC,
+        TextEffect::Kind::UPPERCASE
     };
 };
 }

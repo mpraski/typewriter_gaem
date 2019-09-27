@@ -11,16 +11,13 @@
 #include <algorithm>
 #include <cwctype>
 #include "printable.hpp"
-#include "../text_effect.hpp"
-#include "../utilities/converters.hpp"
+#include "../TextEffect.hpp"
 
 namespace engine {
 class paragraph : public printable {
 public:
     paragraph(
-        const system_ptr &rptr,
-        const std::wstring &c,
-        const std::vector<engine::text_effect> &es,
+        printable::builder &b,
         bool with_tab = true
     );
 

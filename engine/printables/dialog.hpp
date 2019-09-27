@@ -6,13 +6,13 @@
 #define TYPEWRITER_GAEM_DIALOG_HPP
 
 #include "printable.hpp"
-#include "../text_effect.hpp"
+#include "../TextEffect.hpp"
 
 namespace engine {
 class dialog : public printable {
 public:
     dialog(
-        const system_ptr &rptr,
+        printable::builder &b,
         const std::wstring &person,
         const std::wstring &speech
     );

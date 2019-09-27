@@ -18,49 +18,27 @@
 #include <unordered_set>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "game_object.hpp"
-#include "scene_node.hpp"
-#include "audio_system.hpp"
+#include "Entity.hpp"
+#include "AudioSystem.hpp"
 #include "printables/printable.hpp"
 #include "printables/printable_store.hpp"
 #include "printables/dialog.hpp"
 #include "story/story.hpp"
-#include "animation/translate.hpp"
+#include "translate.hpp"
 #include "tweeny.h"
 
-#define pointer(IT) (IT)->first
-#define rect(IT) (IT)->second.bounds
-#define verts(IT) (IT)->second.vertices
-#define buf_verts(IT) (IT)->second.vertices_buffer
-#define fsize(IT) (IT)->second.font_size
+#define pointer(X) (X)->get()
+#define rect(X) (X)->get().global_bounds()
 
 namespace engine {
-class page : public game_object, public scene_node {
-    enum class displacement {
-        CENTER,
-        RIGHT,
-        NONE
-    };
-
-    struct render_info {
-        render_info();
-        explicit render_info(unsigned font_size);
-
-        sf::FloatRect bounds;
-        sf::VertexArray vertices;
-        sf::VertexBuffer vertices_buffer;
-        unsigned font_size;
-    };
-
-    using printable_array = std::vector<std::pair<printable_ptr, render_info>>;
-    using printable_iterator = printable_array::iterator;
-    using effect_array = std::vector<text_effect>;
-    using effect_it = effect_array::const_iterator;
-
+class page : public Entity {
     const constexpr static auto LINE_SHIFT = "line_shift";
+
+    using printable_ref_array = std::vector<std::reference_wrapper<printable>>;
+    using printable_ref_array_iterator = printable_ref_array::iterator;
 public:
     page(
-        system_ptr sys_ptr,
+        SystemPtr sys_ptr,
         audio_system_ptr audio_ptr,
         story_ptr story_ptr
     );
@@ -72,64 +50,29 @@ private:
 
     void input();
 
-    void update_self(sf::Time dt) final;
+    void updateSelf(sf::Time dt) final;
 
-    void draw_self(sf::RenderTarget &target, sf::RenderStates states) const final;
+    void drawSelf(sf::RenderTarget &target, sf::RenderStates states) const final;
 
     printable_store store();
-
-    float measure_text(const printable &printable, size_t begin, size_t end) const;
-
-    void preprocess(printable &printable) const;
-
-    void ensure_updated() const;
-
-    void apply_text_effects(const printable &printable, size_t idx) const;
-
-    void remove_text_effects(size_t idx) const;
 
     void apply_mouse_hover(const sf::Vector2f &cursor);
 
     void apply_mouse_click(const sf::Vector2f &cursor);
 
-    void redraw();
-
-    effect_it displacement_effect(enum displacement d) const;
-
-    float displacement_spacing(enum displacement d, float width) const;
-
     void new_line() const;
 
     bool end_of_page() const;
-
-    bool end_of_text() const;
-
-    void draw_printable_outline(printable_iterator it) const;
 
     void draw_page_outline() const;
 
     void clear_printable_vertices() const;
 
-    inline auto find_printable(id_t id) const {
-      return gen::find(printables, [&](const auto &p) {
-        return *p.first == id;
-      });
-    }
-
-    inline auto find_effect(enum text_effect::kind kind) const {
-      return gen::find(active_effects, [&](const auto &e) {
-        return e.kind == kind;
-      });
-    }
-
 private:
     story_ptr story;
     audio_system_ptr audio;
-    // Core data
-    mutable printable_array printables;
-    mutable effect_array active_effects;
-    printable_iterator current_printable;
-    size_t current_character;
+    printable_ref_array printable_refs;
+    printable_ref_array_iterator current_printable;
     // SFML buffers
     mutable sf::VertexArray vertices;
     mutable sf::VertexBuffer vertices_buffer;
@@ -140,28 +83,14 @@ private:
     mutable bool needs_update;
     mutable bool needs_redraw;
     mutable bool needs_first_preprocess;
-    // Text bounds
-    mutable float x;
-    mutable float y;
-    mutable float min_x;
-    mutable float min_y;
-    mutable float max_x;
-    mutable float max_y;
-    // Text properties
-    mutable unsigned font_size;
-    mutable float line_spacing;
-    mutable bool is_bold;
-    mutable bool is_underlined;
-    mutable bool is_strike_through;
-    mutable bool is_uppercase;
-    mutable displacement displacement;
-    mutable size_t displacement_mode_end;
-    mutable size_t displacement_mode_end_prev;
-    mutable float italic_shear;
-    mutable float typing_delay_factor;
-    mutable float letter_spacing_factor;
-    mutable sf::Color text_color;
-    mutable const sf::Texture *text_texture;
+    // Text mBounds
+    mutable sf::Vector2f next_printable_pos;
+
+    inline auto find_printable(GOId id) {
+      return gen::find_if(printable_refs, [id](const auto &ref) {
+        return ref.get() == id;
+      });
+    }
 };
 
 template<class ...Ts>
