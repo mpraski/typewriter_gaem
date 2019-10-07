@@ -5,7 +5,8 @@
 #include "Collider.hpp"
 
 engine::Collider::Collider()
-    : mBounds{},
+    : Component{},
+      mMesh{},
       mPosition{},
       mVelocity{},
       mMass{},
@@ -15,7 +16,7 @@ engine::Collider::Collider()
 }
 
 sf::FloatRect engine::Collider::localBounds() const {
-  return mBounds;
+  return mMesh->localBounds();
 }
 
 sf::FloatRect engine::Collider::globalBounds() const {
@@ -27,18 +28,12 @@ engine::Component::Kind engine::Collider::kind() const {
 }
 
 void engine::Collider::onStart(engine::Entity &entity) {
-  auto eventHandler{std::mem_fn(&Collider::handleEvent)};
-  if (mGlobal) {
-    listen<Event>(eventHandler);
-  } else {
-    listen<Event>(gen::str("collider", entity.getUID()), eventHandler);
+  mMesh = dynamic_cast<Mesh *>(targetComponent());
+  if (!mMesh) {
+    throw std::runtime_error("Target component is not a mesh");
   }
 }
 
 void engine::Collider::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
-
-}
-
-void engine::Collider::handleEvent(const Event &event) {
 
 }

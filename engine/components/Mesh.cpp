@@ -5,10 +5,11 @@
 #include "Mesh.hpp"
 
 engine::Mesh::Mesh()
-    : mBounds{},
+    : Component{},
+      mBounds{},
       mVertices{sf::Triangles},
-      mVerticesBuffer{sf::VertexBuffer::Dynamic},
       mDebugBoundsVertices{sf::Triangles},
+      mVerticesBuffer{sf::VertexBuffer::Dynamic},
       mShader{},
       mTexture{},
       mBlendMode{sf::BlendNone} {

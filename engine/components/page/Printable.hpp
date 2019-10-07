@@ -7,17 +7,17 @@
 
 #include "../Mesh.hpp"
 #include "../../TextEffect.hpp"
-#include "../../Interactive.hpp"
 #include "../../utilities/Cached.hpp"
 
 namespace engine {
-class Printable : public Mesh, public Interactive {
+class Printable : public Mesh {
     using BackInserter = std::back_insert_iterator<TextEffect>;
     using EffectIt = std::vector<TextEffect>::const_iterator;
 
     enum class State {
         Printing,
         Complete,
+        Pending,
         Scrolling
     };
 
@@ -59,7 +59,7 @@ public:
 
     size_t length() const;
 
-    void onStart(Entity &entity) final;
+    void onStart(Entity &entity) override;
 
     void onEntityUpdate(Entity &entity, sf::Time dt) final;
 
@@ -86,6 +86,8 @@ private:
     float measureText(size_t begin, size_t end);
 
     EffectIt findDisplacementEffect(Displacement d) const;
+
+    EffectIt findEffect(enum TextEffect::Kind kind) const;
 
     float displacementSpacing(Displacement d, float width) const;
 

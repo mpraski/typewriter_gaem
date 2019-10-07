@@ -97,7 +97,7 @@ engine::System::System(
   mWhitespaceWidth += mLetterSpacing;
 }
 
-sf::Vector2f engine::System::mouse_position() const {
+sf::Vector2f engine::System::mousePosition() const {
   return sf::Vector2f{sf::Mouse::getPosition(mWindow)};
 }
 

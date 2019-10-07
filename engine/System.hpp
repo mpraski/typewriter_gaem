@@ -84,7 +84,7 @@ public:
 
     float effectivePageHeight() const;
 
-    sf::Vector2f mouse_position() const;
+    sf::Vector2f mousePosition() const;
 
     void set_mouse_click(const sf::Vector2f &pos) const;
 

@@ -9,10 +9,9 @@
 #include <SFML/System/Time.hpp>
 #include "../event_bus/EventBus.hpp"
 #include "../Identifiable.hpp"
+#include "../Entity.hpp"
 
 namespace engine {
-class Entity;
-
 class Component : public Identifiable {
 public:
     using Ptr = std::unique_ptr<Component>;
@@ -20,14 +19,25 @@ public:
     enum class Kind {
         Mesh,
         Physics,
-        Script
+        Script,
+        Interactive
     };
 
     Component();
 
-    ~Component();
+    explicit Component(std::string name);
 
-    void destroy();
+    void markDestroyed();
+
+    bool destroyed() const noexcept;
+
+    const std::string &getName() const noexcept;
+
+    void setName(const std::string &name);
+
+    void addAttachedComponent(sf::Uint64 id);
+
+    const std::vector<sf::Uint64> &getAttachedComponents() const;
 
     virtual Kind kind() const = 0;
 
@@ -35,13 +45,17 @@ public:
 
     virtual void onEntityUpdate(Entity &entity, sf::Time dt) = 0;
 
-    bool destroyed() const noexcept;
-
-    const std::string &getName() const;
-
-    void setName(const std::string &name);
-
 protected:
+    template<typename T = Component>
+    void addComponent(T &&component) {
+      entity()->addComponent(std::forward<T>(component));
+    }
+
+    template<typename T = Component>
+    void attachComponent(T &&component) {
+      entity()->addComponent(std::forward<T>(component), this);
+    }
+
     template<class E = std::string, class F>
     void listen(const std::string &channel, F &&cb) const {
       EventBus::instance().listen<E>(channel, gen::to_uintptr(this), std::forward<F>(cb));
@@ -53,24 +67,28 @@ protected:
     }
 
     template<class E = std::string>
-    void notify(E &&event = "") const {
+    void notify(E &&event = gen::default_object<E>()) const {
       EventBus::instance().notify(std::forward<E>(event));
     }
 
     template<class E = std::string>
-    void notify_channel(const std::string &channel, E &&event = "") const {
+    void notifyChannel(const std::string &channel, E &&event = gen::default_object<E>()) const {
       EventBus::instance().notify(channel, std::forward<E>(event));
     }
 
 protected:
     Entity *entity() const;
 
+    Component *targetComponent() const;
+
 private:
     friend class Entity;
 
     Entity *mEntity;
+    Component *mTargetComponent;
     bool mDestroyed;
     std::string mName;
+    std::vector<sf::Uint64> mAttachedComponents;
 };
 
 using ComponentPtr = Component::Ptr;

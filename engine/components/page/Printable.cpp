@@ -9,7 +9,8 @@
 engine::Printable::Printable(
     std::wstring contents,
     const std::vector<TextEffect> &textEffects
-) : mState{State::Printing},
+) : Mesh{},
+    mState{State::Pending},
     mNeedsUpdate{false},
     mMaxWidth{System::instance().effectivePageWidth()},
     mX{},
@@ -196,11 +197,31 @@ float engine::Printable::measureText(size_t begin, size_t end) {
 }
 
 engine::Printable::EffectIt engine::Printable::findDisplacementEffect(engine::Printable::Displacement d) const {
-  return engine::Printable::EffectIt();
+  switch (d) {
+    case Displacement::Center:
+      return findEffect(TextEffect::Kind::CENTER);
+    case Displacement::Right:
+      return findEffect(TextEffect::Kind::RIGHT);
+    default:
+      throw std::runtime_error("Wrong displacement value");
+  }
+}
+
+engine::Printable::EffectIt engine::Printable::findEffect(TextEffect::Kind kind) const {
+  return gen::find_if(mActiveEffects, [&](const auto &e) {
+    return e.kind == kind;
+  });
 }
 
 float engine::Printable::displacementSpacing(engine::Printable::Displacement d, float width) const {
-  return 0;
+  switch (d) {
+    case Displacement::Center:
+      return mMaxWidth / 2.f - System::instance().mMarginHorizontal * 1.5f - width / 2.f;
+    case Displacement::Right:
+      return mMaxWidth - 2.5f * System::instance().mMarginHorizontal - width;
+    default:
+      throw std::runtime_error("Wrong displacement value");
+  }
 }
 
 void engine::Printable::applyTextEffects(size_t idx) {
@@ -268,6 +289,12 @@ void engine::Printable::removeTextEffects(size_t idx) const {
 }
 
 void engine::Printable::onStart(engine::Entity &entity) {
+  listen<sf::Uint64>("printable_selection", [this](const auto &id) {
+    if (getUID() == id) {
+      mState = State::Printing;
+    }
+  });
+
   listen("page_scroll_begin", [this](const auto &msg) {
     mState = State::Scrolling;
   });
@@ -280,6 +307,7 @@ void engine::Printable::onStart(engine::Entity &entity) {
 void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
   switch (*mState) {
     case State::Scrolling:
+    case State::Pending:
       return;
     case State::Complete:
       if (mNeedsUpdate) {
@@ -499,5 +527,5 @@ void engine::Printable::newLine() {
   mY += System::instance().mLineSpacing;
   mX = System::instance().mMarginHorizontal;
 
-  notify_channel("new_line");
+  notifyChannel("new_line");
 }

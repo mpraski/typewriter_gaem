@@ -6,28 +6,19 @@
 #define TYPEWRITER_GAEM_DIALOG_HPP
 
 #include "Printable.hpp"
+#include "../Interactive.hpp"
 
 namespace engine {
 class Dialog final : public Printable {
+public:
     Dialog(
         const std::wstring &person,
         const std::wstring &speech
     );
 
-    bool interactive() final;
-
-    void onHoverStart() final;
-
-    void onHoverEnd() final;
-
-    Action onClick() final;
-
-    Action onPress() final;
+    void onStart(Entity &entity) final;
 
 private:
-    bool mOn;
-    bool mShouldUpdate;
-    bool mInteractive;
     std::unordered_map<size_t, std::vector<TextEffect>> mEffectsOnHover;
     std::unordered_map<size_t, std::vector<TextEffect>> mEffectsOffHover;
 };

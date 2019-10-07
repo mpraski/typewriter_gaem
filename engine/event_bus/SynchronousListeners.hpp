@@ -13,7 +13,7 @@
 
 namespace engine {
 template<class E>
-class SynchronousListeners : public Listeners {
+class SynchronousListeners final : public Listeners {
     using callback_t = std::function<void(const E &)>;
 public:
     void remove(callback_id_t cbid) final {

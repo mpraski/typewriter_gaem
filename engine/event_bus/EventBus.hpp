@@ -16,7 +16,7 @@
 // scene nodes and such. May be useful to coordinate
 // complex translations between hierarchies of nodes
 namespace engine {
-class EventBus {
+class EventBus final {
     using type_id_t = std::size_t;
     using ListenersPtr = std::unique_ptr<Listeners>;
     using ListenersMap = std::unordered_map<type_id_t, ListenersPtr>;

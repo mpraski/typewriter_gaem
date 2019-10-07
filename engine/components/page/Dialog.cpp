@@ -8,8 +8,6 @@ engine::Dialog::Dialog(
     const std::wstring &person,
     const std::wstring &speech
 ) : Printable{person + L":\t" + speech, {}},
-    mOn{},
-    mShouldUpdate{},
     mEffectsOnHover{
         {0,
             {
@@ -31,36 +29,33 @@ engine::Dialog::Dialog(
   preprocess();
 }
 
-bool engine::Dialog::interactive() {
-  return mInteractive;
-}
+void engine::Dialog::onStart(engine::Entity &entity) {
+  Printable::onStart(entity);
 
-void engine::Dialog::onHoverStart() {
-  if (mOn) {
-    mShouldUpdate = false;
-    return;
-  } else {
-    mShouldUpdate = true;
-    mOn = true;
-  }
-  mEffects = mEffectsOnHover;
-}
+  auto interactive = std::make_unique<Interactive>();
+  auto chan = interactive->getChannel();
 
-void engine::Dialog::onHoverEnd() {
-  if (!mOn) {
-    mShouldUpdate = false;
-    return;
-  } else {
-    mShouldUpdate = true;
-    mOn = false;
-  }
-  mEffects = mEffectsOffHover;
-}
+  attachComponent(std::move(interactive));
 
-engine::Action engine::Dialog::onClick() {
-  return Action{ActionKind::Click, getUID()};
-}
+  listen<Interactive::Event>(
+      chan,
+      [this](const auto &event) {
+        switch (event) {
+          case Interactive::Event::HoverStart:
+            mEffects = mEffectsOnHover;
+            break;
+          case Interactive::Event::HoverEnd:
+            mEffects = mEffectsOffHover;
+            break;
+        }
+      }
+  );
 
-engine::Action engine::Dialog::onPress() {
-  return Action();
+  listen("page_scroll_begin", [this, chan](const auto &msg) {
+    notifyChannel(chan, Interactive::Event::Disable);
+  });
+
+  listen("page_scroll_end", [this, chan](const auto &msg) {
+    notifyChannel(chan, Interactive::Event::Enable);
+  });
 }

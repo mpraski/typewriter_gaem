@@ -6,16 +6,12 @@
 #define TYPEWRITER_GAEM_COLLIDER_HPP
 
 #include "Component.hpp"
+#include "Mesh.hpp"
 #include "../Entity.hpp"
-
 
 namespace engine {
 class Collider final : public Component {
 public:
-    class Event final {
-
-    };
-
     Collider();
 
     sf::FloatRect localBounds() const;
@@ -29,10 +25,7 @@ public:
     void onEntityUpdate(Entity &entity, sf::Time dt) final;
 
 private:
-    void handleEvent(const Event &event);
-
-private:
-    sf::FloatRect mBounds;
+    const Mesh *mMesh;
     sf::Vector2f mPosition;
     sf::Vector2f mVelocity;
     float mMass;

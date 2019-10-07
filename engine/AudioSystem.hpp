@@ -13,7 +13,7 @@ namespace engine {
 class AudioSystem final {
 public:
     static const auto &instance() {
-      static AudioSystem audioSystem;
+      static AudioSystem audioSystem{};
       return audioSystem;
     }
 

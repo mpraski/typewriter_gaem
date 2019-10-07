@@ -9,21 +9,12 @@
 
 namespace engine {
 class Paragraph final : public Printable {
+public:
     Paragraph(
         std::wstring contents,
         const std::vector<TextEffect> &textEffects,
         bool withTab = true
     );
-
-    bool interactive() final;
-
-    void onHoverStart() final;
-
-    void onHoverEnd() final;
-
-    Action onClick() final;
-
-    Action onPress() final;
 
 private:
     static inline void addTab(std::wstring &s) {

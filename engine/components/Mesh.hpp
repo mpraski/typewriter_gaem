@@ -22,13 +22,11 @@ public:
 
     Kind kind() const final;
 
-    static std::unique_ptr<Collider> fromMesh(const Mesh &mesh);
-
 protected:
     sf::FloatRect mBounds;
     mutable sf::VertexArray mVertices;
-    mutable sf::VertexBuffer mVerticesBuffer;
     mutable sf::VertexArray mDebugBoundsVertices;
+    mutable sf::VertexBuffer mVerticesBuffer;
 
     const sf::Shader *mShader;
     const sf::Texture *mTexture;

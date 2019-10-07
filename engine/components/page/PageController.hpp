@@ -6,6 +6,10 @@
 #define TYPEWRITER_GAEM_PAGECONTROLLER_HPP
 
 #include "../Component.hpp"
+#include "Printable.hpp"
+#include "DecisionNode.hpp"
+#include "Paragraph.hpp"
+#include "Dialog.hpp"
 #include "../../System.hpp"
 #include "../translations/TranslateVertical.hpp"
 
@@ -21,9 +25,14 @@ public:
 private:
     bool shouldScroll() const;
 
+    static std::unique_ptr<Printable> fromTemplate(const PrintableTemplate &tlp);
+
+    void addContents(const std::vector<PrintableTemplate> &contents);
+
 private:
     float mNextY;
     std::vector<sf::Uint64> mPrintableIDs;
+    DecisionNode mDecisionNode;
 };
 }
 

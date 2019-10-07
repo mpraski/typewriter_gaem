@@ -8,12 +8,18 @@ engine::Entity::Entity()
     : Identifiable{},
       mParent{nullptr},
       mDestroyed{},
+      mEntityChannel{gen::str("entity_chan_", getUID())},
       mChildren{},
       mComponents{},
       mDrawables{},
+      mComponentByUID{},
       mClock{},
       mSinceLastUpdate{sf::Time::Zero} {
 
+}
+
+engine::Entity::~Entity() {
+  destroy();
 }
 
 void engine::Entity::addChild(Ptr entity) {
@@ -71,22 +77,63 @@ void engine::Entity::update(sf::Time dt) {
 
 void engine::Entity::destroy() {
   for (auto &c : mComponents) {
-    c->destroy();
+    c->markDestroyed();
   }
   mDestroyed = true;
 }
 
 void engine::Entity::updateSelf(sf::Time dt) {
   for (auto it{std::begin(mComponents)}; it != std::end(mComponents);) {
-    (*it)->onEntityUpdate(*this, dt);
     if ((*it)->destroyed()) {
-      if ((*it)->kind() == Component::Kind::Mesh) {
-        auto r{gen::find(mDrawables, dynamic_cast<sf::Drawable *>(it->get()))};
-        if (r != std::end(mDrawables)) mDrawables.erase(r);
+      for (const auto &depUID : (*it)->mAttachedComponents) {
+        if (auto depComp{getComponent(depUID)}; depComp) {
+          depComp->markDestroyed();
+        }
       }
+      if ((*it)->mTargetComponent) {
+        gen::remove_if((*it)->mTargetComponent->mAttachedComponents, [&](const auto &compUID) {
+          compUID == (*it)->getUID();
+        });
+      }
+      if ((*it)->kind() == Component::Kind::Mesh) {
+        gen::remove_if(mDrawables, [&](const auto &d) {
+          return d == dynamic_cast<sf::Drawable *>(it->get());
+        });
+      }
+      switch ((*it)->kind()) {
+        case Component::Kind::Mesh:
+          gen::remove_if(mDrawables, [&](const auto &d) {
+            return d == dynamic_cast<sf::Drawable *>(it->get());
+          });
+          break;
+        case Component::Kind::Interactive:
+          gen::remove_if(mDrawables, [&](const auto &d) {
+            return d == dynamic_cast<Interactive *>(it->get());
+          });
+          break;
+        default:
+          break;
+      }
+
+      mComponentByUID.erase((*it)->getUID());
       it = mComponents.erase(it);
+      (*it)->onEntityUpdate(*this, dt);
     } else {
+      (*it)->onEntityUpdate(*this, dt);
       ++it;
+    }
+  }
+
+  // Handle mouse hover
+  for (const auto &interactive : mInteractives) {
+    if (interactive->interactive()) {
+      auto bounds{interactive->globalBounds()};
+      auto mousePos{System::instance().mousePosition()};
+      if (bounds.contains(mousePos)) {
+        interactive->onHoverStart();
+      } else {
+        interactive->onHoverEnd();
+      }
     }
   }
 
@@ -126,4 +173,8 @@ void engine::Entity::draw(sf::RenderTarget &target, sf::RenderStates states) con
 
   sf::Time elapsed{mClock.restart()};
   mSinceLastUpdate += elapsed;
+}
+
+const std::string &engine::Entity::getEntityChannel() const {
+  return mEntityChannel;
 }

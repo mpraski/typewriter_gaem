@@ -129,7 +129,7 @@ public:
         if (mLoop) {
           start();
         } else {
-          destroy();
+          markDestroyed();
         }
       }
     }

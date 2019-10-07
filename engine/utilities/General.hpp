@@ -27,6 +27,12 @@ bool instanceof(const T *ptr) {
   return dynamic_cast<const Base *>(ptr) != nullptr;
 }
 
+template<typename T>
+const T &default_object() {
+  static T t{};
+  return t;
+}
+
 template<class T, class F>
 void remove_if(T &ts, F &&f) {
   ts.erase(
