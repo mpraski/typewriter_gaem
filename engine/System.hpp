@@ -86,15 +86,15 @@ public:
 
     sf::Vector2f mousePosition() const;
 
-    void set_mouse_click(const sf::Vector2f &pos) const;
+    void setMouseClick(const sf::Vector2f &pos) const;
 
-    bool mouse_click_available() const;
+    bool mouseClickAvailable() const;
 
-    const sf::Vector2f &mouse_click_position() const;
+    const sf::Vector2f &mouseClickPosition() const;
 
-    void set_cursor(Cursor c) const;
+    void setCursor(Cursor c) const;
 
-    sf::RenderWindow &get_window() const;
+    sf::RenderWindow &getWindow() const;
 
     sf::VideoMode mVideoMode;
     const sf::Font *mFont;

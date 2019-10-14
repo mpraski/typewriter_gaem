@@ -37,3 +37,7 @@ void engine::Collider::onStart(engine::Entity &entity) {
 void engine::Collider::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
 
 }
+
+bool engine::Collider::dependent() const {
+  return true;
+}

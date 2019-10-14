@@ -9,14 +9,22 @@
 #include "../Interactive.hpp"
 
 namespace engine {
-class Dialog final : public Printable {
+class Dialog final : public Printable, public Interactive::Interface {
 public:
     Dialog(
         const std::wstring &person,
         const std::wstring &speech
     );
 
+    virtual ~Dialog() = default;
+
     void onStart(Entity &entity) final;
+
+    void onHoverStart() final;
+
+    void onHoverEnd() final;
+
+    void onClick() final;
 
 private:
     std::unordered_map<size_t, std::vector<TextEffect>> mEffectsOnHover;

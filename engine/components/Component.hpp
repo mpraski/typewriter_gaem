@@ -35,9 +35,9 @@ public:
 
     void setName(const std::string &name);
 
-    void addAttachedComponent(sf::Uint64 id);
+    const std::string &getChannel() const noexcept;
 
-    const std::vector<sf::Uint64> &getAttachedComponents() const;
+    virtual bool dependent() const;
 
     virtual Kind kind() const = 0;
 
@@ -88,6 +88,7 @@ private:
     Component *mTargetComponent;
     bool mDestroyed;
     std::string mName;
+    std::string mChannel;
     std::vector<sf::Uint64> mAttachedComponents;
 };
 

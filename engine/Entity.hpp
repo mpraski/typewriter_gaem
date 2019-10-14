@@ -138,6 +138,10 @@ private:
 
     virtual void drawSelf(sf::RenderTarget &target, sf::RenderStates states) const;
 
+    void performMouseHover();
+
+    void performMouseClick();
+
 private:
     const Entity *mParent;
     bool mDestroyed;

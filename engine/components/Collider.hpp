@@ -18,6 +18,8 @@ public:
 
     sf::FloatRect globalBounds() const;
 
+    bool dependent() const final;
+
     Kind kind() const final;
 
     void onStart(Entity &entity) final;

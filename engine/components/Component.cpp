@@ -10,6 +10,7 @@ engine::Component::Component()
       mTargetComponent{},
       mDestroyed{},
       mName{},
+      mChannel{gen::str("comp-", getUID())},
       mAttachedComponents{} {
 
 }
@@ -20,6 +21,7 @@ engine::Component::Component(std::string name)
       mTargetComponent{},
       mDestroyed{},
       mName{std::move(name)},
+      mChannel{gen::str("comp-", getUID())},
       mAttachedComponents{} {
 
 }
@@ -50,14 +52,14 @@ engine::Entity *engine::Component::entity() const {
   return mEntity;
 }
 
-void engine::Component::addAttachedComponent(sf::Uint64 id) {
-  mAttachedComponents.push_back(id);
-}
-
-const std::vector<sf::Uint64> &engine::Component::getAttachedComponents() const {
-  return mAttachedComponents;
-}
-
 engine::Component *engine::Component::targetComponent() const {
   return mTargetComponent;
+}
+
+const std::string &engine::Component::getChannel() const noexcept {
+  return mChannel;
+}
+
+bool engine::Component::dependent() const {
+  return false;
 }

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
       <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
+      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -12,37 +12,27 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/engine/components/Interactive.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/components/Interactive.hpp" afterDir="false" />
+    <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="implemented mouse hover events for the new architecture">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/AudioSystem.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/AudioSystem.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Entity.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Entity.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Interactive.hpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/System.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/System.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/Collider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Collider.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/Collider.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Collider.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/Component.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Component.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/Component.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Component.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/components/Mesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Mesh.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/components/Mesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Mesh.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/components/Transition.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Transition.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/components/page/DecisionNode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/DecisionNode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/components/page/DecisionNode.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/DecisionNode.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/Interactive.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Interactive.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/Interactive.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Interactive.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/page/Dialog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Dialog.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/page/Dialog.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Dialog.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/page/PageController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/PageController.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/page/PageController.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/PageController.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/components/page/Paragraph.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Paragraph.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/components/page/Paragraph.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Paragraph.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/components/page/Printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Printable.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/components/page/Printable.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Printable.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/event_bus/EventBus.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/event_bus/EventBus.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/event_bus/SynchronousListeners.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/event_bus/SynchronousListeners.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/utilities/General.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/utilities/General.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/engine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/game.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Game.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/game.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Game.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/tweeny" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/tweeny" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -176,14 +166,10 @@
       <workItem from="1569668246425" duration="17306000" />
       <workItem from="1569758650120" duration="6517000" />
       <workItem from="1569866436978" duration="9787000" />
-      <workItem from="1570477769531" duration="4131000" />
-    </task>
-    <task id="LOCAL-00003" summary="changes">
-      <created>1563735430991</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1563735430991</updated>
+      <workItem from="1570477769531" duration="5155000" />
+      <workItem from="1570645989190" duration="4847000" />
+      <workItem from="1570734674713" duration="2306000" />
+      <workItem from="1571078347843" duration="4059000" />
     </task>
     <task id="LOCAL-00004" summary="added support for some text effects">
       <created>1563786185469</created>
@@ -521,7 +507,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566244872432</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="implemented mouse hover events for the new architecture">
+      <created>1570482334413</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1570482334413</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -542,7 +535,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Further prototyped decision trees" />
     <MESSAGE value="some more prototyping" />
     <MESSAGE value="fixed dialog progression" />
     <MESSAGE value="added centered text printable" />
@@ -567,6 +559,7 @@
     <MESSAGE value="added clock-driven event bus for indirect scene node communication" />
     <MESSAGE value="fixes" />
     <MESSAGE value="maintain separate vertex arrays for printables to allow for different font sizes and other cool effects" />
-    <option name="LAST_COMMIT_MESSAGE" value="maintain separate vertex arrays for printables to allow for different font sizes and other cool effects" />
+    <MESSAGE value="implemented mouse hover events for the new architecture" />
+    <option name="LAST_COMMIT_MESSAGE" value="implemented mouse hover events for the new architecture" />
   </component>
 </project>

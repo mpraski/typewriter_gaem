@@ -16,6 +16,8 @@
 namespace engine {
 class PageController : public Component {
 public:
+    PageController(DecisionNode n);
+
     Kind kind() const override;
 
     void onStart(Entity &entity) override;

@@ -2,16 +2,6 @@
 #include "engine/engine.hpp"
 
 int main() {
-  auto game_system{engine::make_system(
-      sf::VideoMode(500, 500),
-      "./res/fonts",
-      "./res/sounds",
-      "./res/textures",
-      "./res/configs"
-  )};
-
-  auto audio_system{engine::make_audio_system(game_system)};
-
   auto sample_decision_tree{
       std::make_shared<engine::decision_node>(
           std::vector<engine::printable *>{
@@ -143,7 +133,7 @@ int main() {
   auto sample_story{engine::make_story(sample_decision_tree)};
 
   try {
-    engine::game game{
+    engine::Game game{
         game_system,
         audio_system,
         sample_story

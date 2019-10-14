@@ -95,11 +95,6 @@ void engine::Entity::updateSelf(sf::Time dt) {
           compUID == (*it)->getUID();
         });
       }
-      if ((*it)->kind() == Component::Kind::Mesh) {
-        gen::remove_if(mDrawables, [&](const auto &d) {
-          return d == dynamic_cast<sf::Drawable *>(it->get());
-        });
-      }
       switch ((*it)->kind()) {
         case Component::Kind::Mesh:
           gen::remove_if(mDrawables, [&](const auto &d) {
@@ -124,22 +119,12 @@ void engine::Entity::updateSelf(sf::Time dt) {
     }
   }
 
-  // Handle mouse hover
-  for (const auto &interactive : mInteractives) {
-    if (interactive->interactive()) {
-      auto bounds{interactive->globalBounds()};
-      auto mousePos{System::instance().mousePosition()};
-      if (bounds.contains(mousePos)) {
-        interactive->onHoverStart();
-      } else {
-        interactive->onHoverEnd();
-      }
-    }
-  }
-
   if (mComponents.empty()) {
     destroy();
   }
+
+  performMouseHover();
+  performMouseClick();
 }
 
 void engine::Entity::drawSelf(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -177,4 +162,38 @@ void engine::Entity::draw(sf::RenderTarget &target, sf::RenderStates states) con
 
 const std::string &engine::Entity::getEntityChannel() const {
   return mEntityChannel;
+}
+
+void engine::Entity::performMouseHover() {
+  bool hovering{};
+  for (auto &interactive : mInteractives) {
+    if (interactive->interactive()) {
+      auto bounds{interactive->globalBounds()};
+      auto mousePos{System::instance().mousePosition()};
+      if (bounds.contains(mousePos)) {
+        interactive->onHoverStart();
+      } else {
+        interactive->onHoverEnd();
+      }
+    }
+  }
+
+  System::instance().setCursor(hovering
+                               ? System::Cursor::HAND
+                               : System::Cursor::ARROW);
+}
+
+void engine::Entity::performMouseClick() {
+  if (System::instance().mouseClickAvailable()) {
+    const auto &mcp{System::instance().mouseClickPosition()};
+    for (auto &interactive : mInteractives) {
+      if (interactive->interactive()) {
+        auto bounds{interactive->globalBounds()};
+        if (bounds.contains(mcp)) {
+          interactive->onClick();
+          System::instance().setCursor(System::Cursor::ARROW);
+        }
+      }
+    }
+  }
 }

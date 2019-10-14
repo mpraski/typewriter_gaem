@@ -4,6 +4,14 @@
 
 #include "PageController.hpp"
 
+engine::PageController::PageController(DecisionNode n)
+    : Component{},
+      mNextY{},
+      mPrintableIDs{},
+      mDecisionNode{std::move(n)} {
+  `
+}
+
 engine::Component::Kind engine::PageController::kind() const {
   return Component::Kind::Script;
 }

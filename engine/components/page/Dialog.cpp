@@ -37,20 +37,6 @@ void engine::Dialog::onStart(engine::Entity &entity) {
 
   attachComponent(std::move(interactive));
 
-  listen<Interactive::Event>(
-      chan,
-      [this](const auto &event) {
-        switch (event) {
-          case Interactive::Event::HoverStart:
-            mEffects = mEffectsOnHover;
-            break;
-          case Interactive::Event::HoverEnd:
-            mEffects = mEffectsOffHover;
-            break;
-        }
-      }
-  );
-
   listen("page_scroll_begin", [this, chan](const auto &msg) {
     notifyChannel(chan, Interactive::Event::Disable);
   });
@@ -58,4 +44,16 @@ void engine::Dialog::onStart(engine::Entity &entity) {
   listen("page_scroll_end", [this, chan](const auto &msg) {
     notifyChannel(chan, Interactive::Event::Enable);
   });
+}
+
+void engine::Dialog::onHoverStart() {
+  mEffects = mEffectsOnHover;
+}
+
+void engine::Dialog::onHoverEnd() {
+  mEffects = mEffectsOffHover;
+}
+
+void engine::Dialog::onClick() {
+
 }

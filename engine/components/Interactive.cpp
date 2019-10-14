@@ -9,7 +9,7 @@ engine::Interactive::Interactive()
       mOn{},
       mInteractive{true},
       mMesh{},
-      mChannel{} {
+      mInterface{} {
 
 }
 
@@ -19,7 +19,7 @@ void engine::Interactive::onHoverStart() {
   } else {
     mOn = true;
   }
-  notifyChannel(mChannel, Event::HoverStart);
+  mInterface->onHoverStart();
 }
 
 void engine::Interactive::onHoverEnd() {
@@ -28,15 +28,11 @@ void engine::Interactive::onHoverEnd() {
   } else {
     mOn = false;
   }
-  notifyChannel(mChannel, Event::HoverEnd);
+  mInterface->onHoverEnd();
 }
 
 void engine::Interactive::onClick() {
-  notifyChannel(mChannel, Event::Click);
-}
-
-void engine::Interactive::onPress() {
-  notifyChannel(mChannel, Event::Press);
+  mInterface->onClick();
 }
 
 engine::Component::Kind engine::Interactive::kind() const {
@@ -49,9 +45,12 @@ void engine::Interactive::onStart(engine::Entity &entity) {
     throw std::runtime_error("Target component is not a mesh");
   }
 
-  mChannel = makeChannel();
+  mInterface = dynamic_cast<Interface *>(targetComponent());
+  if (!mInterface) {
+    throw std::runtime_error("Target component does not implement Interactive::Interface");
+  }
 
-  listen<Event>(mChannel, [this](const auto &event) {
+  listen<Event>(getChannel(), [this](const auto &event) {
     switch (event) {
       case Event::Enable:
         mInteractive = true;
@@ -73,10 +72,6 @@ bool engine::Interactive::interactive() {
   return mInteractive;
 }
 
-const std::string &engine::Interactive::getChannel() const {
-  return mChannel;
-}
-
 sf::FloatRect engine::Interactive::localBounds() const {
   return mMesh->localBounds();
 }
@@ -85,6 +80,6 @@ sf::FloatRect engine::Interactive::globalBounds() const {
   return entity()->getTransform().transformRect(localBounds());
 }
 
-std::string engine::Interactive::makeChannel() {
-  return gen::str("action_", targetComponent()->getUID());
+bool engine::Interactive::dependent() const {
+  return true;
 }

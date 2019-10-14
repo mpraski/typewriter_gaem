@@ -18,6 +18,6 @@
 #include "AudioSystem.hpp"
 #include "TextEffect.hpp"
 #include "AudioSystem.hpp"
-#include "game.hpp"
+#include "Game.hpp"
 
 #endif //TYPEWRITER_GAEM_ENGINE_HPP

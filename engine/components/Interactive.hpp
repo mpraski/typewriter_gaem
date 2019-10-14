@@ -11,11 +11,18 @@
 namespace engine {
 class Interactive final : public Component {
 public:
+    class Interface {
+    public:
+        virtual ~Interface() = default;
+
+        virtual void onHoverStart() = 0;
+
+        virtual void onHoverEnd() = 0;
+
+        virtual void onClick() = 0;
+    };
+
     enum class Event {
-        HoverStart,
-        HoverEnd,
-        Click,
-        Press,
         Enable,
         Disable
     };
@@ -23,8 +30,6 @@ public:
     Interactive();
 
     bool interactive();
-
-    const std::string &getChannel() const;
 
     sf::FloatRect localBounds() const;
 
@@ -36,7 +41,7 @@ public:
 
     void onClick();
 
-    void onPress();
+    bool dependent() const final;
 
     Kind kind() const final;
 
@@ -45,14 +50,11 @@ public:
     void onEntityUpdate(Entity &entity, sf::Time dt) final;
 
 private:
-    std::string makeChannel();
-
-private:
     bool mOn;
     bool mInteractive;
 
-    const Mesh *mMesh;
-    std::string mChannel;
+    Mesh *mMesh;
+    Interface *mInterface;
 };
 }
 
