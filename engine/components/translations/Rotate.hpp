@@ -13,6 +13,10 @@ class Rotate final : public Transition<float> {
 public:
     using Transition<float>::Transition;
 
+    Rotate *clone() const final {
+      return new Rotate{*this};
+    }
+
 private:
     void applyStep(float angle) final {
       entity()->rotate(angle);

@@ -16,3 +16,7 @@ engine::Paragraph::Paragraph(
 
   preprocess();
 }
+
+engine::Paragraph *engine::Paragraph::clone() const {
+  return new Paragraph{*this};
+}

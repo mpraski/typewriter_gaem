@@ -9,7 +9,7 @@
 #include "utilities/General.hpp"
 
 namespace engine {
-class Identifiable {
+class Identifiable : sf::NonCopyable {
 public:
     Identifiable();
 

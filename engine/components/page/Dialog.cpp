@@ -57,3 +57,7 @@ void engine::Dialog::onHoverEnd() {
 void engine::Dialog::onClick() {
 
 }
+
+engine::Dialog *engine::Dialog::clone() const {
+  return new Dialog{*this};
+}

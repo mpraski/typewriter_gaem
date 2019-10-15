@@ -64,3 +64,7 @@ void engine::PageController::addContents(const std::vector<PrintableTemplate> &c
     addComponent(std::move(printable));
   }
 }
+
+engine::PageController *engine::PageController::clone() const {
+  return new PageController{*this};
+}

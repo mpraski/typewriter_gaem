@@ -16,6 +16,8 @@ class Mesh : public Component,
 public:
     Mesh();
 
+    Mesh(const Mesh &) = default;
+
     sf::FloatRect localBounds() const;
 
     sf::FloatRect globalBounds() const;

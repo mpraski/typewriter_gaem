@@ -55,6 +55,7 @@ public:
       c->mTargetComponent = targetComponent;
       c->onStart(*this);
       if (targetComponent) {
+        assert(c->dependent());
         targetComponent->addDependentComponent(c->getUID());
       }
       mComponents.push_back(std::move(c));
@@ -87,7 +88,7 @@ public:
       if (comp == std::end(mComponents)) {
         throw std::runtime_error("Component not present");
       }
-      if (!comp->getDependentComponents().empty()) {
+      if (!comp->mDependentComponents.empty()) {
         throw std::runtime_error("Component has dependants");
       }
       switch (c->kind()) {
@@ -105,7 +106,7 @@ public:
           break;
       }
       mComponentByUID.erase(comp->getUID());
-      if (comp->mTargetComponent) {
+      if (comp->dependent()) {
         gen::remove_if(comp->mTargetComponent->mDependentComponents, [&](const auto &compUID) {
           compUID == comp->getUID();
         });

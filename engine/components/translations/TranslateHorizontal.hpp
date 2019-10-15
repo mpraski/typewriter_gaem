@@ -13,6 +13,10 @@ class TranslateHorizontal final : public Transition<float> {
 public:
     using Transition<float>::Transition;
 
+    TranslateHorizontal *clone() const final {
+      return new TranslateHorizontal{*this};
+    }
+
 private:
     void applyStep(float x) final {
       entity()->move(x, 0.f);

@@ -14,15 +14,19 @@
 #include "../translations/TranslateVertical.hpp"
 
 namespace engine {
-class PageController : public Component {
+class PageController final : public Component {
 public:
-    PageController(DecisionNode n);
+    explicit PageController(DecisionNode n);
+
+    PageController(const PageController &) = default;
 
     Kind kind() const override;
 
     void onStart(Entity &entity) override;
 
     void onEntityUpdate(Entity &entity, sf::Time dt) override;
+
+    PageController *clone() const final;
 
 private:
     bool shouldScroll() const;

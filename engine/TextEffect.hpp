@@ -62,6 +62,12 @@ public:
     sf::Color mColor;
     std::string mTexture;
     float mFontSizeFactor;
+
+    const constexpr static enum TextEffect::Kind STATIC_EFFECTS[] = {
+        TextEffect::Kind::BOLD,
+        TextEffect::Kind::ITALIC,
+        TextEffect::Kind::UPPERCASE
+    };
 };
 }
 

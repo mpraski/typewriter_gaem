@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
       <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
+      <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -13,25 +13,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="implemented mouse hover events for the new architecture">
+      <change afterPath="$PROJECT_DIR$/engine/utilities/NonCopyable.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Action.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Action.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/AudioSystem.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/AudioSystem.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Entity.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Entity.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/System.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/System.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Identifiable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Identifiable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Identifiable.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Identifiable.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/TextEffect.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/TextEffect.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/Collider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Collider.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/Collider.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Collider.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/Component.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Component.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/Component.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Component.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/Interactive.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Interactive.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/Interactive.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Interactive.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/Mesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Mesh.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/Transition.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/Transition.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/page/Dialog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Dialog.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/page/Dialog.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Dialog.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/page/PageController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/PageController.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/components/page/PageController.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/PageController.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/engine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/engine.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/game.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Game.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/game.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Game.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/page/Paragraph.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Paragraph.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/page/Paragraph.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Paragraph.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/page/Printable.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/page/Printable.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/translations/Rotate.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/translations/Rotate.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/translations/Scale.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/translations/Scale.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/translations/Translate.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/translations/Translate.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/translations/TranslateHorizontal.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/translations/TranslateHorizontal.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/components/translations/TranslateVertical.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/components/translations/TranslateVertical.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/engine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Engine.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/event_bus/EventBus.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/EventBus/EventBus.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/event_bus/Listeners.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/EventBus/Listeners.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/event_bus/SynchronousListeners.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/EventBus/SynchronousListeners.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/page.hpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/tweeny" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/tweeny" afterDir="false" />
     </list>
@@ -169,7 +187,8 @@
       <workItem from="1570477769531" duration="5155000" />
       <workItem from="1570645989190" duration="4847000" />
       <workItem from="1570734674713" duration="2306000" />
-      <workItem from="1571078347843" duration="4059000" />
+      <workItem from="1571078347843" duration="5715000" />
+      <workItem from="1571168174813" duration="6894000" />
     </task>
     <task id="LOCAL-00004" summary="added support for some text effects">
       <created>1563786185469</created>

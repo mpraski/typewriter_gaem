@@ -43,6 +43,7 @@ class Printable : public Mesh {
         float mLetterSpacingFactor = 1.f;
         sf::Color mTextColor = sf::Color::White;
     };
+
 public:
     using Ptr = std::unique_ptr<Printable>;
 
@@ -50,6 +51,8 @@ public:
         std::wstring contents,
         const std::vector<TextEffect> &textEffects
     );
+
+    Printable(const Printable &) = default;
 
     size_t currentCharacter() const;
 
@@ -59,7 +62,7 @@ public:
 
     size_t length() const;
 
-    void onStart(Entity &entity) override;
+    void onStart(Entity &entity);
 
     void onEntityUpdate(Entity &entity, sf::Time dt) final;
 

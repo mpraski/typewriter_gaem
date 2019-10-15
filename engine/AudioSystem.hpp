@@ -7,7 +7,7 @@
 
 #include <random>
 #include <chrono>
-#include "engine.hpp"
+#include "Engine.hpp"
 
 namespace engine {
 class AudioSystem final {
@@ -16,6 +16,14 @@ public:
       static AudioSystem audioSystem{};
       return audioSystem;
     }
+
+    AudioSystem(const AudioSystem &p) = delete;
+
+    AudioSystem(AudioSystem &&p) = delete;
+
+    AudioSystem &operator=(const AudioSystem &p) = delete;
+
+    AudioSystem &operator=(AudioSystem &&p) = delete;
 
     void playTypewriterClick() const;
 

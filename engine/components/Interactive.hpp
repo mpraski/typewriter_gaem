@@ -29,6 +29,8 @@ public:
 
     Interactive();
 
+    Interactive(const Interactive &);
+
     bool interactive();
 
     sf::FloatRect localBounds() const;
@@ -48,6 +50,8 @@ public:
     void onStart(Entity &entity) final;
 
     void onEntityUpdate(Entity &entity, sf::Time dt) final;
+
+    Interactive *clone() const final;
 
 private:
     bool mOn;

@@ -15,17 +15,6 @@ engine::Component::Component()
 
 }
 
-engine::Component::Component(std::string name)
-    : Identifiable{},
-      mEntity{},
-      mTargetComponent{},
-      mDestroyed{},
-      mName{std::move(name)},
-      mChannel{gen::str("comp-", getUID())},
-      mAttachedComponents{} {
-
-}
-
 void engine::Component::markDestroyed() {
   EventBus::instance().unlisten_all(gen::to_uintptr(this));
   mTargetComponent = nullptr;
@@ -62,4 +51,15 @@ const std::string &engine::Component::getChannel() const noexcept {
 
 bool engine::Component::dependent() const {
   return false;
+}
+
+engine::Component::Component(const engine::Component &comp)
+    : Identifiable{},
+      mEntity{},
+      mTargetComponent{},
+      mDestroyed{},
+      mName{comp.mName},
+      mChannel{gen::str("comp-", getUID())},
+      mAttachedComponents{} {
+  assert(!comp.mDestroyed);
 }

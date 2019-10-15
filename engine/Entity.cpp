@@ -8,7 +8,7 @@ engine::Entity::Entity()
     : Identifiable{},
       mParent{nullptr},
       mDestroyed{},
-      mEntityChannel{gen::str("entity_chan_", getUID())},
+      mEntityChannel{gen::str("ent-", getUID())},
       mChildren{},
       mComponents{},
       mDrawables{},
@@ -90,7 +90,7 @@ void engine::Entity::updateSelf(sf::Time dt) {
           depComp->markDestroyed();
         }
       }
-      if ((*it)->mTargetComponent) {
+      if ((*it)->dependent()) {
         gen::remove_if((*it)->mTargetComponent->mAttachedComponents, [&](const auto &compUID) {
           compUID == (*it)->getUID();
         });

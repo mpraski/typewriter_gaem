@@ -23,9 +23,16 @@ public:
         Interactive
     };
 
+public:
     Component();
 
-    explicit Component(std::string name);
+    Component(const Component &);
+
+    Component(Component &&) = delete;
+
+    Component &operator=(const Component &) = delete;
+
+    Component &operator=(Component &&) = delete;
 
     void markDestroyed();
 
@@ -44,6 +51,10 @@ public:
     virtual void onStart(Entity &entity) = 0;
 
     virtual void onEntityUpdate(Entity &entity, sf::Time dt) = 0;
+
+    virtual Component *clone() const = 0;
+
+    virtual ~Component() = default;
 
 protected:
     template<typename T = Component>
@@ -76,7 +87,6 @@ protected:
       EventBus::instance().notify(channel, std::forward<E>(event));
     }
 
-protected:
     Entity *entity() const;
 
     Component *targetComponent() const;

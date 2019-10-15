@@ -16,6 +16,10 @@ public:
         bool withTab = true
     );
 
+    Paragraph(const Paragraph &) = default;
+
+    Paragraph *clone() const final;
+
 private:
     static inline void addTab(std::wstring &s) {
       s.insert(s.begin(), L'\t');

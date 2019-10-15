@@ -13,7 +13,6 @@
 #include "story/decision_node.hpp"
 #include "story/action.hpp"
 #include "utilities/General.hpp"
-#include "page.hpp"
 #include "System.hpp"
 #include "AudioSystem.hpp"
 #include "TextEffect.hpp"

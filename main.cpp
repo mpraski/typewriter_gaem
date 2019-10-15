@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "engine/engine.hpp"
+#include "engine/Engine.hpp"
 
 int main() {
   auto sample_decision_tree{

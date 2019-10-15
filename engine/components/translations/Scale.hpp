@@ -13,6 +13,10 @@ class Scale final : public Transition<sf::Vector2f> {
 public:
     using Transition<sf::Vector2f>::Transition;
 
+    Scale *clone() const final {
+      return new Scale{*this};
+    }
+
 private:
     void applyStep(sf::Vector2f factor) final {
       entity()->scale(factor);

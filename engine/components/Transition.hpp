@@ -97,6 +97,8 @@ public:
       }
     }
 
+    Transition(const Transition &) = default;
+
     ~Transition() = default;
 
     template<class... Args>
