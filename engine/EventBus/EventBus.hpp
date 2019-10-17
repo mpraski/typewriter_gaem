@@ -14,7 +14,7 @@
 
 // Add event bus for indirect communication between
 // scene nodes and such. May be useful to coordinate
-// complex translations between hierarchies of nodes
+// complex Translations between hierarchies of nodes
 namespace engine {
 class EventBus final {
     using type_id_t = std::size_t;

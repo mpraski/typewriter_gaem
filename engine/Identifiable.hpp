@@ -6,7 +6,7 @@
 #define TYPEWRITER_GAEM_IDENTIFIABLE_HPP
 
 #include <SFML/Config.hpp>
-#include "utilities/General.hpp"
+#include "Utilities/General.hpp"
 
 namespace engine {
 class Identifiable : sf::NonCopyable {

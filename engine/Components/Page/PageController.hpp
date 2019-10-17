@@ -11,7 +11,7 @@
 #include "Paragraph.hpp"
 #include "Dialog.hpp"
 #include "../../System.hpp"
-#include "../translations/TranslateVertical.hpp"
+#include "../Translations/TranslateVertical.hpp"
 
 namespace engine {
 class PageController final : public Component {
@@ -38,6 +38,7 @@ private:
 private:
     float mNextY;
     std::vector<sf::Uint64> mPrintableIDs;
+    std::vector<sf::Uint64>::const_iterator mCurrentPrintable;
     DecisionNode mDecisionNode;
 };
 }

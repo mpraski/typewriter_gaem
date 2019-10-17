@@ -16,7 +16,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "utilities/General.hpp"
+#include "Utilities/General.hpp"
 
 namespace fs = boost::filesystem;
 namespace pt = boost::property_tree;

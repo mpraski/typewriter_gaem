@@ -9,7 +9,7 @@ engine::PageController::PageController(DecisionNode n)
       mNextY{},
       mPrintableIDs{},
       mDecisionNode{std::move(n)} {
-  `
+
 }
 
 engine::Component::Kind engine::PageController::kind() const {
@@ -34,6 +34,13 @@ void engine::PageController::onStart(engine::Entity &entity) {
     }
   });
 
+  listen("printable_end", [&, this](const auto& msg){
+    if(std::next(mCurrentPrintable) != std::end(mPrintableIDs)) {
+      mCurrentPrintable = std::next(mCurrentPrintable);
+      notifyChannel("printable_selection", *mCurrentPrintable);
+    }
+  });
+
   addContents(mDecisionNode.getContents());
 }
 
@@ -51,6 +58,8 @@ std::unique_ptr<engine::Printable> engine::PageController::fromTemplate(const en
       return std::make_unique<Paragraph>(tpl.text1, tpl.effects, true);
     case PrintableTemplate::Kind::Dialog:
       return std::make_unique<Dialog>(tpl.text1, tpl.text2);
+    default:
+      throw std::invalid_argument("No such printabe kind")
   }
 }
 

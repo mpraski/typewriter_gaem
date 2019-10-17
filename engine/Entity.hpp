@@ -7,10 +7,10 @@
 
 #include <SFML/Graphics.hpp>
 #include "System.hpp"
-#include "utilities/General.hpp"
-#include "event_bus/EventBus.hpp"
-#include "components/Component.hpp"
-#include "components/Interactive.hpp"
+#include "Utilities/General.hpp"
+#include "EventBus/EventBus.hpp"
+#include "Components/Component.hpp"
+#include "Components/Interactive.hpp"
 
 namespace engine {
 class Entity final : public Identifiable,
@@ -33,7 +33,7 @@ public:
     Ptr removeChild(const Entity &entity);
 
     template<typename T, typename U = Component>
-    void addComponent(std::unique_ptr<T> component, const U *targetComponent = nullptr) {
+    void addComponent(std::unique_ptr<T> component, U *targetComponent = nullptr) {
       static_assert(std::is_convertible_v<Component *, T *>, "T must derive from Component");
       static_assert(std::is_convertible_v<Component *, U *>, "U must derive from Component");
       ComponentPtr c{static_cast<Component *>(component.release())};
@@ -76,7 +76,7 @@ public:
       if (!id) return nullptr;
       auto comp{mComponentByUID.find(id)};
       if (comp == std::end(mComponentByUID)) return nullptr;
-      return dynamic_cast<T *>(comp);
+      return dynamic_cast<T *>(comp->second);
     }
 
     template<typename T = Component, typename U = Component>
@@ -91,7 +91,7 @@ public:
       if (!comp->mDependentComponents.empty()) {
         throw std::runtime_error("Component has dependants");
       }
-      switch (c->kind()) {
+      switch (comp->kind()) {
         case Component::Kind::Mesh:
           gen::remove_if(mDrawables, [&](const auto &d) {
             return static_cast<Component *>(d) == cast_component;

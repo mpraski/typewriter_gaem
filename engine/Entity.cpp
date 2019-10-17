@@ -102,7 +102,7 @@ void engine::Entity::updateSelf(sf::Time dt) {
           });
           break;
         case Component::Kind::Interactive:
-          gen::remove_if(mDrawables, [&](const auto &d) {
+          gen::remove_if(mInteractives, [&](const auto &d) {
             return d == dynamic_cast<Interactive *>(it->get());
           });
           break;

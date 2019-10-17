@@ -66,17 +66,17 @@ engine::System::System(
       },
       mMousePressed{},
       mMousePressedPosition{} {
-  const auto &pageConfig{get_configs("page")};
-  mFontSize = pageConfig.get<unsigned>("page.font_size");
-  mPageWidth = pageConfig.get<float>("page.page_width");
-  mPageHeight = pageConfig.get<float>("page.page_height");
-  mMarginVertical = pageConfig.get<float>("page.margin_vertical");
-  mMarginHorizontal = pageConfig.get<float>("page.margin_horizontal");
-  mLetterSpacingFactor = pageConfig.get<float>("page.mLetterSpacingFactor");
-  mLineSpacingFactor = pageConfig.get<float>("page.line_spacing_factor");
-  mTypingDelay = pageConfig.get<unsigned>("page.typing_delay");
+  const auto &pageConfig{get_configs("Page")};
+  mFontSize = pageConfig.get<unsigned>("Page.font_size");
+  mPageWidth = pageConfig.get<float>("Page.page_width");
+  mPageHeight = pageConfig.get<float>("Page.page_height");
+  mMarginVertical = pageConfig.get<float>("Page.margin_vertical");
+  mMarginHorizontal = pageConfig.get<float>("Page.margin_horizontal");
+  mLetterSpacingFactor = pageConfig.get<float>("Page.mLetterSpacingFactor");
+  mLineSpacingFactor = pageConfig.get<float>("Page.line_spacing_factor");
+  mTypingDelay = pageConfig.get<unsigned>("Page.typing_delay");
 
-  auto page_font{pageConfig.get<std::string>("page.font")};
+  auto page_font{pageConfig.get<std::string>("Page.font")};
   mFont = &get_fonts(page_font);
 
   if (!arrowCursor.loadFromSystem(sf::Cursor::Type::Arrow)) {

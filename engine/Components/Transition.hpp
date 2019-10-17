@@ -9,7 +9,7 @@
 #include <functional>
 #include <tuple>
 #include <utility>
-#include "../utilities/Tuples.hpp"
+#include "../Utilities/Tuples.hpp"
 #include "tweeny.h"
 #include "Component.hpp"
 

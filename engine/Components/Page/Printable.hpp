@@ -7,7 +7,7 @@
 
 #include "../Mesh.hpp"
 #include "../../TextEffect.hpp"
-#include "../../utilities/Cached.hpp"
+#include "../../Utilities/Cached.hpp"
 
 namespace engine {
 class Printable : public Mesh {

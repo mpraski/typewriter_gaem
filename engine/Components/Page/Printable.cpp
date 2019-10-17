@@ -419,6 +419,7 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
 
   if (++mCurrentCharacter == mContents.length()) {
     mState = State::Complete;
+    notifyChannel("printable_end");
   }
 }
 

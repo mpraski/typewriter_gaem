@@ -6,12 +6,13 @@
 #define TYPEWRITER_GAEM_COMPONENT_HPP
 
 #include <memory>
+#include <cassert>
 #include <SFML/System/Time.hpp>
-#include "../event_bus/EventBus.hpp"
+#include "../EventBus/EventBus.hpp"
 #include "../Identifiable.hpp"
-#include "../Entity.hpp"
 
 namespace engine {
+class Entity;
 class Component : public Identifiable {
 public:
     using Ptr = std::unique_ptr<Component>;
