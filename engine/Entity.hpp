@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "System.hpp"
+#include "Identifiable.hpp"
 #include "Utilities/General.hpp"
 #include "EventBus/EventBus.hpp"
 #include "Components/Component.hpp"
@@ -15,8 +16,7 @@
 namespace engine {
 class Entity final : public Identifiable,
                      public sf::Drawable,
-                     public sf::Transformable,
-                     public sf::NonCopyable {
+                     public sf::Transformable {
 public:
     using Ptr = std::unique_ptr<Entity>;
 
@@ -34,8 +34,6 @@ public:
 
     template<typename T, typename U = Component>
     void addComponent(std::unique_ptr<T> component, U *targetComponent = nullptr) {
-      static_assert(std::is_convertible_v<Component *, T *>, "T must derive from Component");
-      static_assert(std::is_convertible_v<Component *, U *>, "U must derive from Component");
       ComponentPtr c{static_cast<Component *>(component.release())};
       if (c->kind() == Component::Kind::Mesh) {
         mDrawables.push_back(dynamic_cast<sf::Drawable *>(c.get()));
@@ -51,7 +49,6 @@ public:
           break;
       }
       mComponentByUID[c->getUID()] = c.get();
-      c->mEntity = this;
       c->mTargetComponent = targetComponent;
       c->onStart(*this);
       if (targetComponent) {
@@ -63,7 +60,6 @@ public:
 
     template<typename T = Component>
     T *getComponent(const std::string &name) {
-      static_assert(std::is_convertible_v<Component *, T *>, "T must derive from Component");
       if (name.empty()) return nullptr;
       auto comp{gen::find_if(mComponents, [&](const auto &c) { c->getName() == name; })};
       if (comp == std::end(mComponents)) return nullptr;
@@ -72,7 +68,6 @@ public:
 
     template<typename T = Component>
     T *getComponent(sf::Uint64 id) {
-      static_assert(std::is_convertible_v<Component *, T *>, "T must derive from Component");
       if (!id) return nullptr;
       auto comp{mComponentByUID.find(id)};
       if (comp == std::end(mComponentByUID)) return nullptr;
@@ -146,6 +141,8 @@ private:
 private:
     const Entity *mParent;
     bool mDestroyed;
+
+    Component::Adder mAdder;
 
     std::string mEntityChannel;
 

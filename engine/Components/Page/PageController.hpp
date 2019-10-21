@@ -18,15 +18,11 @@ class PageController final : public Component {
 public:
     explicit PageController(DecisionNode n);
 
-    PageController(const PageController &) = default;
+    Kind kind() const final;
 
-    Kind kind() const override;
+    void onStart(Entity &entity) final;
 
-    void onStart(Entity &entity) override;
-
-    void onEntityUpdate(Entity &entity, sf::Time dt) override;
-
-    PageController *clone() const final;
+    void onEntityUpdate(Entity &entity, sf::Time dt) final;
 
 private:
     bool shouldScroll() const;

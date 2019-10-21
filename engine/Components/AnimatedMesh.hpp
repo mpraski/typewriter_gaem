@@ -10,7 +10,7 @@
 #include "Mesh.hpp"
 
 namespace engine {
-class AnimatedMesh final : public Mesh {
+class AnimatedMesh : public Mesh {
 public:
     class Animation final {
 

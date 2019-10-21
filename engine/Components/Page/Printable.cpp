@@ -209,7 +209,7 @@ engine::Printable::EffectIt engine::Printable::findDisplacementEffect(engine::Pr
 
 engine::Printable::EffectIt engine::Printable::findEffect(TextEffect::Kind kind) const {
   return gen::find_if(mActiveEffects, [&](const auto &e) {
-    return e.kind == kind;
+    return e.mKind == kind;
   });
 }
 
@@ -273,9 +273,9 @@ void engine::Printable::applyTextEffects(size_t idx) {
   }
 }
 
-void engine::Printable::removeTextEffects(size_t idx) const {
+void engine::Printable::removeTextEffects(size_t idx) {
   gen::remove_if(mActiveEffects, [&](const auto &e) {
-    return idx == e.end;
+    return idx == e.mEnd;
   });
 
   mModifiers.mBold = false;

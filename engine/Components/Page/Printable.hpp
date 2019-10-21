@@ -52,8 +52,6 @@ public:
         const std::vector<TextEffect> &textEffects
     );
 
-    Printable(const Printable &) = default;
-
     size_t currentCharacter() const;
 
     const std::wstring &to_string() const;
@@ -76,7 +74,7 @@ private:
 
     void applyTextEffects(size_t idx);
 
-    void removeTextEffects(size_t idx) const;
+    void removeTextEffects(size_t idx);
 
     void breakLineAt(size_t idx);
 

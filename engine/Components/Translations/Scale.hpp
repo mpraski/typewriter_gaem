@@ -6,21 +6,33 @@
 #define TYPEWRITER_GAEM_SCALE_HPP
 
 #include "../Transition.hpp"
-#include "../../Entity.hpp"
 
 namespace engine {
 class Scale final : public Transition<sf::Vector2f> {
 public:
     using Transition<sf::Vector2f>::Transition;
 
-    Scale *clone() const final {
-      return new Scale{*this};
+    bool dependent() const final {
+      return true;
+    }
+
+protected:
+    void onStart(Entity &entity) final {
+      Transition::onStart(entity);
+
+      mMesh = dynamic_cast<Mesh *>(targetComponent());
+      if (!mMesh) {
+        throw std::runtime_error("Target component is not a mesh");
+      }
     }
 
 private:
     void applyStep(sf::Vector2f factor) final {
-      entity()->scale(factor);
+      mMesh->scale(factor);
     }
+
+private:
+    Mesh *mMesh;
 };
 }
 

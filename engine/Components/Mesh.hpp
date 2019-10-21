@@ -6,8 +6,6 @@
 #define TYPEWRITER_GAEM_MESH_HPP
 
 #include "Component.hpp"
-#include "Collider.hpp"
-#include "../Entity.hpp"
 
 namespace engine {
 class Mesh : public Component,
@@ -15,8 +13,6 @@ class Mesh : public Component,
              public sf::Transformable {
 public:
     Mesh();
-
-    Mesh(const Mesh &) = default;
 
     sf::FloatRect localBounds() const;
 

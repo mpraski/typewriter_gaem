@@ -16,8 +16,6 @@ public:
         const std::wstring &speech
     );
 
-    Dialog(const Dialog &) = default;
-
     void onStart(Entity &entity) final;
 
     void onHoverStart() final;
@@ -25,8 +23,6 @@ public:
     void onHoverEnd() final;
 
     void onClick() final;
-
-    Dialog *clone() const final;
 
 private:
     std::unordered_map<size_t, std::vector<TextEffect>> mEffectsOnHover;

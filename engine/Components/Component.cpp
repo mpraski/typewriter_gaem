@@ -6,12 +6,11 @@
 
 engine::Component::Component()
     : Identifiable{},
-      mEntity{},
       mTargetComponent{},
       mDestroyed{},
       mName{},
       mChannel{gen::str("comp-", getUID())},
-      mAttachedComponents{} {
+      mDependentComponents{} {
 
 }
 
@@ -37,10 +36,6 @@ void engine::Component::setName(const std::string &name) {
   mName = name;
 }
 
-engine::Entity *engine::Component::entity() const {
-  return mEntity;
-}
-
 engine::Component *engine::Component::targetComponent() const {
   return mTargetComponent;
 }
@@ -53,13 +48,6 @@ bool engine::Component::dependent() const {
   return false;
 }
 
-engine::Component::Component(const engine::Component &comp)
-    : Identifiable{},
-      mEntity{},
-      mTargetComponent{},
-      mDestroyed{},
-      mName{comp.mName},
-      mChannel{gen::str("comp-", getUID())},
-      mAttachedComponents{} {
-  assert(!comp.mDestroyed);
+void engine::Component::addDependentComponent(sf::Uint64 id) {
+  mDependentComponents.push_back(id);
 }

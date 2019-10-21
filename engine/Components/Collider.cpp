@@ -20,7 +20,7 @@ sf::FloatRect engine::Collider::localBounds() const {
 }
 
 sf::FloatRect engine::Collider::globalBounds() const {
-  return entity()->getTransform().transformRect(localBounds());
+  return mMesh->globalBounds();
 }
 
 engine::Component::Kind engine::Collider::kind() const {
@@ -40,20 +40,4 @@ void engine::Collider::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
 
 bool engine::Collider::dependent() const {
   return true;
-}
-
-engine::Collider *engine::Collider::clone() const {
-  return new Collider{*this};
-}
-
-engine::Collider::Collider(const engine::Collider &other)
-    : Component{other},
-      mMesh{},
-      mPosition{other.mPosition},
-      mVelocity{other.mVelocity},
-      mMass{other.mMass},
-      mInvertedMass{other.mInvertedMass},
-      mEnabled{other.mEnabled},
-      mGlobal{other.mGlobal} {
-
 }

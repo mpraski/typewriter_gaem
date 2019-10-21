@@ -77,22 +77,9 @@ sf::FloatRect engine::Interactive::localBounds() const {
 }
 
 sf::FloatRect engine::Interactive::globalBounds() const {
-  return entity()->getTransform().transformRect(localBounds());
+  return mMesh->globalBounds();
 }
 
 bool engine::Interactive::dependent() const {
   return true;
-}
-
-engine::Interactive *engine::Interactive::clone() const {
-  return new Interactive{*this};
-}
-
-engine::Interactive::Interactive(const engine::Interactive &other)
-    : Component{other},
-      mOn{other.mOn},
-      mInteractive{other.mInteractive},
-      mMesh{},
-      mInterface{} {
-
 }

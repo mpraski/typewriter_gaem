@@ -6,21 +6,34 @@
 #define TYPEWRITER_GAEM_TRANSLATEVERTICAL_HPP
 
 #include "../Transition.hpp"
-#include "../../Entity.hpp"
 
 namespace engine {
 class TranslateVertical final : public Transition<float> {
 public:
     using Transition<float>::Transition;
 
-    TranslateVertical *clone() const final {
-      return new TranslateVertical{*this};
+
+    bool dependent() const final {
+      return true;
+    }
+
+protected:
+    void onStart(Entity &entity) final {
+      Transition::onStart(entity);
+
+      mMesh = dynamic_cast<Mesh *>(targetComponent());
+      if (!mMesh) {
+        throw std::runtime_error("Target component is not a mesh");
+      }
     }
 
 private:
     void applyStep(float y) final {
-      entity()->move(0.f, y);
+      mMesh->move(0.f, y);
     }
+
+private:
+    Mesh *mMesh;
 };
 }
 

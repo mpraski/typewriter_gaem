@@ -5,9 +5,7 @@
 #ifndef TYPEWRITER_GAEM_COLLIDER_HPP
 #define TYPEWRITER_GAEM_COLLIDER_HPP
 
-#include "Component.hpp"
 #include "Mesh.hpp"
-#include "../Entity.hpp"
 
 namespace engine {
 class Collider final : public Component {
@@ -27,8 +25,6 @@ public:
     void onStart(Entity &entity) final;
 
     void onEntityUpdate(Entity &entity, sf::Time dt) final;
-
-    Collider *clone() const final;
 
 private:
     const Mesh *mMesh;

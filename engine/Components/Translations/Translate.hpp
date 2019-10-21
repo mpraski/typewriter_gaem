@@ -6,21 +6,33 @@
 #define TYPEWRITER_GAEM_TRANSLATE_HPP
 
 #include "../Transition.hpp"
-#include "../../Entity.hpp"
 
 namespace engine {
 class Translate final : public Transition<float, float> {
 public:
     using Transition<float, float>::Transition;
 
-    Translate *clone() const final {
-      return new Translate{*this};
+    bool dependent() const final {
+      return true;
+    }
+    
+protected:
+    void onStart(Entity &entity) final {
+      Transition::onStart(entity);
+
+      mMesh = dynamic_cast<Mesh *>(targetComponent());
+      if (!mMesh) {
+        throw std::runtime_error("Target component is not a mesh");
+      }
     }
 
 private:
     void applyStep(float x, float y) final {
-      entity()->move(x, y);
+      mMesh->move(x, y);
     }
+
+private:
+    Mesh *mMesh;
 };
 }
 

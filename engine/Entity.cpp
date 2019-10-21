@@ -8,6 +8,7 @@ engine::Entity::Entity()
     : Identifiable{},
       mParent{nullptr},
       mDestroyed{},
+      mAdder{},
       mEntityChannel{gen::str("ent-", getUID())},
       mChildren{},
       mComponents{},
@@ -85,14 +86,14 @@ void engine::Entity::destroy() {
 void engine::Entity::updateSelf(sf::Time dt) {
   for (auto it{std::begin(mComponents)}; it != std::end(mComponents);) {
     if ((*it)->destroyed()) {
-      for (const auto &depUID : (*it)->mAttachedComponents) {
+      for (const auto &depUID : (*it)->mDependentComponents) {
         if (auto depComp{getComponent(depUID)}; depComp) {
           depComp->markDestroyed();
         }
       }
       if ((*it)->dependent()) {
-        gen::remove_if((*it)->mTargetComponent->mAttachedComponents, [&](const auto &compUID) {
-          compUID == (*it)->getUID();
+        gen::remove_if((*it)->mTargetComponent->mDependentComponents, [&](const auto &compUID) {
+          return compUID == (*it)->getUID();
         });
       }
       switch ((*it)->kind()) {
@@ -197,3 +198,4 @@ void engine::Entity::performMouseClick() {
     }
   }
 }
+

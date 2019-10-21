@@ -20,7 +20,7 @@ void engine::PageController::onStart(engine::Entity &entity) {
   listen("new_line", [&, this](const auto &msg) {
     if (shouldScroll()) {
       notifyChannel("page_scroll_begin");
-      entity.addComponent(
+      addComponent(
           std::make_unique<TranslateVertical>(
               TranslateVertical::from(0.f)
                   .to(-System::instance().mLineSpacing)
@@ -34,8 +34,8 @@ void engine::PageController::onStart(engine::Entity &entity) {
     }
   });
 
-  listen("printable_end", [&, this](const auto& msg){
-    if(std::next(mCurrentPrintable) != std::end(mPrintableIDs)) {
+  listen("printable_end", [&, this](const auto &msg) {
+    if (std::next(mCurrentPrintable) != std::end(mPrintableIDs)) {
       mCurrentPrintable = std::next(mCurrentPrintable);
       notifyChannel("printable_selection", *mCurrentPrintable);
     }
@@ -59,7 +59,7 @@ std::unique_ptr<engine::Printable> engine::PageController::fromTemplate(const en
     case PrintableTemplate::Kind::Dialog:
       return std::make_unique<Dialog>(tpl.text1, tpl.text2);
     default:
-      throw std::invalid_argument("No such printabe kind")
+      throw std::invalid_argument("No such printabe kind");
   }
 }
 
@@ -72,8 +72,4 @@ void engine::PageController::addContents(const std::vector<PrintableTemplate> &c
 
     addComponent(std::move(printable));
   }
-}
-
-engine::PageController *engine::PageController::clone() const {
-  return new PageController{*this};
 }

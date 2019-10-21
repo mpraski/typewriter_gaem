@@ -5,7 +5,6 @@
 #ifndef TYPEWRITER_GAEM_INTERACTIVE_HPP
 #define TYPEWRITER_GAEM_INTERACTIVE_HPP
 
-#include "Component.hpp"
 #include "Mesh.hpp"
 
 namespace engine {
@@ -50,8 +49,6 @@ public:
     void onStart(Entity &entity) final;
 
     void onEntityUpdate(Entity &entity, sf::Time dt) final;
-
-    Interactive *clone() const final;
 
 private:
     bool mOn;

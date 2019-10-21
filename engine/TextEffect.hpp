@@ -76,13 +76,7 @@ template<>
 class hash<engine::TextEffect> {
 public :
     size_t operator()(const engine::TextEffect &e) const {
-      return static_cast<size_t>(to_integral(e.mKind)) ^ e.mBegin ^ e.mEnd;
-    }
-
-private:
-    template<typename E>
-    static constexpr auto to_integral(E e) -> typename std::underlying_type<E>::type {
-      return static_cast<typename std::underlying_type<E>::type>(e);
+      return static_cast<size_t>(e.mKind) ^ e.mBegin ^ e.mEnd;
     }
 };
 

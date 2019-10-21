@@ -97,10 +97,6 @@ public:
       }
     }
 
-    Transition(const Transition &) = default;
-
-    ~Transition() = default;
-
     template<class... Args>
     static Builder from(Args &&... from) {
       return Builder().from(std::forward<Args>(from)...);
@@ -116,7 +112,7 @@ public:
       return Component::Kind::Script;
     }
 
-    void onStart(Entity &entity) final {
+    void onStart(Entity &entity) {
       start();
     }
 

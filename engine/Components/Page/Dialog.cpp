@@ -35,7 +35,7 @@ void engine::Dialog::onStart(engine::Entity &entity) {
   auto interactive = std::make_unique<Interactive>();
   auto chan = interactive->getChannel();
 
-  attachComponent(std::move(interactive));
+  addComponent(std::move(interactive), this);
 
   listen("page_scroll_begin", [this, chan](const auto &msg) {
     notifyChannel(chan, Interactive::Event::Disable);
@@ -56,8 +56,4 @@ void engine::Dialog::onHoverEnd() {
 
 void engine::Dialog::onClick() {
 
-}
-
-engine::Dialog *engine::Dialog::clone() const {
-  return new Dialog{*this};
 }

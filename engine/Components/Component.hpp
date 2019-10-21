@@ -13,9 +13,11 @@
 
 namespace engine {
 class Entity;
+
 class Component : public Identifiable {
 public:
     using Ptr = std::unique_ptr<Component>;
+    using Adder = std::function<void(Ptr, Component *)>;
 
     enum class Kind {
         Mesh,
@@ -27,13 +29,9 @@ public:
 public:
     Component();
 
-    Component(const Component &);
-
-    Component(Component &&) = delete;
+    Component(const Component &) = delete;
 
     Component &operator=(const Component &) = delete;
-
-    Component &operator=(Component &&) = delete;
 
     void markDestroyed();
 
@@ -53,19 +51,17 @@ public:
 
     virtual void onEntityUpdate(Entity &entity, sf::Time dt) = 0;
 
-    virtual Component *clone() const = 0;
+    void addDependentComponent(sf::Uint64 id);
 
     virtual ~Component() = default;
 
 protected:
-    template<typename T = Component>
-    void addComponent(T &&component) {
-      entity()->addComponent(std::forward<T>(component));
-    }
+    Component *targetComponent() const;
 
-    template<typename T = Component>
-    void attachComponent(T &&component) {
-      entity()->addComponent(std::forward<T>(component), this);
+    template<typename T, typename U = Component>
+    void addComponent(std::unique_ptr<T> comp, U *target = nullptr) {
+      Ptr p{static_cast<Component *>(comp.release())};
+      mAdder(p, target);
     }
 
     template<class E = std::string, class F>
@@ -78,29 +74,35 @@ protected:
       EventBus::instance().listen<E>(gen::to_uintptr(this), std::forward<F>(cb));
     }
 
-    template<class E = std::string>
-    void notify(E &&event = gen::default_object<E>()) const {
+    template<class E>
+    void notify(E &event = gen::default_object<E>()) const {
+      EventBus::instance().notify(std::forward<E>(event));
+    }
+
+    template<class E>
+    void notify(E &&event) const {
       EventBus::instance().notify(std::forward<E>(event));
     }
 
     template<class E = std::string>
-    void notifyChannel(const std::string &channel, E &&event = gen::default_object<E>()) const {
+    void notifyChannel(const std::string &channel, E &event = gen::default_object<E>()) const {
       EventBus::instance().notify(channel, std::forward<E>(event));
     }
 
-    Entity *entity() const;
-
-    Component *targetComponent() const;
+    template<class E>
+    void notifyChannel(const std::string &channel, E &&event) const {
+      EventBus::instance().notify(channel, std::forward<E>(event));
+    }
 
 private:
     friend class Entity;
 
-    Entity *mEntity;
+    Adder mAdder;
     Component *mTargetComponent;
     bool mDestroyed;
     std::string mName;
     std::string mChannel;
-    std::vector<sf::Uint64> mAttachedComponents;
+    std::vector<sf::Uint64> mDependentComponents;
 };
 
 using ComponentPtr = Component::Ptr;

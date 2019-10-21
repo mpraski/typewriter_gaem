@@ -6,21 +6,33 @@
 #define TYPEWRITER_GAEM_ROTATE_HPP
 
 #include "../Transition.hpp"
-#include "../../Entity.hpp"
 
 namespace engine {
 class Rotate final : public Transition<float> {
 public:
     using Transition<float>::Transition;
 
-    Rotate *clone() const final {
-      return new Rotate{*this};
+    bool dependent() const final {
+      return true;
+    }
+
+protected:
+    void onStart(Entity &entity) final {
+      Transition::onStart(entity);
+
+      mMesh = dynamic_cast<Mesh *>(targetComponent());
+      if (!mMesh) {
+        throw std::runtime_error("Target component is not a mesh");
+      }
     }
 
 private:
     void applyStep(float angle) final {
-      entity()->rotate(angle);
+      mMesh->rotate(angle);
     }
+
+private:
+    Mesh *mMesh;
 };
 }
 
