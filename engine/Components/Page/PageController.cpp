@@ -3,6 +3,7 @@
 //
 
 #include "PageController.hpp"
+#include "../../Entity.hpp"
 
 engine::PageController::PageController(DecisionNode n)
     : Component{},
@@ -20,7 +21,7 @@ void engine::PageController::onStart(engine::Entity &entity) {
   listen("new_line", [&, this](const auto &msg) {
     if (shouldScroll()) {
       notifyChannel("page_scroll_begin");
-      addComponent(
+      entity.addComponent(
           std::make_unique<TranslateVertical>(
               TranslateVertical::from(0.f)
                   .to(-System::instance().mLineSpacing)
@@ -41,7 +42,7 @@ void engine::PageController::onStart(engine::Entity &entity) {
     }
   });
 
-  addContents(mDecisionNode.getContents());
+  addContents(entity, mDecisionNode.getContents());
 }
 
 void engine::PageController::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
@@ -63,13 +64,13 @@ std::unique_ptr<engine::Printable> engine::PageController::fromTemplate(const en
   }
 }
 
-void engine::PageController::addContents(const std::vector<PrintableTemplate> &contents) {
+void engine::PageController::addContents(Entity& entity, const std::vector<PrintableTemplate> &contents) {
   for (const auto &tpl : contents) {
     auto printable{fromTemplate(tpl)};
     printable->move(0, mNextY);
     mNextY += printable->localBounds().height;
     mPrintableIDs.push_back(printable->getUID());
 
-    addComponent(std::move(printable));
+      entity.addComponent(std::move(printable));
   }
 }

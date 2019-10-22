@@ -17,6 +17,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Utilities/General.hpp"
+#include "Utilities/NonCopyable.h"
+#include "Utilities/NonMovable.h"
+#include "EventBus/EventBus.hpp"
 
 namespace fs = boost::filesystem;
 namespace pt = boost::property_tree;
@@ -38,7 +41,7 @@ inline const auto &get_##RMAP(const std::string & res_id, const std::string &res
 }
 
 namespace engine {
-class System final {
+class System final : private NonCopyable, private NonMovable {
 public:
     template<class T>
     using ResourcePack = std::unordered_map<std::string, T>;
@@ -64,13 +67,10 @@ public:
       return system;
     }
 
-    System(const System &p) = delete;
-
-    System(System &&p) = delete;
-
-    System &operator=(const System &p) = delete;
-
-    System &operator=(System &&p) = delete;
+    static auto &bus() {
+      static EventBus<QueuedListeners> instance;
+      return instance;
+    }
 
     RESOURCE_GETTER(fonts);
 
@@ -173,11 +173,11 @@ private:
 
       for (const auto &resDirPath : boost::make_iterator_range(fs::directory_iterator(resourcePath), {})) {
         if (fs::is_directory(resDirPath)) {
-          auto resource_category{getSubDirectory(resDirPath.path())};
+          auto resCat{getSubDirectory(resDirPath.path())};
 
-          for (const auto &resource_file_path : boost::make_iterator_range(fs::directory_iterator(resDirPath),
-                                                                           {})) {
-            creator(resource_category, resource_file_path);
+          for (const auto &resFilePath : boost::make_iterator_range(fs::directory_iterator(resDirPath),
+                                                                    {})) {
+            creator(resCat, resFilePath);
           }
         } else {
           creator(ROOT_RESOURCE_CATEGORY, resDirPath);

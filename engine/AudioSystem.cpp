@@ -18,8 +18,9 @@ engine::AudioSystem::AudioSystem()
 }
 
 void engine::AudioSystem::playTypewriterClick() const {
-  auto rand_buf{random(std::begin(mTypewriterClicks),
-                       std::end(mTypewriterClicks))};
+  auto rand_buf{gen::random_iter(std::begin(mTypewriterClicks),
+    std::end(mTypewriterClicks),
+                       mRandFun)};
 
   playCached(rand_buf->first, rand_buf->second);
 }

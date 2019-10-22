@@ -10,6 +10,7 @@
 #include <variant>
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <typeindex>
 
 namespace engine::gen {
 template<typename T, typename ... Ts>
@@ -136,8 +137,8 @@ constexpr void draw(sf::RenderTarget &target, const sf::RenderStates &states, Ts
 }
 
 template<class T>
-constexpr auto type_id() {
-  return typeid(T).hash_code();
+constexpr auto type_id() noexcept {
+  return std::type_index(typeid(T));
 }
 
 template<class T>
@@ -145,9 +146,15 @@ constexpr auto to_uintptr(const T *t) {
   return reinterpret_cast<std::uintptr_t>(t);
 }
 
-template<typename ... T>
-std::function<void()> bindTemplate(void (*f)(T...), T... param) {
-  return std::bind(f, std::forward<T>(param)...);
+template<class It, class Fun>
+It random_iter(It begin, It end, Fun&& randFun) {
+    long sz{std::distance(begin, end)};
+    long div{RAND_MAX / sz};
+
+    long k;
+    do { k = randFun() / div; } while (k >= sz);
+
+    return std::next(begin, k);
 }
 
 sf::Uint64 next_uid();

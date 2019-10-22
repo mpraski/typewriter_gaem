@@ -9,9 +9,11 @@
 #include <SFML/System/Time.hpp>
 #include <memory>
 #include "Entity.hpp"
+#include "Utilities/NonCopyable.h"
+#include "Utilities/NonMovable.h"
 
 namespace engine {
-class Game {
+class Game final : private NonCopyable, private NonMovable {
 public:
     explicit Game(std::unique_ptr<Entity> rootEntity);
 

@@ -12,7 +12,6 @@ class TranslateVertical final : public Transition<float> {
 public:
     using Transition<float>::Transition;
 
-
     bool dependent() const final {
       return true;
     }

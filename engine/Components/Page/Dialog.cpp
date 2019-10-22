@@ -3,6 +3,7 @@
 //
 
 #include "Dialog.hpp"
+#include "../../Entity.hpp"
 
 engine::Dialog::Dialog(
     const std::wstring &person,
@@ -35,7 +36,7 @@ void engine::Dialog::onStart(engine::Entity &entity) {
   auto interactive = std::make_unique<Interactive>();
   auto chan = interactive->getChannel();
 
-  addComponent(std::move(interactive), this);
+  entity.addComponent(std::move(interactive), this);
 
   listen("page_scroll_begin", [this, chan](const auto &msg) {
     notifyChannel(chan, Interactive::Event::Disable);

@@ -83,7 +83,7 @@ public:
       if (comp == std::end(mComponents)) {
         throw std::runtime_error("Component not present");
       }
-      if (!comp->mDependentComponents.empty()) {
+      if (!comp->getDependentComponents().empty()) {
         throw std::runtime_error("Component has dependants");
       }
       switch (comp->kind()) {
@@ -117,11 +117,9 @@ public:
 
     bool hasElapsed(sf::Time dt);
 
-    bool root() const noexcept;
-
     bool destroyed() const noexcept;
 
-    const std::string &getEntityChannel() const;
+    const std::string &getChannel() const;
 
 private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
@@ -139,12 +137,9 @@ private:
     void performMouseClick();
 
 private:
-    const Entity *mParent;
     bool mDestroyed;
-
-    Component::Adder mAdder;
-
-    std::string mEntityChannel;
+    std::string mChannel;
+    const Entity *mParent;
 
     std::vector<Ptr> mChildren;
     std::vector<ComponentPtr> mComponents;

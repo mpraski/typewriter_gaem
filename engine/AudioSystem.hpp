@@ -7,23 +7,18 @@
 
 #include <random>
 #include <chrono>
-#include "Engine.hpp"
+#include "System.hpp"
+#include "Utilities/General.hpp"
+#include "Utilities/NonCopyable.h"
+#include "Utilities/NonMovable.h"
 
 namespace engine {
-class AudioSystem final {
+class AudioSystem final : private NonCopyable, private NonMovable {
 public:
     static const auto &instance() {
       static AudioSystem audioSystem{};
       return audioSystem;
     }
-
-    AudioSystem(const AudioSystem &p) = delete;
-
-    AudioSystem(AudioSystem &&p) = delete;
-
-    AudioSystem &operator=(const AudioSystem &p) = delete;
-
-    AudioSystem &operator=(AudioSystem &&p) = delete;
 
     void playTypewriterClick() const;
 
@@ -33,17 +28,6 @@ private:
     AudioSystem();
 
     void playCached(const std::string &key, const sf::SoundBuffer &buf) const;
-
-    template<class It>
-    It random(It begin, It end) const {
-      long sz{std::distance(begin, end)};
-      long div{RAND_MAX / sz};
-
-      long k;
-      do { k = mRandFun() / div; } while (k >= sz);
-
-      return std::next(begin, k);
-    }
 
 private:
     const System::ResourcePack<sf::SoundBuffer> &mTypewriterClicks;

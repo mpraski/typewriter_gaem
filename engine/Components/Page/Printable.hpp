@@ -8,6 +8,8 @@
 #include "../Mesh.hpp"
 #include "../../TextEffect.hpp"
 #include "../../Utilities/Cached.hpp"
+#include "../../System.hpp"
+#include "../../AudioSystem.hpp"
 
 namespace engine {
 class Printable : public Mesh {
@@ -60,7 +62,7 @@ public:
 
     size_t length() const;
 
-    void onStart(Entity &entity);
+    void onStart(Entity &entity) override;
 
     void onEntityUpdate(Entity &entity, sf::Time dt) final;
 

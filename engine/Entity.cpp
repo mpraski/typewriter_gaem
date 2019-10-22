@@ -6,15 +6,9 @@
 
 engine::Entity::Entity()
     : Identifiable{},
-      mParent{nullptr},
       mDestroyed{},
-      mAdder{std::bind(
-          &Entity::addComponent < Component, Component > ,
-          this,
-          std::placeholders::_1,
-          std::placeholders::_2
-      )},
-      mEntityChannel{gen::str("ent-", getUID())},
+      mChannel{gen::str("ent-", getUID())},
+      mParent{},
       mChildren{},
       mComponents{},
       mDrawables{},
@@ -66,16 +60,12 @@ bool engine::Entity::hasElapsed(sf::Time dt) {
   return false;
 }
 
-bool engine::Entity::root() const noexcept {
-  return !mParent;
-}
-
 bool engine::Entity::destroyed() const noexcept {
   return mDestroyed;
 }
 
 void engine::Entity::update(sf::Time dt) {
-  EventBus::instance().deliver();
+  System::bus().deliver();
 
   updateSelf(dt);
   updateChildren(dt);
@@ -91,7 +81,7 @@ void engine::Entity::destroy() {
 void engine::Entity::updateSelf(sf::Time dt) {
   for (auto it{std::begin(mComponents)}; it != std::end(mComponents);) {
     if ((*it)->destroyed()) {
-      for (const auto &depUID : (*it)->mDependentComponents) {
+      for (const auto &depUID : (*it)->getDependentComponents()) {
         if (auto depComp{getComponent(depUID)}; depComp) {
           depComp->markDestroyed();
         }
@@ -166,8 +156,8 @@ void engine::Entity::draw(sf::RenderTarget &target, sf::RenderStates states) con
   mSinceLastUpdate += elapsed;
 }
 
-const std::string &engine::Entity::getEntityChannel() const {
-  return mEntityChannel;
+const std::string &engine::Entity::getChannel() const {
+  return mChannel;
 }
 
 void engine::Entity::performMouseHover() {

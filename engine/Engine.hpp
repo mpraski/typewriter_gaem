@@ -23,7 +23,7 @@
 #include "Components/Page/Printable.hpp"
 #include "EventBus/EventBus.hpp"
 #include "EventBus/Listeners.hpp"
-#include "EventBus/SynchronousListeners.hpp"
+#include "EventBus/QueuedListeners.hpp"
 #include "Utilities/Cached.hpp"
 #include "Utilities/Tuples.hpp"
 #include "System.hpp"

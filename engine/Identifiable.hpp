@@ -7,9 +7,10 @@
 
 #include <SFML/Config.hpp>
 #include "Utilities/General.hpp"
+#include "Utilities/NonCopyable.h"
 
 namespace engine {
-class Identifiable : sf::NonCopyable {
+class Identifiable : private NonCopyable {
 public:
     Identifiable();
 

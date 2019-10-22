@@ -12,8 +12,6 @@ class Collider final : public Component {
 public:
     Collider();
 
-    Collider(const Collider &);
-
     sf::FloatRect localBounds() const;
 
     sf::FloatRect globalBounds() const;

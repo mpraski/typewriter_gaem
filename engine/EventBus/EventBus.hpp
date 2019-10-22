@@ -10,31 +10,20 @@
 #include <unordered_set>
 #include <memory>
 #include "Listeners.hpp"
-#include "SynchronousListeners.hpp"
+#include "QueuedListeners.hpp"
+#include "../Utilities/NonCopyable.h"
+#include "../Utilities/NonMovable.h"
 
 // Add event bus for indirect communication between
 // scene nodes and such. May be useful to coordinate
 // complex Translations between hierarchies of nodes
 namespace engine {
-class EventBus final {
-    using type_id_t = std::size_t;
+template<template <typename> class ListenersImp>
+class EventBus final : private NonCopyable, private NonMovable {
     using ListenersPtr = std::unique_ptr<Listeners>;
-    using ListenersMap = std::unordered_map<type_id_t, ListenersPtr>;
+    using ListenersMap = std::unordered_map<std::type_index, ListenersPtr>;
     const constexpr static auto DEFAULT_CHANNEL = "default_channel";
 public:
-    static auto &instance() {
-      static EventBus instance;
-      return instance;
-    }
-
-    EventBus(const EventBus &p) = delete;
-
-    EventBus(EventBus &&p) = delete;
-
-    EventBus &operator=(const EventBus &p) = delete;
-
-    EventBus &operator=(EventBus &&p) = delete;
-
     template<class E, class F>
     void listen(callback_id_t cbid, F &&cb) {
       listen<E, F>(DEFAULT_CHANNEL, cbid, std::forward<F>(cb));
@@ -47,7 +36,7 @@ public:
       static_assert(!std::is_reference<E>::value, "Class must not be a reference");
       static_assert(!std::is_pointer<E>::value, "Class must not be a pointer");
 
-      using typed_listeners_t = SynchronousListeners<E>;
+      using typed_listeners_t = ListenersImp<E>;
 
       auto tid{gen::type_id<E>()};
       auto &chan{mCallbacks[channel]};
@@ -96,7 +85,7 @@ public:
     template<class E>
     void notify(const std::string &channel, E &&event) {
       using CE = typename std::remove_const<typename std::remove_reference<E>::type>::type;
-      using typed_listeners_t = SynchronousListeners<CE>;
+      using typed_listeners_t = ListenersImp<CE>;
 
       static_assert(!std::is_volatile<CE>::value, "Class must not be volatile");
       static_assert(!std::is_pointer<CE>::value, "Class must not be a pointer");
@@ -116,6 +105,8 @@ public:
     }
 
 private:
+    friend class System;
+
     EventBus() = default;
 
 private:

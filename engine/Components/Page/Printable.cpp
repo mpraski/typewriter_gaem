@@ -3,8 +3,7 @@
 //
 
 #include "Printable.hpp"
-#include "../../System.hpp"
-#include "../../AudioSystem.hpp"
+#include "../../Entity.hpp"
 
 engine::Printable::Printable(
     std::wstring contents,

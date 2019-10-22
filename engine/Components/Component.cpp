@@ -6,8 +6,8 @@
 
 engine::Component::Component()
     : Identifiable{},
-      mTargetComponent{},
       mDestroyed{},
+      mTargetComponent{},
       mName{},
       mChannel{gen::str("comp-", getUID())},
       mDependentComponents{} {
@@ -15,7 +15,7 @@ engine::Component::Component()
 }
 
 void engine::Component::markDestroyed() {
-  EventBus::instance().unlisten_all(gen::to_uintptr(this));
+  System::bus().unlisten_all(gen::to_uintptr(this));
   mTargetComponent = nullptr;
   mDestroyed = true;
 }
@@ -50,4 +50,8 @@ bool engine::Component::dependent() const {
 
 void engine::Component::addDependentComponent(sf::Uint64 id) {
   mDependentComponents.push_back(id);
+}
+
+const std::vector<sf::Uint64> &engine::Component::getDependentComponents() const noexcept {
+    return mDependentComponents;
 }

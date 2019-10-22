@@ -29,7 +29,7 @@ private:
 
     static std::unique_ptr<Printable> fromTemplate(const PrintableTemplate &tlp);
 
-    void addContents(const std::vector<PrintableTemplate> &contents);
+    void addContents(Entity& entity, const std::vector<PrintableTemplate> &contents);
 
 private:
     float mNextY;

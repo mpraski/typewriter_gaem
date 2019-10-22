@@ -2,8 +2,8 @@
 // Created by marcin on 8/18/19.
 //
 
-#ifndef TYPEWRITER_GAEM_SYNCHRONOUSLISTENERS_HPP
-#define TYPEWRITER_GAEM_SYNCHRONOUSLISTENERS_HPP
+#ifndef TYPEWRITER_GAEM_QUEUEDLISTENERS_HPP
+#define TYPEWRITER_GAEM_QUEUEDLISTENERS_HPP
 
 #include <vector>
 #include <queue>
@@ -13,7 +13,7 @@
 
 namespace engine {
 template<class E>
-class SynchronousListeners final : public Listeners {
+class QueuedListeners final : public Listeners {
     using callback_t = std::function<void(const E &)>;
 public:
     void remove(callback_id_t cbid) final {
@@ -48,4 +48,4 @@ private:
 };
 }
 
-#endif //TYPEWRITER_GAEM_SYNCHRONOUSLISTENERS_HPP
+#endif //TYPEWRITER_GAEM_QUEUEDLISTENERS_HPP

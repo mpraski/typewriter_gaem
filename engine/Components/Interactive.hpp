@@ -28,13 +28,11 @@ public:
 
     Interactive();
 
-    Interactive(const Interactive &);
-
-    bool interactive();
-
     sf::FloatRect localBounds() const;
 
     sf::FloatRect globalBounds() const;
+
+    bool interactive();
 
     void onHoverStart();
 
