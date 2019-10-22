@@ -53,7 +53,18 @@ public:
     virtual ~Component() = default;
 
 protected:
-    Component *targetComponent() const;
+    template<typename T = Component>
+    T *getTargetComponent() const {
+        if constexpr(std::is_same_v<T, Component>) {
+            return mTargetComponent;
+        }
+
+        T* target = dynamic_cast<T *>(mTargetComponent);
+        if (!target) {
+            throw std::runtime_error(gen::str("Target component is not a ", typeid(T).name()));
+        }
+        return target;
+    }
 
     template<class E = std::string, class F>
     void listen(const std::string &channel, F &&cb) const {

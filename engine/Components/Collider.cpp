@@ -28,10 +28,7 @@ engine::Component::Kind engine::Collider::kind() const {
 }
 
 void engine::Collider::onStart(engine::Entity &entity) {
-  mMesh = dynamic_cast<Mesh *>(targetComponent());
-  if (!mMesh) {
-    throw std::runtime_error("Target component is not a mesh");
-  }
+  mMesh = getTargetComponent<Mesh>();
 }
 
 void engine::Collider::onEntityUpdate(engine::Entity &entity, sf::Time dt) {

@@ -40,15 +40,8 @@ engine::Component::Kind engine::Interactive::kind() const {
 }
 
 void engine::Interactive::onStart(engine::Entity &entity) {
-  mMesh = dynamic_cast<Mesh *>(targetComponent());
-  if (!mMesh) {
-    throw std::runtime_error("Target component is not a mesh");
-  }
-
-  mInterface = dynamic_cast<Interface *>(targetComponent());
-  if (!mInterface) {
-    throw std::runtime_error("Target component does not implement Interactive::Interface");
-  }
+    mMesh = getTargetComponent<Mesh>();
+    mInterface = getTargetComponent<Interface>();
 
   listen<Event>(getChannel(), [this](const auto &event) {
     switch (event) {

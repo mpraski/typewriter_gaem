@@ -36,10 +36,6 @@ void engine::Component::setName(const std::string &name) {
   mName = name;
 }
 
-engine::Component *engine::Component::targetComponent() const {
-  return mTargetComponent;
-}
-
 const std::string &engine::Component::getChannel() const noexcept {
   return mChannel;
 }

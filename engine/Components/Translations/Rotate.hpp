@@ -19,11 +19,7 @@ public:
 protected:
     void onStart(Entity &entity) final {
       Transition::onStart(entity);
-
-      mMesh = dynamic_cast<Mesh *>(targetComponent());
-      if (!mMesh) {
-        throw std::runtime_error("Target component is not a mesh");
-      }
+      mMesh = getTargetComponent<Mesh>();
     }
 
 private:

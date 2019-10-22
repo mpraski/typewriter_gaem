@@ -33,6 +33,10 @@ public:
         }
     }
 
+    void deliver() final {
+
+    }
+
 private:
     std::vector<std::pair<callback_id_t, callback_t>> mCallbacks;
 };

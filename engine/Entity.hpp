@@ -35,9 +35,6 @@ public:
     template<typename T, typename U = Component>
     void addComponent(std::unique_ptr<T> component, U *targetComponent = nullptr) {
       ComponentPtr c{static_cast<Component *>(component.release())};
-      if (c->kind() == Component::Kind::Mesh) {
-        mDrawables.push_back(dynamic_cast<sf::Drawable *>(c.get()));
-      }
       switch (c->kind()) {
         case Component::Kind::Mesh:
           mDrawables.push_back(dynamic_cast<sf::Drawable *>(c.get()));
