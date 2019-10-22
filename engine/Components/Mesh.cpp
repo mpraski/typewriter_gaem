@@ -9,10 +9,9 @@ engine::Mesh::Mesh()
       mBounds{},
       mVertices{sf::Triangles},
       mDebugBoundsVertices{sf::Triangles},
-      mVerticesBuffer{sf::VertexBuffer::Dynamic},
       mShader{},
       mTexture{},
-      mBlendMode{sf::BlendNone} {
+      mBlendMode{sf::BlendAdd} {
 
 }
 
@@ -34,14 +33,6 @@ void engine::Mesh::draw(sf::RenderTarget &target, sf::RenderStates states) const
   gen::addRect(mDebugBoundsVertices, globalBounds());
 #endif
 
-  if (sf::VertexBuffer::isAvailable()) {
-    if (mVerticesBuffer.getVertexCount() != mVertices.getVertexCount())
-      mVerticesBuffer.create(mVertices.getVertexCount());
-
-    if (mVertices.getVertexCount() > 0)
-      mVerticesBuffer.update(&mVertices[0]);
-  }
-
   if (mShader) {
     states.shader = mShader;
   }
@@ -50,11 +41,7 @@ void engine::Mesh::draw(sf::RenderTarget &target, sf::RenderStates states) const
   }
   states.blendMode = mBlendMode;
 
-  if (sf::VertexBuffer::isAvailable()) {
-    target.draw(mVerticesBuffer, states);
-  } else {
-    target.draw(mVertices, states);
-  }
+  target.draw(mVertices, states);
 
 #ifdef DEBUG_BOUNDS
   target.draw(mDebugBoundsVertices, states);

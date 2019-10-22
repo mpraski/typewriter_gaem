@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include "engine/Engine.hpp"
 
+#define DEBUG_BOUNDS
+
 int main() {
   engine::DecisionNode sampleStory{
       {

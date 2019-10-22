@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
       <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
+      <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -14,10 +14,9 @@
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="implemented mouse hover events for the new architecture">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Component.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Component.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Entity.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/System.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Utilities/General.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Utilities/General.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Mesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Mesh.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Mesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Mesh.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/tweeny" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/tweeny" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -51,7 +50,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C/C++" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -160,7 +159,8 @@
       <workItem from="1571425208890" duration="736000" />
       <workItem from="1571426079482" duration="4012000" />
       <workItem from="1571685875171" duration="5199000" />
-      <workItem from="1571725335994" duration="1538000" />
+      <workItem from="1571725335994" duration="1591000" />
+      <workItem from="1571761936195" duration="2046000" />
     </task>
     <task id="LOCAL-00004" summary="added support for some text effects">
       <created>1563786185469</created>
