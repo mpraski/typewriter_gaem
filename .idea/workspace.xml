@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
       <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
+      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -13,34 +13,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="implemented mouse hover events for the new architecture">
-      <change afterPath="$PROJECT_DIR$/engine/Utilities/General.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/AnimatedMesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/AnimatedMesh.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Collider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Collider.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Collider.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Collider.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Component.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Component.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Components/Component.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Component.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Interactive.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Interactive.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Interactive.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Interactive.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Mesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Mesh.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Dialog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Dialog.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Dialog.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Dialog.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/PageController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/PageController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/PageController.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/PageController.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Paragraph.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Paragraph.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Paragraph.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Paragraph.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Printable.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Printable.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Printable.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Transition.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Transition.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Translations/Rotate.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Translations/Rotate.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Translations/Scale.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Translations/Scale.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Translations/Translate.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Translations/Translate.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Translations/TranslateHorizontal.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Translations/TranslateHorizontal.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Translations/TranslateVertical.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Translations/TranslateVertical.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Entity.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Entity.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/TextEffect.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/TextEffect.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/System.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Utilities/General.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Utilities/General.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/tweeny" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/tweeny" afterDir="false" />
     </list>
@@ -183,7 +159,8 @@
       <workItem from="1571341070055" duration="5167000" />
       <workItem from="1571425208890" duration="736000" />
       <workItem from="1571426079482" duration="4012000" />
-      <workItem from="1571685875171" duration="5135000" />
+      <workItem from="1571685875171" duration="5199000" />
+      <workItem from="1571725335994" duration="1538000" />
     </task>
     <task id="LOCAL-00004" summary="added support for some text effects">
       <created>1563786185469</created>

@@ -8,7 +8,12 @@ engine::Entity::Entity()
     : Identifiable{},
       mParent{nullptr},
       mDestroyed{},
-      mAdder{},
+      mAdder{std::bind(
+          &Entity::addComponent < Component, Component > ,
+          this,
+          std::placeholders::_1,
+          std::placeholders::_2
+      )},
       mEntityChannel{gen::str("ent-", getUID())},
       mChildren{},
       mComponents{},

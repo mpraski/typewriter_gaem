@@ -145,6 +145,11 @@ constexpr auto to_uintptr(const T *t) {
   return reinterpret_cast<std::uintptr_t>(t);
 }
 
+template<typename ... T>
+std::function<void()> bindTemplate(void (*f)(T...), T... param) {
+  return std::bind(f, std::forward<T>(param)...);
+}
+
 sf::Uint64 next_uid();
 
 // Add an underline or strikethrough line to the vertex array

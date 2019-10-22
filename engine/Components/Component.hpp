@@ -61,7 +61,7 @@ protected:
     template<typename T, typename U = Component>
     void addComponent(std::unique_ptr<T> comp, U *target = nullptr) {
       Ptr p{static_cast<Component *>(comp.release())};
-      mAdder(p, target);
+      mAdder(std::move(p), target);
     }
 
     template<class E = std::string, class F>
