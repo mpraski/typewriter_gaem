@@ -1,6 +1,6 @@
 {
   "page": {
-    "font": "MonoSpatial",
+    "font": "type_right",
     "font_size": 24,
     "page_width": 460.0,
     "page_height": 400.0,
@@ -8,6 +8,6 @@
     "margin_vertical": 20.0,
     "letter_spacing_factor": 1.0,
     "line_spacing_factor": 1.0,
-    "typing_delay": 50
+    "typing_delay": 100
   }
 }

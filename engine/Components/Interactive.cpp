@@ -40,8 +40,8 @@ engine::Component::Kind engine::Interactive::kind() const {
 }
 
 void engine::Interactive::onStart(engine::Entity &entity) {
-    mMesh = getTargetComponent<Mesh>();
-    mInterface = getTargetComponent<Interface>();
+  mMesh = getTargetComponent<Mesh>();
+  mInterface = getTargetComponent<Interface>();
 
   listen<Event>(getChannel(), [this](const auto &event) {
     switch (event) {

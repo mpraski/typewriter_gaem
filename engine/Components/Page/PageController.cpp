@@ -43,6 +43,8 @@ void engine::PageController::onStart(engine::Entity &entity) {
   });
 
   addContents(entity, mDecisionNode.getContents());
+
+  notifyChannel("printable_selection", mPrintableIDs[0]);
 }
 
 void engine::PageController::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
@@ -64,13 +66,13 @@ std::unique_ptr<engine::Printable> engine::PageController::fromTemplate(const en
   }
 }
 
-void engine::PageController::addContents(Entity& entity, const std::vector<PrintableTemplate> &contents) {
+void engine::PageController::addContents(Entity &entity, const std::vector<PrintableTemplate> &contents) {
   for (const auto &tpl : contents) {
     auto printable{fromTemplate(tpl)};
     printable->move(0, mNextY);
     mNextY += printable->localBounds().height;
     mPrintableIDs.push_back(printable->getUID());
 
-      entity.addComponent(std::move(printable));
+    entity.addComponent(std::move(printable));
   }
 }

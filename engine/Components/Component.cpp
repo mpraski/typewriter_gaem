@@ -49,5 +49,5 @@ void engine::Component::addDependentComponent(sf::Uint64 id) {
 }
 
 const std::vector<sf::Uint64> &engine::Component::getDependentComponents() const noexcept {
-    return mDependentComponents;
+  return mDependentComponents;
 }

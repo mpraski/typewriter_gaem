@@ -21,6 +21,7 @@ protected:
       Transition::onStart(entity);
       mMesh = getTargetComponent<Mesh>();
     }
+
 private:
     void applyStep(float x) final {
       mMesh->move(x, 0.f);

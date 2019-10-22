@@ -55,40 +55,40 @@ public:
 protected:
     template<typename T = Component>
     T *getTargetComponent() const {
-        if constexpr(std::is_same_v<T, Component>) {
-            return mTargetComponent;
-        }
+      if constexpr(std::is_same_v<T, Component>) {
+        return mTargetComponent;
+      }
 
-        T* target = dynamic_cast<T *>(mTargetComponent);
-        if (!target) {
-            throw std::runtime_error(gen::str("Target component is not a ", typeid(T).name()));
-        }
-        return target;
+      T *target = dynamic_cast<T *>(mTargetComponent);
+      if (!target) {
+        throw std::runtime_error(gen::str("Target component is not a ", typeid(T).name()));
+      }
+      return target;
     }
 
     template<class E = std::string, class F>
     void listen(const std::string &channel, F &&cb) const {
-        System::bus().listen<E>(channel, gen::to_uintptr(this), std::forward<F>(cb));
+      System::bus().listen<E>(channel, gen::to_uintptr(this), std::forward<F>(cb));
     }
 
     template<class E>
     void notify(E &event = gen::default_object<E>()) const {
-        System::bus().notify(std::forward<E>(event));
+      System::bus().notify(std::forward<E>(event));
     }
 
     template<class E>
     void notify(E &&event) const {
-        System::bus().notify(std::forward<E>(event));
+      System::bus().notify(std::forward<E>(event));
     }
 
     template<class E = std::string>
     void notifyChannel(const std::string &channel, E &event = gen::default_object<E>()) const {
-        System::bus().notify(channel, std::forward<E>(event));
+      System::bus().notify(channel, std::forward<E>(event));
     }
 
     template<class E>
     void notifyChannel(const std::string &channel, E &&event) const {
-        System::bus().notify(channel, std::forward<E>(event));
+      System::bus().notify(channel, std::forward<E>(event));
     }
 
 private:

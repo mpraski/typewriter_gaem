@@ -17,7 +17,8 @@ engine::Printable::Printable(
     mCurrentCharacter{},
     mContents{std::move(contents)},
     mActiveEffects{},
-    mEffects{} {
+    mEffects{},
+    mModifiers{} {
   for (const auto &e: textEffects) {
     mEffects[e.mBegin].push_back(e);
   }

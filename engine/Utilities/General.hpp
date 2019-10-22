@@ -147,14 +147,14 @@ constexpr auto to_uintptr(const T *t) {
 }
 
 template<class It, class Fun>
-It random_iter(It begin, It end, Fun&& randFun) {
-    long sz{std::distance(begin, end)};
-    long div{RAND_MAX / sz};
+It random_iter(It begin, It end, Fun &&randFun) {
+  long sz{std::distance(begin, end)};
+  long div{RAND_MAX / sz};
 
-    long k;
-    do { k = randFun() / div; } while (k >= sz);
+  long k;
+  do { k = randFun() / div; } while (k >= sz);
 
-    return std::next(begin, k);
+  return std::next(begin, k);
 }
 
 sf::Uint64 next_uid();

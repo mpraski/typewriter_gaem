@@ -9,6 +9,10 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/composite_key.hpp>
+#include <boost/multi_index/identity.hpp>
+#include <boost/multi_index/hashed_index.hpp>
 #include "Listeners.hpp"
 #include "QueuedListeners.hpp"
 #include "../Utilities/NonCopyable.h"
@@ -18,11 +22,27 @@
 // scene nodes and such. May be useful to coordinate
 // complex Translations between hierarchies of nodes
 namespace engine {
-template<template <typename> class ListenersImp>
+using namespace boost::multi_index;
+
+template<template<typename> class ListenersImp>
 class EventBus final : private NonCopyable, private NonMovable {
     using ListenersPtr = std::unique_ptr<Listeners>;
     using ListenersMap = std::unordered_map<std::type_index, ListenersPtr>;
     const constexpr static auto DEFAULT_CHANNEL = "default_channel";
+
+    struct ListenersPayload final {
+        ListenersPayload(std::string c, std::type_index t, ListenersPtr p)
+            : channel{std::move(c)},
+              type{t},
+              pointer{std::move(p)} {
+
+        }
+
+        std::string channel;
+        std::type_index type;
+        std::unique_ptr<Listeners> pointer;
+    };
+
 public:
     template<class E, class F>
     void listen(callback_id_t cbid, F &&cb) {
@@ -36,19 +56,22 @@ public:
       static_assert(!std::is_reference<E>::value, "Class must not be a reference");
       static_assert(!std::is_pointer<E>::value, "Class must not be a pointer");
 
-      using typed_listeners_t = ListenersImp<E>;
-
-      auto tid{gen::type_id<E>()};
-      auto &chan{mCallbacks[channel]};
-      if (chan.find(tid) == std::end(chan)) {
-        auto[it, ok]{chan.insert(std::make_pair(tid, std::make_unique<typed_listeners_t>()))};
+      auto it{mCallbacks.find(boost::make_tuple(channel, gen::type_id<E>()))};
+      if (it == std::end(mCallbacks)) {
+        auto[itt, ok]{mCallbacks.insert(
+            {
+                channel,
+                gen::type_id<E>(),
+                std::make_unique<ListenersImp<E>>()
+            }
+        )};
         if (ok) {
-          mFlattenedListeners.push_back(it->second.get());
+          it = itt;
+          mFlattenedListeners.push_back(it->pointer.get());
         }
       }
 
-      auto &listeners{chan[tid]};
-      auto *typed_listeners{static_cast<typed_listeners_t *>(listeners.get())};
+      auto *typed_listeners{static_cast<ListenersImp<E> *>(it->pointer.get())};
       typed_listeners->add(cbid, std::forward<F>(cb));
     }
 
@@ -64,10 +87,9 @@ public:
       static_assert(!std::is_reference<E>::value, "Class must not be a reference");
       static_assert(!std::is_pointer<E>::value, "Class must not be a pointer");
 
-      auto tid{gen::type_id<E>()};
-      auto &chan{mCallbacks[channel]};
-      if (auto it{chan.find(tid)}; it != std::end(chan)) {
-        it->second.remove(cbid);
+      auto it{mCallbacks.find(boost::make_tuple(channel, gen::type_id<E>()))};
+      if (it != std::end(mCallbacks)) {
+        it->pointer->remove(cbid);
       }
     }
 
@@ -85,15 +107,13 @@ public:
     template<class E>
     void notify(const std::string &channel, E &&event) {
       using CE = typename std::remove_const<typename std::remove_reference<E>::type>::type;
-      using typed_listeners_t = ListenersImp<CE>;
 
       static_assert(!std::is_volatile<CE>::value, "Class must not be volatile");
       static_assert(!std::is_pointer<CE>::value, "Class must not be a pointer");
 
-      auto tid{gen::type_id<CE>()};
-      auto &chan{mCallbacks[channel]};
-      if (auto it{chan.find(tid)}; it != std::end(chan)) {
-        auto *typed_listeners{static_cast<typed_listeners_t *>(it->second.get())};
+      auto it{mCallbacks.find(boost::make_tuple(channel, gen::type_id<E>()))};
+      if (it != std::end(mCallbacks)) {
+        auto *typed_listeners{static_cast<ListenersImp<CE> *>(it->pointer.get())};
         typed_listeners->notify(std::forward<E>(event));
       }
     }
@@ -110,8 +130,19 @@ private:
     EventBus() = default;
 
 private:
-    std::unordered_map<std::string, ListenersMap> mCallbacks;
     std::vector<Listeners *> mFlattenedListeners;
+    boost::multi_index_container<
+        ListenersPayload,
+        indexed_by<
+            hashed_unique<
+                composite_key<
+                    ListenersPayload,
+                    member<ListenersPayload, std::string, &ListenersPayload::channel>,
+                    member<ListenersPayload, std::type_index, &ListenersPayload::type>
+                >
+            >
+        >
+    > mCallbacks;
 };
 }
 
