@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
       <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
+      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -12,11 +12,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="implemented mouse hover events for the new architecture">
+    <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="remove vertex buffer implementation for mesh">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Mesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Mesh.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Mesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Mesh.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Entity.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/EventBus/EventBus.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/EventBus/EventBus.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/System.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Utilities/NonMovable.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Utilities/NonMovable.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/tweeny" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/tweeny" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -45,6 +46,12 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$USER_HOME$/Programs/pseuthe" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -160,14 +167,8 @@
       <workItem from="1571426079482" duration="4012000" />
       <workItem from="1571685875171" duration="5199000" />
       <workItem from="1571725335994" duration="1591000" />
-      <workItem from="1571761936195" duration="2046000" />
-    </task>
-    <task id="LOCAL-00004" summary="added support for some text effects">
-      <created>1563786185469</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1563786185469</updated>
+      <workItem from="1571761936195" duration="2547000" />
+      <workItem from="1571777104664" duration="2005000" />
     </task>
     <task id="LOCAL-00005" summary="bumped compiler version to c++17">
       <created>1563805791586</created>
@@ -505,7 +506,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570482334413</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="remove vertex buffer implementation for mesh">
+      <created>1571768360903</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1571768360904</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -525,8 +533,8 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="some more prototyping" />
     <MESSAGE value="fixed dialog progression" />
     <MESSAGE value="added centered text printable" />
     <MESSAGE value="finished text displacement effects" />
@@ -551,6 +559,7 @@
     <MESSAGE value="fixes" />
     <MESSAGE value="maintain separate vertex arrays for printables to allow for different font sizes and other cool effects" />
     <MESSAGE value="implemented mouse hover events for the new architecture" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemented mouse hover events for the new architecture" />
+    <MESSAGE value="remove vertex buffer implementation for mesh" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove vertex buffer implementation for mesh" />
   </component>
 </project>

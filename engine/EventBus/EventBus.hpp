@@ -14,7 +14,6 @@
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include "Listeners.hpp"
-#include "QueuedListeners.hpp"
 #include "../Utilities/NonCopyable.h"
 #include "../Utilities/NonMovable.h"
 
@@ -31,13 +30,6 @@ class EventBus final : private NonCopyable, private NonMovable {
     const constexpr static auto DEFAULT_CHANNEL = "default_channel";
 
     struct ListenersPayload final {
-        ListenersPayload(std::string c, std::type_index t, ListenersPtr p)
-            : channel{std::move(c)},
-              type{t},
-              pointer{std::move(p)} {
-
-        }
-
         std::string channel;
         std::type_index type;
         std::unique_ptr<Listeners> pointer;

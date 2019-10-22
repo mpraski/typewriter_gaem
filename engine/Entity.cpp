@@ -82,7 +82,7 @@ void engine::Entity::updateSelf(sf::Time dt) {
   for (auto it{std::begin(mComponents)}; it != std::end(mComponents);) {
     if ((*it)->destroyed()) {
       for (const auto &depUID : (*it)->getDependentComponents()) {
-        if (auto depComp{getComponent(depUID)}; depComp) {
+        if (auto *depComp{getComponent(depUID)}; depComp) {
           depComp->markDestroyed();
         }
       }
@@ -108,7 +108,6 @@ void engine::Entity::updateSelf(sf::Time dt) {
 
       mComponentByUID.erase((*it)->getUID());
       it = mComponents.erase(it);
-      (*it)->onEntityUpdate(*this, dt);
     } else {
       (*it)->onEntityUpdate(*this, dt);
       ++it;

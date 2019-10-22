@@ -20,6 +20,7 @@
 #include "Utilities/NonCopyable.h"
 #include "Utilities/NonMovable.h"
 #include "EventBus/EventBus.hpp"
+#include "EventBus/SynchronousListeners.h"
 
 namespace fs = boost::filesystem;
 namespace pt = boost::property_tree;
@@ -68,7 +69,7 @@ public:
     }
 
     static auto &bus() {
-      static EventBus<QueuedListeners> instance;
+      static EventBus<SynchronousListeners> instance;
       return instance;
     }
 

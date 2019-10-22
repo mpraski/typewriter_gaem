@@ -8,9 +8,9 @@
 namespace engine {
 class NonMovable {
 public:
-    NonMovable(const NonMovable &) = delete;
+    NonMovable(NonMovable &&) = delete;
 
-    NonMovable &operator=(const NonMovable &) = delete;
+    NonMovable &operator=(NonMovable &&) = delete;
 
 protected:
     NonMovable() = default;
