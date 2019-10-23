@@ -63,7 +63,8 @@ public:
           "./res/fonts",
           "./res/sounds",
           "./res/textures",
-          "./res/configs"
+          "./res/configs",
+          "./res/shaders"
       };
       return system;
     }
@@ -80,6 +81,8 @@ public:
     RESOURCE_GETTER(textures);
 
     RESOURCE_GETTER(configs);
+
+    RESOURCE_GETTER(shaders);
 
     float effectivePageWidth() const;
 
@@ -119,6 +122,7 @@ private:
     ResourceMap<sf::SoundBuffer> sounds;
     ResourceMap<sf::Texture> textures;
     ResourceMap<pt::ptree> configs;
+    ResourceMap<std::unique_ptr<sf::Shader>> shaders;
 
     sf::VideoMode mVideoMode;
     sf::RenderWindow mWindow;
@@ -134,10 +138,11 @@ private:
         const std::string &fonts_path,
         const std::string &sounds_path,
         const std::string &textures_path,
-        const std::string &configs_path
+        const std::string &configs_path,
+        const std::string &shaders_path
     );
 
-    static ResourceMap<sf::Shader> loadShaders(const std::string &resourcePath);
+    static ResourceMap<std::unique_ptr<sf::Shader>> loadShaders(const std::string &resourcePath);
 
     static std::string getSubDirectory(const fs::path &path) {
       constexpr const auto separator{fs::path::preferred_separator};
@@ -173,7 +178,7 @@ private:
         }
       }};
 
-      if(!fs::exists(resourcePath)) {
+      if (!fs::exists(resourcePath)) {
         throw std::runtime_error(gen::str("Resouce path ", resourcePath, " does not exist!"));
       }
 

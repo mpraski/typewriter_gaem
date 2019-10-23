@@ -12,7 +12,7 @@
 namespace engine {
 class AnimatedMesh final : public Mesh {
 public:
-    using Ptr = std::unique_ptr<AnimatedMesh> ;
+    using Ptr = std::unique_ptr<AnimatedMesh>;
 
     struct Animation final {
         std::string mName;
@@ -21,7 +21,7 @@ public:
         bool mLoop;
     };
 
-    AnimatedMesh(const sf::Texture&);
+    AnimatedMesh(const sf::Texture &);
 
     void onStart(Entity &entity) final;
 

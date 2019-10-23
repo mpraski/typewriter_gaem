@@ -23,8 +23,10 @@ namespace engine {
 class Entity final : public Identifiable,
                      public sf::Drawable,
                      public sf::Transformable {
-    struct IndexByName {};
-    struct IndexByUID {};
+    struct IndexByName {
+    };
+    struct IndexByUID {
+    };
 public:
     using Ptr = std::unique_ptr<Entity>;
 
@@ -66,7 +68,7 @@ public:
     template<typename T = Component>
     T *getComponent(const std::string &name) {
       if (name.empty()) return nullptr;
-      auto& idx{mComponentCache.get<IndexByName>()};
+      auto &idx{mComponentCache.get<IndexByName>()};
       auto comp{idx.find(name)};
       if (comp == std::end(idx)) return nullptr;
       return dynamic_cast<T *>(*comp);
@@ -75,7 +77,7 @@ public:
     template<typename T = Component>
     T *getComponent(sf::Uint64 id) {
       if (!id) return nullptr;
-      auto& idx{mComponentCache.get<IndexByUID>()};
+      auto &idx{mComponentCache.get<IndexByUID>()};
       auto comp{idx.find(id)};
       if (comp == std::end(idx)) return nullptr;
       return dynamic_cast<T *>(*comp);
@@ -158,7 +160,7 @@ private:
         indexed_by<
             hashed_unique<
                 tag<IndexByName>,
-                const_mem_fun<Component, const std::string&, &Component::getName>
+                const_mem_fun<Component, const std::string &, &Component::getName>
             >,
             hashed_unique<
                 tag<IndexByUID>,

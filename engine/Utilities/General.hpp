@@ -44,7 +44,7 @@ I find_default(T &map, const K &key, const E &e = gen::default_object<E>()) {
   if (auto it{map.find(key)}; it != std::end(map)) {
     return it;
   }
-  auto[ok, it]{map.insert(std::make_pair(key, e))};
+  auto[it, ok]{map.insert(std::make_pair(key, e))};
   return it;
 }
 

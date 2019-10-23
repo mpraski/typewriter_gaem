@@ -9,7 +9,8 @@ engine::System::System(
     const std::string &fonts_path,
     const std::string &sounds_path,
     const std::string &textures_path,
-    const std::string &configs_path
+    const std::string &configs_path,
+    const std::string &shaders_path
 )
     : mVideoMode{mode},
       currentCursor{Cursor::ARROW},
@@ -64,6 +65,7 @@ engine::System::System(
               }
           )
       },
+      shaders{loadShaders(shaders_path)},
       mMousePressed{},
       mMousePressedPosition{} {
   const auto &pageConfig{get_configs("page")};
@@ -140,7 +142,7 @@ float engine::System::effectivePageHeight() const {
   return mPageHeight - 2 * mMarginVertical;
 }
 
-engine::System::ResourceMap<sf::Shader>
+engine::System::ResourceMap<std::unique_ptr<sf::Shader>>
 engine::System::loadShaders(const std::string &resourcePath) {
   std::unordered_map<
       std::string,
@@ -150,7 +152,7 @@ engine::System::loadShaders(const std::string &resourcePath) {
           std::string
       >
   > foundFiles;
-  ResourceMap<sf::Shader> shaders;
+  ResourceMap<std::unique_ptr<sf::Shader>> shaders;
 
   auto creator{[&](const std::string &resCategory, const auto &resFilePath) {
     if (fs::is_directory(resFilePath)) {
@@ -191,17 +193,17 @@ engine::System::loadShaders(const std::string &resourcePath) {
   for (const auto&[k, v] : foundFiles) {
     const auto&[cat, vert, frag] = v;
 
-    sf::Shader shader;
+    auto shader{std::make_unique<sf::Shader>()};
     if (!vert.empty() && !frag.empty()) {
-      if (!shader.loadFromFile(vert, frag)) {
+      if (!shader->loadFromFile(vert, frag)) {
         throw std::runtime_error("Could not load shader: " + k);
       }
     } else if (!vert.empty()) {
-      if (!shader.loadFromFile(vert, sf::Shader::Vertex)) {
+      if (!shader->loadFromFile(vert, sf::Shader::Vertex)) {
         throw std::runtime_error("Could not load vertex shader: " + k);
       }
     } else if (!frag.empty()) {
-      if (!shader.loadFromFile(frag, sf::Shader::Fragment)) {
+      if (!shader->loadFromFile(frag, sf::Shader::Fragment)) {
         throw std::runtime_error("Could not load fragment shader: " + k);
       }
     }
