@@ -6,7 +6,7 @@
 #define TYPEWRITER_GAEM_PRINTABLE_HPP
 
 #include "../Mesh.hpp"
-#include "../../TextEffect.hpp"
+#include "TextEffect.hpp"
 #include "../../Utilities/Cached.hpp"
 #include "../../System.hpp"
 #include "../../AudioSystem.hpp"

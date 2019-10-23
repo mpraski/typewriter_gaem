@@ -8,7 +8,7 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "../../TextEffect.hpp"
+#include "TextEffect.hpp"
 
 namespace engine {
 struct PrintableTemplate final {

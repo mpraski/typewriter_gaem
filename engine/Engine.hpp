@@ -28,7 +28,7 @@
 #include "Utilities/Tuples.hpp"
 #include "System.hpp"
 #include "AudioSystem.hpp"
-#include "TextEffect.hpp"
+#include "Components/Page/TextEffect.hpp"
 #include "AudioSystem.hpp"
 #include "Game.hpp"
 

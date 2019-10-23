@@ -29,7 +29,7 @@ bool instanceof(const T *ptr) {
 }
 
 template<typename T>
-decltype(T{}) &default_object() {
+const decltype(T{}) &default_object() {
   static T x{};
   return x;
 }

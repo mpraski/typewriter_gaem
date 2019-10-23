@@ -133,6 +133,8 @@ void engine::Printable::preprocess() {
           lineWidth = 0;
           textHeight += System::instance().mLineSpacing;
           break;
+        default:
+          break;
       }
     } else {
       const auto &glyph{System::instance().mFont->getGlyph(currChar, mModifiers.mFontSize, mModifiers.mBold)};
@@ -182,6 +184,7 @@ float engine::Printable::measureText(size_t begin, size_t end) {
           break;
         case L'\n':
           return textWidth;
+        default:
           break;
       }
     } else {
@@ -367,6 +370,8 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
       case L'\n':
         newLine();
         break;
+      default:
+        break;
     }
   } else {
     const auto &glyph{System::instance().mFont->getGlyph(currChar, mModifiers.mFontSize, mModifiers.mBold)};
@@ -470,6 +475,8 @@ void engine::Printable::redraw() {
         case L'\n':
           mY += System::instance().mLineSpacing;
           mX = System::instance().mMarginHorizontal;
+          break;
+        default:
           break;
       }
     } else {

@@ -57,7 +57,7 @@ public:
         HAND
     };
 
-    static const auto &instance() {
+    static auto &instance() {
       static System system{
           sf::VideoMode(500, 500),
           "./res/fonts",
@@ -87,17 +87,17 @@ public:
 
     sf::Vector2f mousePosition() const;
 
-    void setMouseClick(const sf::Vector2f &pos) const;
+    void setMouseClick(const sf::Vector2f &pos);
 
     bool mouseClickAvailable() const;
 
-    const sf::Vector2f &mouseClickPosition() const;
+    const sf::Vector2f &mouseClickPosition();
 
-    void setCursor(Cursor c) const;
+    void setCursor(Cursor c);
 
-    sf::RenderWindow &getWindow() const;
+    sf::RenderWindow &getWindow();
 
-    sf::VideoMode mVideoMode;
+public:
     const sf::Font *mFont;
     unsigned mFontSize;
     unsigned mTypingDelay;
@@ -115,6 +115,20 @@ public:
     float mUnderlineThickness;
 
 private:
+    ResourceMap<sf::Font> fonts;
+    ResourceMap<sf::SoundBuffer> sounds;
+    ResourceMap<sf::Texture> textures;
+    ResourceMap<pt::ptree> configs;
+
+    sf::VideoMode mVideoMode;
+    sf::RenderWindow mWindow;
+    bool mMousePressed;
+    Cursor currentCursor;
+    sf::Cursor arrowCursor;
+    sf::Cursor grabCursor;
+    sf::Vector2f mMousePressedPosition;
+
+private:
     System(
         sf::VideoMode mode,
         const std::string &fonts_path,
@@ -122,21 +136,6 @@ private:
         const std::string &textures_path,
         const std::string &configs_path
     );
-
-    // Resource maps, can be publicly
-    // accessed through methods generated
-    // by RESOURCE_GETTER macro
-    ResourceMap<sf::Font> fonts;
-    ResourceMap<sf::SoundBuffer> sounds;
-    ResourceMap<sf::Texture> textures;
-    ResourceMap<pt::ptree> configs;
-    // Some other shit
-    mutable Cursor currentCursor;
-    mutable sf::Cursor arrowCursor;
-    mutable sf::Cursor grabCursor;
-    mutable sf::RenderWindow mWindow;
-    mutable bool mMousePressed;
-    mutable sf::Vector2f mMousePressedPosition;
 
     static std::string getSubDirectory(const fs::path &path) {
       constexpr const auto separator{fs::path::preferred_separator};

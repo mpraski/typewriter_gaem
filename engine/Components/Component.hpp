@@ -72,18 +72,13 @@ protected:
     }
 
     template<class E>
-    void notify(E &event = gen::default_object<E>()) const {
-      System::bus().notify(std::forward<E>(event));
-    }
-
-    template<class E>
     void notify(E &&event) const {
       System::bus().notify(std::forward<E>(event));
     }
 
     template<class E = std::string>
-    void notifyChannel(const std::string &channel, E &event = gen::default_object<E>()) const {
-      System::bus().notify(channel, std::forward<E>(event));
+    void notifyChannel(const std::string &channel, const E &event = gen::default_object<E>()) const {
+      System::bus().notify(channel, event);
     }
 
     template<class E>

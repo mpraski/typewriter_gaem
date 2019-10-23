@@ -61,8 +61,6 @@ std::unique_ptr<engine::Printable> engine::PageController::fromTemplate(const en
       return std::make_unique<Paragraph>(tpl.text1, tpl.effects, true);
     case PrintableTemplate::Kind::Dialog:
       return std::make_unique<Dialog>(tpl.text1, tpl.text2);
-    default:
-      throw std::invalid_argument("No such printabe kind");
   }
 }
 

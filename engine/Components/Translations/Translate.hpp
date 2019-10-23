@@ -15,7 +15,7 @@ public:
     bool dependent() const final {
       return true;
     }
-    
+
 protected:
     void onStart(Entity &entity) final {
       Transition::onStart(entity);

@@ -57,10 +57,13 @@ public:
                 std::make_unique<ListenersImp<E>>()
             }
         )};
-        if (ok) {
-          it = itt;
-          mFlattenedListeners.push_back(it->pointer.get());
+
+        if (!ok) {
+          throw std::runtime_error(gen::str("Failure inserting listeners <", channel, ":", typeid(E).name(), ">"));
         }
+
+        it = itt;
+        mFlattenedListeners.push_back(it->pointer.get());
       }
 
       auto *typed_listeners{static_cast<ListenersImp<E> *>(it->pointer.get())};
@@ -103,7 +106,7 @@ public:
       static_assert(!std::is_volatile<CE>::value, "Class must not be volatile");
       static_assert(!std::is_pointer<CE>::value, "Class must not be a pointer");
 
-      auto it{mCallbacks.find(boost::make_tuple(channel, gen::type_id<E>()))};
+      auto it{mCallbacks.find(boost::make_tuple(channel, gen::type_id<CE>()))};
       if (it != std::end(mCallbacks)) {
         auto *typed_listeners{static_cast<ListenersImp<CE> *>(it->pointer.get())};
         typed_listeners->notify(std::forward<E>(event));

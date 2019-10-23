@@ -101,7 +101,7 @@ sf::Vector2f engine::System::mousePosition() const {
   return sf::Vector2f{sf::Mouse::getPosition(mWindow)};
 }
 
-void engine::System::setMouseClick(const sf::Vector2f &pos) const {
+void engine::System::setMouseClick(const sf::Vector2f &pos) {
   mMousePressed = true;
   mMousePressedPosition = pos;
 }
@@ -110,12 +110,12 @@ bool engine::System::mouseClickAvailable() const {
   return mMousePressed;
 }
 
-const sf::Vector2f &engine::System::mouseClickPosition() const {
+const sf::Vector2f &engine::System::mouseClickPosition() {
   mMousePressed = false;
   return mMousePressedPosition;
 }
 
-void engine::System::setCursor(Cursor c) const {
+void engine::System::setCursor(Cursor c) {
   if (c == currentCursor) return;
   currentCursor = c;
   switch (c) {
@@ -128,7 +128,7 @@ void engine::System::setCursor(Cursor c) const {
   }
 }
 
-sf::RenderWindow &engine::System::getWindow() const {
+sf::RenderWindow &engine::System::getWindow() {
   return mWindow;
 }
 
