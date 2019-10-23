@@ -137,6 +137,8 @@ private:
         const std::string &configs_path
     );
 
+    static ResourceMap<sf::Shader> loadShaders(const std::string &resourcePath);
+
     static std::string getSubDirectory(const fs::path &path) {
       constexpr const auto separator{fs::path::preferred_separator};
       std::vector<std::string> parts;
@@ -170,6 +172,10 @@ private:
           throw std::runtime_error("Unable to load resource from path: " + path);
         }
       }};
+
+      if(!fs::exists(resourcePath)) {
+        throw std::runtime_error(gen::str("Resouce path ", resourcePath, " does not exist!"));
+      }
 
       for (const auto &resDirPath : boost::make_iterator_range(fs::directory_iterator(resourcePath), {})) {
         if (fs::is_directory(resDirPath)) {

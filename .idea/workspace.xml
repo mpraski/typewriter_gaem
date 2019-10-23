@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
       <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
+      <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -12,13 +12,21 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="remove vertex buffer implementation for mesh">
+    <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="implemented mouse hover events for the new architecture">
+      <change afterPath="$PROJECT_DIR$/engine/Scene.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/Scene.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/AnimatedMesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/AnimatedMesh.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/AnimatedMesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/AnimatedMesh.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Component.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Component.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Component.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Component.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Mesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Mesh.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Entity.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/EventBus/EventBus.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/EventBus/EventBus.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Entity.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/System.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/System.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Utilities/NonMovable.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Utilities/NonMovable.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/tweeny" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/tweeny" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Utilities/General.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Utilities/General.hpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,11 +69,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/engine/Components/Page" />
       <recent name="$PROJECT_DIR$/engine" />
       <recent name="$PROJECT_DIR$/engine/components" />
       <recent name="$PROJECT_DIR$/engine/event_bus" />
       <recent name="$PROJECT_DIR$/engine/printables" />
-      <recent name="$PROJECT_DIR$/engine/story" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -169,13 +177,7 @@
       <workItem from="1571725335994" duration="1591000" />
       <workItem from="1571761936195" duration="2547000" />
       <workItem from="1571777104664" duration="2005000" />
-    </task>
-    <task id="LOCAL-00005" summary="bumped compiler version to c++17">
-      <created>1563805791586</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1563805791586</updated>
+      <workItem from="1571837475319" duration="10342000" />
     </task>
     <task id="LOCAL-00006" summary="added resource loader">
       <created>1563819145511</created>
@@ -513,7 +515,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571768360904</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="Refactored and cleaned up">
+      <created>1571828074390</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1571828074391</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -535,7 +544,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="fixed dialog progression" />
     <MESSAGE value="added centered text printable" />
     <MESSAGE value="finished text displacement effects" />
     <MESSAGE value="added cursor change on hover" />
@@ -560,6 +568,7 @@
     <MESSAGE value="maintain separate vertex arrays for printables to allow for different font sizes and other cool effects" />
     <MESSAGE value="implemented mouse hover events for the new architecture" />
     <MESSAGE value="remove vertex buffer implementation for mesh" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove vertex buffer implementation for mesh" />
+    <MESSAGE value="Refactored and cleaned up" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored and cleaned up" />
   </component>
 </project>

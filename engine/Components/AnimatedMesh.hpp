@@ -10,16 +10,18 @@
 #include "Mesh.hpp"
 
 namespace engine {
-class AnimatedMesh : public Mesh {
+class AnimatedMesh final : public Mesh {
 public:
-    class Animation final {
+    using Ptr = std::unique_ptr<AnimatedMesh> ;
 
-    private:
+    struct Animation final {
         std::string mName;
         sf::Uint16 mBeginFrame;
-        sf::Int16 mEndFrame;
+        sf::Uint16 mEndFrame;
         bool mLoop;
     };
+
+    AnimatedMesh(const sf::Texture&);
 
     void onStart(Entity &entity) final;
 

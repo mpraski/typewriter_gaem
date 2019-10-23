@@ -139,3 +139,75 @@ float engine::System::effectivePageWidth() const {
 float engine::System::effectivePageHeight() const {
   return mPageHeight - 2 * mMarginVertical;
 }
+
+engine::System::ResourceMap<sf::Shader>
+engine::System::loadShaders(const std::string &resourcePath) {
+  std::unordered_map<
+      std::string,
+      std::tuple<
+          std::string,
+          std::string,
+          std::string
+      >
+  > foundFiles;
+  ResourceMap<sf::Shader> shaders;
+
+  auto creator{[&](const std::string &resCategory, const auto &resFilePath) {
+    if (fs::is_directory(resFilePath)) {
+      throw std::runtime_error("Resource file path is a directory: " + resFilePath.path().string());
+    }
+
+    auto path{resFilePath.path().string()};
+    auto name{resFilePath.path().stem().string()};
+    auto ext{resFilePath.path().extension().string()};
+
+    auto it{gen::find_default(foundFiles, name)};
+
+    std::get<0>(it->second) = resCategory;
+    if (ext == "vert") {
+      std::get<1>(it->second) = path;
+    } else if (ext == "frag") {
+      std::get<2>(it->second) = path;
+    }
+  }};
+
+  if (!fs::exists(resourcePath)) {
+    throw std::runtime_error(gen::str("Shader path ", resourcePath, " does not exist!"));
+  }
+
+  for (const auto &resDirPath : boost::make_iterator_range(fs::directory_iterator(resourcePath), {})) {
+    if (fs::is_directory(resDirPath)) {
+      auto resCat{getSubDirectory(resDirPath.path())};
+
+      for (const auto &resFilePath : boost::make_iterator_range(fs::directory_iterator(resDirPath),
+                                                                {})) {
+        creator(resCat, resFilePath);
+      }
+    } else {
+      creator(ROOT_RESOURCE_CATEGORY, resDirPath);
+    }
+  }
+
+  for (const auto&[k, v] : foundFiles) {
+    const auto&[cat, vert, frag] = v;
+
+    sf::Shader shader;
+    if (!vert.empty() && !frag.empty()) {
+      if (!shader.loadFromFile(vert, frag)) {
+        throw std::runtime_error("Could not load shader: " + k);
+      }
+    } else if (!vert.empty()) {
+      if (!shader.loadFromFile(vert, sf::Shader::Vertex)) {
+        throw std::runtime_error("Could not load vertex shader: " + k);
+      }
+    } else if (!frag.empty()) {
+      if (!shader.loadFromFile(frag, sf::Shader::Fragment)) {
+        throw std::runtime_error("Could not load fragment shader: " + k);
+      }
+    }
+
+    shaders[cat].insert(std::make_pair(k, std::move(shader)));
+  }
+
+  return shaders;
+}

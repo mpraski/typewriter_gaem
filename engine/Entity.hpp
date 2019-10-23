@@ -5,6 +5,11 @@
 #ifndef TYPEWRITER_GAEM_ENTITY_HPP
 #define TYPEWRITER_GAEM_ENTITY_HPP
 
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/composite_key.hpp>
+#include <boost/multi_index/identity.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/mem_fun.hpp>
 #include <SFML/Graphics.hpp>
 #include "System.hpp"
 #include "Identifiable.hpp"
@@ -12,11 +17,14 @@
 #include "EventBus/EventBus.hpp"
 #include "Components/Component.hpp"
 #include "Components/Interactive.hpp"
+#include "Components/Mesh.hpp"
 
 namespace engine {
 class Entity final : public Identifiable,
                      public sf::Drawable,
                      public sf::Transformable {
+    struct IndexByName {};
+    struct IndexByUID {};
 public:
     using Ptr = std::unique_ptr<Entity>;
 
@@ -37,7 +45,7 @@ public:
       ComponentPtr c{static_cast<Component *>(component.release())};
       switch (c->kind()) {
         case Component::Kind::Mesh:
-          mDrawables.push_back(dynamic_cast<sf::Drawable *>(c.get()));
+          mMeshes.push_back(dynamic_cast<Mesh *>(c.get()));
           break;
         case Component::Kind::Interactive:
           mInteractives.push_back(dynamic_cast<Interactive *>(c.get()));
@@ -45,30 +53,32 @@ public:
         default:
           break;
       }
-      mComponentByUID[c->getUID()] = c.get();
+      mComponentCache.get<IndexByUID>().insert(c.get());
       c->mTargetComponent = targetComponent;
-      c->onStart(*this);
       if (targetComponent) {
         assert(c->dependent());
         targetComponent->addDependentComponent(c->getUID());
       }
+      c->onStart(*this);
       mComponents.push_back(std::move(c));
     }
 
     template<typename T = Component>
     T *getComponent(const std::string &name) {
       if (name.empty()) return nullptr;
-      auto comp{gen::find_if(mComponents, [&](const auto &c) { c->getName() == name; })};
-      if (comp == std::end(mComponents)) return nullptr;
-      return dynamic_cast<T *>(comp->get());
+      auto& idx{mComponentCache.get<IndexByName>()};
+      auto comp{idx.find(name)};
+      if (comp == std::end(idx)) return nullptr;
+      return dynamic_cast<T *>(*comp);
     }
 
     template<typename T = Component>
     T *getComponent(sf::Uint64 id) {
       if (!id) return nullptr;
-      auto comp{mComponentByUID.find(id)};
-      if (comp == std::end(mComponentByUID)) return nullptr;
-      return dynamic_cast<T *>(comp->second);
+      auto& idx{mComponentCache.get<IndexByUID>()};
+      auto comp{idx.find(id)};
+      if (comp == std::end(idx)) return nullptr;
+      return dynamic_cast<T *>(*comp);
     }
 
     template<typename T = Component, typename U = Component>
@@ -85,7 +95,7 @@ public:
       }
       switch (comp->kind()) {
         case Component::Kind::Mesh:
-          gen::remove_if(mDrawables, [&](const auto &d) {
+          gen::remove_if(mMeshes, [&](const auto &d) {
             return static_cast<Component *>(d) == cast_component;
           });
           break;
@@ -97,7 +107,7 @@ public:
         default:
           break;
       }
-      mComponentByUID.erase(comp->getUID());
+      mComponentCache.get<IndexByUID>().erase(comp->getUID());
       if (comp->dependent()) {
         gen::remove_if(comp->mTargetComponent->mDependentComponents, [&](const auto &compUID) {
           compUID == comp->getUID();
@@ -140,10 +150,22 @@ private:
 
     std::vector<Ptr> mChildren;
     std::vector<ComponentPtr> mComponents;
-    std::vector<sf::Drawable *> mDrawables;
+    std::vector<Mesh *> mMeshes;
     std::vector<Interactive *> mInteractives;
 
-    std::unordered_map<sf::Uint64, Component *> mComponentByUID;
+    boost::multi_index_container<
+        Component *,
+        indexed_by<
+            hashed_unique<
+                tag<IndexByName>,
+                const_mem_fun<Component, const std::string&, &Component::getName>
+            >,
+            hashed_unique<
+                tag<IndexByUID>,
+                const_mem_fun<Identifiable, sf::Uint64, &Identifiable::getUID>
+            >
+        >
+    > mComponentCache;
 
     mutable sf::Clock mClock;
     mutable sf::Time mSinceLastUpdate;

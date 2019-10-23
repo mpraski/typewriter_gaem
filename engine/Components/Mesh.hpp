@@ -22,7 +22,7 @@ public:
 
 protected:
     sf::FloatRect mBounds;
-    mutable sf::VertexArray mVertices;
+    sf::VertexArray mVertices;
     mutable sf::VertexArray mDebugBoundsVertices;
 
     const sf::Shader *mShader;

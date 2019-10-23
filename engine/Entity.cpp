@@ -11,8 +11,8 @@ engine::Entity::Entity()
       mParent{},
       mChildren{},
       mComponents{},
-      mDrawables{},
-      mComponentByUID{},
+      mMeshes{},
+      mComponentCache{},
       mClock{},
       mSinceLastUpdate{sf::Time::Zero} {
 
@@ -93,8 +93,8 @@ void engine::Entity::updateSelf(sf::Time dt) {
       }
       switch ((*it)->kind()) {
         case Component::Kind::Mesh:
-          gen::remove_if(mDrawables, [&](const auto &d) {
-            return d == dynamic_cast<sf::Drawable *>(it->get());
+          gen::remove_if(mMeshes, [&](const auto &d) {
+            return d == dynamic_cast<Mesh *>(it->get());
           });
           break;
         case Component::Kind::Interactive:
@@ -106,7 +106,7 @@ void engine::Entity::updateSelf(sf::Time dt) {
           break;
       }
 
-      mComponentByUID.erase((*it)->getUID());
+      mComponentCache.get<IndexByUID>().erase((*it)->getUID());
       it = mComponents.erase(it);
     } else {
       (*it)->onEntityUpdate(*this, dt);
@@ -123,7 +123,7 @@ void engine::Entity::updateSelf(sf::Time dt) {
 }
 
 void engine::Entity::drawSelf(sf::RenderTarget &target, sf::RenderStates states) const {
-  for (const auto &d : mDrawables) {
+  for (const auto &d : mMeshes) {
     target.draw(*d, states);
   }
 }

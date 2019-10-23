@@ -34,6 +34,20 @@ const decltype(T{}) &default_object() {
   return x;
 }
 
+template<
+    typename T,
+    typename I = typename T::iterator,
+    typename K = typename T::key_type,
+    typename E = typename T::mapped_type
+>
+I find_default(T &map, const K &key, const E &e = gen::default_object<E>()) {
+  if (auto it{map.find(key)}; it != std::end(map)) {
+    return it;
+  }
+  auto[ok, it]{map.insert(std::make_pair(key, e))};
+  return it;
+}
+
 template<class T, class F>
 void remove_if(T &ts, F &&f) {
   ts.erase(

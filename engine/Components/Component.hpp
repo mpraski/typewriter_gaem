@@ -28,13 +28,13 @@ public:
 public:
     Component();
 
+    explicit Component(std::string name);
+
     void markDestroyed();
 
     bool destroyed() const noexcept;
 
     const std::string &getName() const noexcept;
-
-    void setName(const std::string &name);
 
     void addDependentComponent(sf::Uint64 id);
 
