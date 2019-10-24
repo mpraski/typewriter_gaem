@@ -36,11 +36,10 @@ const decltype(T{}) &default_object() {
 
 template<
     typename T,
-    typename I = typename T::iterator,
     typename K = typename T::key_type,
     typename E = typename T::mapped_type
 >
-I find_default(T &map, const K &key, const E &e = gen::default_object<E>()) {
+auto find_default(T &map, const K &key, const E &e = gen::default_object<E>()) {
   if (auto it{map.find(key)}; it != std::end(map)) {
     return it;
   }
@@ -170,6 +169,11 @@ It random_iter(It begin, It end, Fun &&randFun) {
 
   return std::next(begin, k);
 }
+
+template<typename T>
+struct remove_qualifiers {
+    using type = typename std::remove_const<typename std::remove_reference<T>::type>::type;
+};
 
 sf::Uint64 next_uid();
 

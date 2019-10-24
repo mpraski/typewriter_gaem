@@ -144,6 +144,7 @@ float engine::System::effectivePageHeight() const {
 
 engine::System::ResourceMap<std::unique_ptr<sf::Shader>>
 engine::System::loadShaders(const std::string &resourcePath) {
+  ResourceMap<std::unique_ptr<sf::Shader>> shaders;
   std::unordered_map<
       std::string,
       std::tuple<
@@ -152,7 +153,6 @@ engine::System::loadShaders(const std::string &resourcePath) {
           std::string
       >
   > foundFiles;
-  ResourceMap<std::unique_ptr<sf::Shader>> shaders;
 
   auto creator{[&](const std::string &resCategory, const auto &resFilePath) {
     if (fs::is_directory(resFilePath)) {
@@ -206,6 +206,8 @@ engine::System::loadShaders(const std::string &resourcePath) {
       if (!shader->loadFromFile(frag, sf::Shader::Fragment)) {
         throw std::runtime_error("Could not load fragment shader: " + k);
       }
+    } else {
+      throw std::runtime_error("Shader doesn't have any valid files: " + k);
     }
 
     shaders[cat].insert(std::make_pair(k, std::move(shader)));

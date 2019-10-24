@@ -11,6 +11,7 @@
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/mem_fun.hpp>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "System.hpp"
 #include "Identifiable.hpp"
 #include "Utilities/General.hpp"
@@ -44,24 +45,18 @@ public:
 
     template<typename T, typename U = Component>
     void addComponent(std::unique_ptr<T> component, U *targetComponent = nullptr) {
-      ComponentPtr c{static_cast<Component *>(component.release())};
-      switch (c->kind()) {
-        case Component::Kind::Mesh:
-          mMeshes.push_back(dynamic_cast<Mesh *>(c.get()));
-          break;
-        case Component::Kind::Interactive:
-          mInteractives.push_back(dynamic_cast<Interactive *>(c.get()));
-          break;
-        default:
-          break;
+      if constexpr(std::is_convertible_v<T *, Mesh *>) {
+        mMeshes.push_back(static_cast<Mesh*>(component.get()));
+      } else if constexpr(std::is_convertible_v<T *, Interactive *>) {
+        mInteractives.push_back(static_cast<Interactive*>(component.get()));
       }
-      mComponentCache.get<IndexByUID>().insert(c.get());
-      c->mTargetComponent = targetComponent;
-      if (targetComponent) {
-        assert(c->dependent());
-        targetComponent->addDependentComponent(c->getUID());
+      ComponentPtr c{static_cast<Component *>(component.release())};
+      if (c->dependent()) {
+        c->mTargetComponent = targetComponent;
+        c->mTargetComponent->addDependentComponent(c->getUID());
       }
       c->onStart(*this);
+      mComponentCache.get<IndexByUID>().insert(c.get());
       mComponents.push_back(std::move(c));
     }
 

@@ -87,20 +87,29 @@ void engine::Entity::updateSelf(sf::Time dt) {
         }
       }
       if ((*it)->dependent()) {
-        gen::remove_if((*it)->mTargetComponent->mDependentComponents, [&](const auto &compUID) {
-          return compUID == (*it)->getUID();
-        });
+        gen::remove_if(
+            (*it)->mTargetComponent->mDependentComponents,
+            [u = (*it)->getUID()](const auto &compUID) {
+              return compUID == u;
+            }
+        );
       }
       switch ((*it)->kind()) {
         case Component::Kind::Mesh:
-          gen::remove_if(mMeshes, [&](const auto &d) {
-            return d == dynamic_cast<Mesh *>(it->get());
-          });
+          gen::remove_if(
+              mMeshes,
+              [c = static_cast<Mesh *>(it->get())](const auto &d) { // NOLINT
+                return d == c;
+              }
+          );
           break;
         case Component::Kind::Interactive:
-          gen::remove_if(mInteractives, [&](const auto &d) {
-            return d == dynamic_cast<Interactive *>(it->get());
-          });
+          gen::remove_if(
+              mInteractives,
+              [c = static_cast<Interactive *>(it->get())](const auto &d) { // NOLINT
+                return d == c;
+              }
+          );
           break;
         default:
           break;
