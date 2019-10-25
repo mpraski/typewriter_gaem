@@ -10,7 +10,7 @@
 
 namespace engine {
 class Scene : public Identifiable, public sf::Drawable {
-    Scene(std::vector<EntityPtr>&& layers);
+    Scene(std::vector<EntityPtr> &&layers);
 
 private:
     std::vector<EntityPtr> mLayers;

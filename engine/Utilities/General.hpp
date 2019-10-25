@@ -170,10 +170,19 @@ It random_iter(It begin, It end, Fun &&randFun) {
   return std::next(begin, k);
 }
 
-template<typename T>
-struct remove_qualifiers {
-    using type = typename std::remove_const<typename std::remove_reference<T>::type>::type;
-};
+template<
+    typename E,
+    typename std::underlying_type<E>::type First,
+    typename std::underlying_type<E>::type Last,
+    typename Fun
+>
+constexpr void enum_for(Fun &&f) {
+  if constexpr (First < Last) {
+    using UE = typename std::underlying_type<E>::type;
+    f(static_cast<E>(std::integral_constant<UE, First>()()));
+    enum_for<E, First + 1, Last>(std::forward<Fun>(f));
+  }
+}
 
 sf::Uint64 next_uid();
 

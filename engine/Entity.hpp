@@ -46,9 +46,9 @@ public:
     template<typename T, typename U = Component>
     void addComponent(std::unique_ptr<T> component, U *targetComponent = nullptr) {
       if constexpr(std::is_convertible_v<T *, Mesh *>) {
-        mMeshes.push_back(static_cast<Mesh*>(component.get()));
+        mMeshes.push_back(static_cast<Mesh *>(component.get()));
       } else if constexpr(std::is_convertible_v<T *, Interactive *>) {
-        mInteractives.push_back(static_cast<Interactive*>(component.get()));
+        mInteractives.push_back(static_cast<Interactive *>(component.get()));
       }
       ComponentPtr c{static_cast<Component *>(component.release())};
       if (c->dependent()) {

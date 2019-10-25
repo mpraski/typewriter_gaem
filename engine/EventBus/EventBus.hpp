@@ -43,10 +43,10 @@ public:
 
     template<class E, class F>
     void listen(const std::string &channel, callback_id_t cbid, F &&cb) {
-      static_assert(!std::is_const<E>::value, "Class must not be const");
-      static_assert(!std::is_volatile<E>::value, "Class must not be volatile");
-      static_assert(!std::is_reference<E>::value, "Class must not be a reference");
-      static_assert(!std::is_pointer<E>::value, "Class must not be a pointer");
+      static_assert(!std::is_const_v<E>, "Class must not be const");
+      static_assert(!std::is_volatile_v<E>, "Class must not be volatile");
+      static_assert(!std::is_reference_v<E>, "Class must not be a reference");
+      static_assert(!std::is_pointer_v<E>, "Class must not be a pointer");
 
       auto it{mCallbacks.find(boost::make_tuple(channel, gen::type_id<E>()))};
       if (it == std::end(mCallbacks)) {
@@ -77,10 +77,10 @@ public:
 
     template<class E>
     void unlisten(const std::string &channel, callback_id_t cbid) {
-      static_assert(!std::is_const<E>::value, "Class must not be const");
-      static_assert(!std::is_volatile<E>::value, "Class must not be volatile");
-      static_assert(!std::is_reference<E>::value, "Class must not be a reference");
-      static_assert(!std::is_pointer<E>::value, "Class must not be a pointer");
+      static_assert(!std::is_const_v<E>, "Class must not be const");
+      static_assert(!std::is_volatile_v<E>, "Class must not be volatile");
+      static_assert(!std::is_reference_v<E>, "Class must not be a reference");
+      static_assert(!std::is_pointer_v<E>, "Class must not be a pointer");
 
       auto it{mCallbacks.find(boost::make_tuple(channel, gen::type_id<E>()))};
       if (it != std::end(mCallbacks)) {
@@ -103,8 +103,8 @@ public:
     void notify(const std::string &channel, E &&event) {
       using CE = typename std::remove_const<typename std::remove_reference<E>::type>::type;
 
-      static_assert(!std::is_volatile<CE>::value, "Class must not be volatile");
-      static_assert(!std::is_pointer<CE>::value, "Class must not be a pointer");
+      static_assert(!std::is_volatile_v<CE>, "Class must not be volatile");
+      static_assert(!std::is_pointer_v<CE>, "Class must not be a pointer");
 
       auto it{mCallbacks.find(boost::make_tuple(channel, gen::type_id<CE>()))};
       if (it != std::end(mCallbacks)) {

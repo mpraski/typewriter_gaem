@@ -4,6 +4,6 @@
 
 #include "Scene.hpp"
 
-engine::Scene::Scene(std::vector<EntityPtr>&& layers)
+engine::Scene::Scene(std::vector<EntityPtr> &&layers)
     : mLayers{std::move(layers)} {
 }
