@@ -11,13 +11,11 @@
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/mem_fun.hpp>
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include "System.hpp"
 #include "Identifiable.hpp"
 #include "Utilities/General.hpp"
 #include "EventBus/EventBus.hpp"
 #include "Components/Component.hpp"
-#include "Components/Interactive.hpp"
 #include "Components/Mesh.hpp"
 
 namespace engine {
@@ -47,14 +45,18 @@ public:
     void addComponent(std::unique_ptr<T> component, U *targetComponent = nullptr) {
       if constexpr(std::is_convertible_v<T *, Mesh *>) {
         mMeshes.push_back(static_cast<Mesh *>(component.get()));
-      } else if constexpr(std::is_convertible_v<T *, Interactive *>) {
-        mInteractives.push_back(static_cast<Interactive *>(component.get()));
       }
       ComponentPtr c{static_cast<Component *>(component.release())};
       if (c->dependent()) {
         c->mTargetComponent = targetComponent;
         c->mTargetComponent->addDependentComponent(c->getUID());
       }
+#ifdef DEBUG
+      auto &idx{mComponentCache.get<IndexByName>()};
+      if (idx.find(c->getName()) != std::end(idx)) {
+        // log message about duplicated named component
+      }
+#endif
       c->onStart(*this);
       mComponentCache.get<IndexByUID>().insert(c.get());
       mComponents.push_back(std::move(c));
@@ -90,19 +92,10 @@ public:
       if (!comp->getDependentComponents().empty()) {
         throw std::runtime_error("Component has dependants");
       }
-      switch (comp->kind()) {
-        case Component::Kind::Mesh:
-          gen::remove_if(mMeshes, [&](const auto &d) {
-            return static_cast<Component *>(d) == cast_component;
-          });
-          break;
-        case Component::Kind::Interactive:
-          gen::remove_if(mInteractives, [&](const auto &d) {
-            return static_cast<Component *>(d) == cast_component;
-          });
-          break;
-        default:
-          break;
+      if (comp->kind() == Component::Kind::Mesh) {
+        gen::remove_if(mMeshes, [&](const auto &d) {
+          return static_cast<Component *>(d) == cast_component;
+        });
       }
       mComponentCache.get<IndexByUID>().erase(comp->getUID());
       if (comp->dependent()) {
@@ -136,10 +129,6 @@ private:
 
     virtual void drawSelf(sf::RenderTarget &target, sf::RenderStates states) const;
 
-    void performMouseHover();
-
-    void performMouseClick();
-
 private:
     bool mDestroyed;
     std::string mChannel;
@@ -148,7 +137,6 @@ private:
     std::vector<Ptr> mChildren;
     std::vector<ComponentPtr> mComponents;
     std::vector<Mesh *> mMeshes;
-    std::vector<Interactive *> mInteractives;
 
     boost::multi_index_container<
         Component *,

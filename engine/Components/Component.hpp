@@ -55,10 +55,6 @@ public:
 protected:
     template<typename T = Component>
     T *getTargetComponent() const {
-      if constexpr(std::is_same_v<T, Component>) {
-        return mTargetComponent;
-      }
-
       T *target = dynamic_cast<T *>(mTargetComponent);
       if (!target) {
         throw std::runtime_error(gen::str("Target component is not a ", typeid(T).name()));
@@ -66,7 +62,7 @@ protected:
       return target;
     }
 
-    template<class E = std::string, class F>
+    template<class E = std::true_type, class F>
     void listen(const std::string &channel, F &&cb) const {
       System::bus().listen<E>(channel, gen::to_uintptr(this), std::forward<F>(cb));
     }
@@ -76,7 +72,7 @@ protected:
       System::bus().notify(std::forward<E>(event));
     }
 
-    template<class E = std::string>
+    template<class E = std::true_type>
     void notifyChannel(const std::string &channel, const E &event = gen::default_object<E>()) const {
       System::bus().notify(channel, event);
     }

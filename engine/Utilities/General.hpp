@@ -174,13 +174,18 @@ template<
     typename E,
     typename std::underlying_type<E>::type First,
     typename std::underlying_type<E>::type Last,
+    typename Pred,
     typename Fun
 >
-constexpr void enum_for(Fun &&f) {
+constexpr void if_else(Pred &&p, Fun &&f) {
   if constexpr (First < Last) {
     using UE = typename std::underlying_type<E>::type;
-    f(static_cast<E>(std::integral_constant<UE, First>()()));
-    enum_for<E, First + 1, Last>(std::forward<Fun>(f));
+    auto key{static_cast<E>(std::integral_constant<UE, First>()())};
+    if (p(key)) {
+      f(key);
+    } else {
+      if_else<E, First + 1, Last>(std::forward<Pred>(p), std::forward<Fun>(f));
+    }
   }
 }
 

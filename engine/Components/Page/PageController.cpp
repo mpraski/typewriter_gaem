@@ -4,13 +4,15 @@
 
 #include "PageController.hpp"
 #include "../../Entity.hpp"
+#include "../../Engine.hpp"
+#include <iostream>
 
 engine::PageController::PageController(DecisionNode n)
     : Component{},
       mNextY{},
       mPrintableIDs{},
       mDecisionNode{std::move(n)} {
-
+  assert(!mDecisionNode.getContents().empty());
 }
 
 engine::Component::Kind engine::PageController::kind() const {
@@ -41,6 +43,8 @@ void engine::PageController::onStart(engine::Entity &entity) {
       notifyChannel("printable_selection", *mCurrentPrintable);
     }
   });
+
+  listen<sf::Keyboard::Key>(Constants::KeyboardChannel, getKeyboardListener());
 
   addContents(entity, mDecisionNode.getContents());
 
@@ -73,4 +77,8 @@ void engine::PageController::addContents(Entity &entity, const std::vector<Print
 
     entity.addComponent(std::move(printable));
   }
+}
+
+void engine::PageController::onKey(sf::Keyboard::Key key) {
+  std::cout << "key press: " << key << std::endl;
 }

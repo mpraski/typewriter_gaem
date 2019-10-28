@@ -3,6 +3,7 @@
 //
 
 #include "Paragraph.hpp"
+#include "../../Engine.hpp"
 
 engine::Paragraph::Paragraph(
     std::wstring contents,

@@ -19,7 +19,7 @@ engine::Component::Component(std::string name)
       mDestroyed{},
       mTargetComponent{},
       mName{std::move(name)},
-      mChannel{gen::str("comp-", getUID())},
+      mChannel{mName},
       mDependentComponents{} {
 
 }

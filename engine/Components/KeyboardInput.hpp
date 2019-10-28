@@ -8,9 +8,27 @@
 #include "Component.hpp"
 
 namespace engine {
-class KeyboardInput : public Component {
+class KeyboardInput final : public Component {
+public:
+    class Helper {
+    public:
+        Helper();
+
+    protected:
+        virtual void onKey(sf::Keyboard::Key) = 0;
+
+        void captureKeyboardEvents(bool c);
+
+        std::function<void(sf::Keyboard::Key)> getKeyboardListener();
+
+    private:
+        bool mCapture;
+    };
+
 public:
     KeyboardInput();
+
+    explicit KeyboardInput(std::string name);
 
     Kind kind() const override;
 

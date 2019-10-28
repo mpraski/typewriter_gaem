@@ -292,7 +292,7 @@ void engine::Printable::removeTextEffects(size_t idx) {
 }
 
 void engine::Printable::onStart(engine::Entity &entity) {
-  listen<sf::Uint64>("printable_selection", [this](const auto &id) {
+  listen<sf::Uint64>("printable_selection", [this](auto id) {
     if (getUID() == id) {
       mState = State::Printing;
     }
@@ -331,6 +331,13 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
 
   auto prevChar{sf::Utf32::decodeWide(mContents[mCurrentCharacter ? mCurrentCharacter - 1 : 0])};
   auto currChar{sf::Utf32::decodeWide(mContents[mCurrentCharacter])};
+
+  float x = 0.f;
+  float y = static_cast<float>(mModifiers.mFontSize);
+  float minX = static_cast<float>(mModifiers.mFontSize);
+  float minY = static_cast<float>(mModifiers.mFontSize);
+  float maxX = 0.f;
+  float maxY = 0.f;
 
   // Skip to avoid glitches
   if (currChar == L'\r')
@@ -373,6 +380,9 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
       default:
         break;
     }
+
+    maxX = std::max(maxX, x);
+    maxY = std::max(maxY, y);
   } else {
     const auto &glyph{System::instance().mFont->getGlyph(currChar, mModifiers.mFontSize, mModifiers.mBold)};
 
@@ -383,9 +393,17 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
         glyph,
         mModifiers.mItalicShear
     );
-    //if (text_texture) {
-    //  gen::add_font_background(font_texture_vertices, sf::Vector2f(x, y), glyph, italic_shear);
-    //}
+
+    float left = glyph.bounds.left;
+    float top = glyph.bounds.top;
+    float right = glyph.bounds.left + glyph.bounds.width;
+    float bottom = glyph.bounds.top + glyph.bounds.height;
+
+    minX = std::min(minX, x + left - mModifiers.mItalicShear * bottom);
+    maxX = std::max(maxX, x + right - mModifiers.mItalicShear * top);
+    minY = std::min(minY, y + top);
+    maxY = std::max(maxY, y + bottom);
+
     auto advance{glyph.advance + System::instance().mLetterSpacing + mModifiers.mLetterSpacingFactor};
 
     if (mModifiers.mUnderlined) {
@@ -419,6 +437,11 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
 
     AudioSystem::instance().playTypewriterClick();
   }
+
+  mBounds.left = minX;
+  mBounds.top = minY;
+  mBounds.width = maxX - minX;
+  mBounds.height = maxY - minY;
 
   mTexture = &System::instance().mFont->getTexture(mModifiers.mFontSize);
 
@@ -489,9 +512,7 @@ void engine::Printable::redraw() {
           glyph,
           mModifiers.mItalicShear
       );
-      //if (text_texture) {
-      //  gen::add_font_background(font_texture_vertices, sf::Vector2f(x, y), glyph, italic_shear);
-      //}
+
       auto advance{glyph.advance + System::instance().mLetterSpacing + mModifiers.mLetterSpacingFactor};
 
       if (mModifiers.mUnderlined) {

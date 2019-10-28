@@ -4,6 +4,7 @@
 
 #include "Dialog.hpp"
 #include "../../Entity.hpp"
+#include "../../Engine.hpp"
 
 engine::Dialog::Dialog(
     const std::wstring &person,
@@ -33,17 +34,14 @@ engine::Dialog::Dialog(
 void engine::Dialog::onStart(engine::Entity &entity) {
   Printable::onStart(entity);
 
-  auto interactive = std::make_unique<Interactive>();
-  auto chan = interactive->getChannel();
+  listen<MouseInput::Event>(Constants::MouseChannel, getMouseListener(*this));
 
-  entity.addComponent(std::move(interactive), this);
-
-  listen("page_scroll_begin", [this, chan](const auto &msg) {
-    notifyChannel(chan, Interactive::Event::Disable);
+  listen("page_scroll_begin", [this](const auto &msg) {
+    captureMouseEvents(false);
   });
 
-  listen("page_scroll_end", [this, chan](const auto &msg) {
-    notifyChannel(chan, Interactive::Event::Enable);
+  listen("page_scroll_end", [this](const auto &msg) {
+    captureMouseEvents(true);
   });
 }
 

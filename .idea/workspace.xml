@@ -12,21 +12,30 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="implemented mouse hover events for the new architecture">
-      <change afterPath="$PROJECT_DIR$/engine/Scene.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/Scene.hpp" afterDir="false" />
+    <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/engine/Components/MouseInput.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/Components/MouseInput.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/Constants.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/Utilities/function.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/AnimatedMesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/AnimatedMesh.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/AnimatedMesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/AnimatedMesh.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Components/Component.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Component.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Components/Component.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Component.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Mesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Mesh.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Interactive.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Interactive.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/KeyboardInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/KeyboardInput.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/KeyboardInput.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/KeyboardInput.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Dialog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Dialog.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Dialog.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Dialog.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Page/PageController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/PageController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Page/PageController.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/PageController.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Paragraph.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Paragraph.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Printable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Engine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Engine.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Entity.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Entity.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/System.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/System.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/System.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Utilities/General.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Utilities/General.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -177,28 +186,17 @@
       <workItem from="1571725335994" duration="1591000" />
       <workItem from="1571761936195" duration="2547000" />
       <workItem from="1571777104664" duration="2005000" />
-      <workItem from="1571837475319" duration="10342000" />
-    </task>
-    <task id="LOCAL-00006" summary="added resource loader">
-      <created>1563819145511</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1563819145511</updated>
-    </task>
-    <task id="LOCAL-00007" summary="added sound effects">
-      <created>1563867800248</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1563867800248</updated>
-    </task>
-    <task id="LOCAL-00008" summary="added moar sound effects">
-      <created>1563874730048</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1563874730048</updated>
+      <workItem from="1571837475319" duration="10381000" />
+      <workItem from="1571903325446" duration="755000" />
+      <workItem from="1571913948841" duration="9564000" />
+      <workItem from="1572022737012" duration="6291000" />
+      <workItem from="1572078527235" duration="1959000" />
+      <workItem from="1572092965872" duration="1617000" />
+      <workItem from="1572115033179" duration="802000" />
+      <workItem from="1572167112896" duration="10199000" />
+      <workItem from="1572268233828" duration="3788000" />
+      <workItem from="1572285416767" duration="287000" />
+      <workItem from="1572287539995" duration="1753000" />
     </task>
     <task id="LOCAL-00009" summary="maybe fixed build script for macos">
       <created>1563895033975</created>
@@ -522,7 +520,28 @@
       <option name="project" value="LOCAL" />
       <updated>1571828074391</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="load shaders">
+      <created>1571862001654</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1571862001654</updated>
+    </task>
+    <task id="LOCAL-00056" summary="Refactored">
+      <created>1571940883529</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1571940883529</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Added KeyboardInput component">
+      <created>1572037539669</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1572037539670</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -544,9 +563,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="added centered text printable" />
-    <MESSAGE value="finished text displacement effects" />
-    <MESSAGE value="added cursor change on hover" />
     <MESSAGE value="added preliminary support for line shift tween" />
     <MESSAGE value="created animation hierarchy to facilitate working with graphical transitions" />
     <MESSAGE value="fixed line shift animation" />
@@ -569,6 +585,9 @@
     <MESSAGE value="implemented mouse hover events for the new architecture" />
     <MESSAGE value="remove vertex buffer implementation for mesh" />
     <MESSAGE value="Refactored and cleaned up" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactored and cleaned up" />
+    <MESSAGE value="load shaders" />
+    <MESSAGE value="Refactored" />
+    <MESSAGE value="Added KeyboardInput component" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added KeyboardInput component" />
   </component>
 </project>

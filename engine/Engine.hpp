@@ -8,7 +8,6 @@
 #include "Components/AnimatedMesh.hpp"
 #include "Components/Collider.hpp"
 #include "Components/Component.hpp"
-#include "Components/Interactive.hpp"
 #include "Components/Mesh.hpp"
 #include "Components/Transition.hpp"
 #include "Components/Translations/Rotate.hpp"
@@ -31,5 +30,6 @@
 #include "Components/Page/TextEffect.hpp"
 #include "AudioSystem.hpp"
 #include "Game.hpp"
+#include "Constants.hpp"
 
 #endif //TYPEWRITER_GAEM_ENGINE_HPP

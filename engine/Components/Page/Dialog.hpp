@@ -6,10 +6,10 @@
 #define TYPEWRITER_GAEM_DIALOG_HPP
 
 #include "Printable.hpp"
-#include "../Interactive.hpp"
+#include "../MouseInput.hpp"
 
 namespace engine {
-class Dialog final : public Printable, public Interactive::Interface {
+class Dialog final : public Printable, public MouseInput::Helper {
 public:
     Dialog(
         const std::wstring &person,

@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "engine/Engine.hpp"
-
-#define DEBUG_BOUNDS
+#include "engine/Utilities/function.h"
 
 int main() {
   engine::DecisionNode sampleStory{
@@ -30,9 +29,14 @@ int main() {
   };
 
   auto pageController{std::make_unique<engine::PageController>(sampleStory)};
+  auto keyboardInput{std::make_unique<engine::KeyboardInput>(engine::Constants::KeyboardChannel)};
   auto rootEntity{std::make_unique<engine::Entity>()};
 
   rootEntity->addComponent(std::move(pageController));
+  rootEntity->addComponent(std::move(keyboardInput));
+
+  auto lam{[](int s) { return s; }};
+  static_assert(std::is_same_v<engine::lambda_detail::lambda_type<decltype(lam)>::arg<0>::type, int>);
 
   try {
     engine::Game game{std::move(rootEntity)};
