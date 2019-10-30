@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
       <config projectName="typewriter_gaem" targetName="typewriter_gaem" />
+      <config projectName="typewriter_gaem" targetName="tweeny-dummy" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -13,29 +13,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="58d49e20-87b4-4f8b-8ed1-b11d650182ef" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/engine/Components/MouseInput.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/Components/MouseInput.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/Constants.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/Utilities/function.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Component.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Component.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Component.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Component.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Interactive.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Interactive.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/KeyboardInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/KeyboardInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/KeyboardInput.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/KeyboardInput.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Dialog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Dialog.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Dialog.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Dialog.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/PageController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/PageController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/PageController.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/PageController.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Components/Page/Paragraph.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Paragraph.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/Components/Mesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Mesh.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/Components/Page/Printable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Components/Page/Printable.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Engine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Engine.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Entity.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Entity.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Entity.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/Utilities/General.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/Utilities/General.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -196,14 +176,8 @@
       <workItem from="1572167112896" duration="10199000" />
       <workItem from="1572268233828" duration="3788000" />
       <workItem from="1572285416767" duration="287000" />
-      <workItem from="1572287539995" duration="1753000" />
-    </task>
-    <task id="LOCAL-00009" summary="maybe fixed build script for macos">
-      <created>1563895033975</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1563895033975</updated>
+      <workItem from="1572287539995" duration="1775000" />
+      <workItem from="1572464239219" duration="4152000" />
     </task>
     <task id="LOCAL-00010" summary="typo">
       <created>1563895185206</created>
@@ -541,7 +515,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572037539670</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="changes">
+      <created>1572290480885</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1572290480886</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -563,7 +544,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="added preliminary support for line shift tween" />
     <MESSAGE value="created animation hierarchy to facilitate working with graphical transitions" />
     <MESSAGE value="fixed line shift animation" />
     <MESSAGE value="fixed debug bounds drawing" />
@@ -588,6 +568,7 @@
     <MESSAGE value="load shaders" />
     <MESSAGE value="Refactored" />
     <MESSAGE value="Added KeyboardInput component" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added KeyboardInput component" />
+    <MESSAGE value="changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="changes" />
   </component>
 </project>

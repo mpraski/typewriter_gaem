@@ -332,10 +332,8 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
   auto prevChar{sf::Utf32::decodeWide(mContents[mCurrentCharacter ? mCurrentCharacter - 1 : 0])};
   auto currChar{sf::Utf32::decodeWide(mContents[mCurrentCharacter])};
 
-  float x = 0.f;
-  float y = static_cast<float>(mModifiers.mFontSize);
-  float minX = static_cast<float>(mModifiers.mFontSize);
-  float minY = static_cast<float>(mModifiers.mFontSize);
+  float minX = 0.f;
+  float minY = 0.f;
   float maxX = 0.f;
   float maxY = 0.f;
 
@@ -365,6 +363,9 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
 
   mX += System::instance().mFont->getKerning(prevChar, currChar, mModifiers.mFontSize);
 
+  minX = std::min(minX, mX);
+  minY = std::min(minY, mY);
+
   // Handle special characters
   if ((currChar == L' ') || (currChar == L'\n') || (currChar == L'\t')) {
     switch (currChar) {
@@ -381,8 +382,8 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
         break;
     }
 
-    maxX = std::max(maxX, x);
-    maxY = std::max(maxY, y);
+    maxX = std::max(maxX, mX);
+    maxY = std::max(maxY, mY);
   } else {
     const auto &glyph{System::instance().mFont->getGlyph(currChar, mModifiers.mFontSize, mModifiers.mBold)};
 
@@ -393,16 +394,6 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
         glyph,
         mModifiers.mItalicShear
     );
-
-    float left = glyph.bounds.left;
-    float top = glyph.bounds.top;
-    float right = glyph.bounds.left + glyph.bounds.width;
-    float bottom = glyph.bounds.top + glyph.bounds.height;
-
-    minX = std::min(minX, x + left - mModifiers.mItalicShear * bottom);
-    maxX = std::max(maxX, x + right - mModifiers.mItalicShear * top);
-    minY = std::min(minY, y + top);
-    maxY = std::max(maxY, y + bottom);
 
     auto advance{glyph.advance + System::instance().mLetterSpacing + mModifiers.mLetterSpacingFactor};
 
@@ -433,13 +424,21 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
       );
     }
 
+    float left = glyph.bounds.left;
+    float top = glyph.bounds.top;
+    float right = glyph.bounds.left + glyph.bounds.width;
+    float bottom = glyph.bounds.top + glyph.bounds.height;
+
+    minX = std::min(minX, mX + left - mModifiers.mItalicShear * bottom);
+    maxX = std::max(maxX, mX + right - mModifiers.mItalicShear * top);
+    minY = std::min(minY, mY + top);
+    maxY = std::max(maxY, mY + bottom);
+
     mX += advance;
 
     AudioSystem::instance().playTypewriterClick();
   }
 
-  mBounds.left = minX;
-  mBounds.top = minY;
   mBounds.width = maxX - minX;
   mBounds.height = maxY - minY;
 

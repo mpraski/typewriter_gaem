@@ -2,13 +2,14 @@
 // Created by marcin on 9/25/19.
 //
 
+#include <iostream>
 #include "Mesh.hpp"
 
 engine::Mesh::Mesh()
     : Component{},
       mBounds{},
       mVertices{sf::Triangles},
-      mDebugBoundsVertices{sf::Triangles},
+      mDebugBoundsVertices{sf::Lines},
       mShader{},
       mTexture{},
       mBlendMode{sf::BlendAdd} {
