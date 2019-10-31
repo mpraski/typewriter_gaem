@@ -11,15 +11,25 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <typeindex>
+#include <boost/log/sources/record_ostream.hpp>
 
 namespace engine::gen {
+template<typename E, typename T, typename ... Ts>
+inline void to_stream(std::basic_ostream<E> &os, T &&t, Ts &&... ts) {
+  os << std::forward<T>(t);
+  (void) std::initializer_list<int>{0, (void(os << std::forward<Ts>(ts)), 0)...};
+}
+
+template<typename E, typename T, typename ... Ts>
+inline void to_stream(boost::log::basic_record_ostream<E> &os, T &&t, Ts &&... ts) {
+  os << std::forward<T>(t);
+  (void) std::initializer_list<int>{0, (void(os << std::forward<Ts>(ts)), 0)...};
+}
+
 template<typename T, typename ... Ts>
 auto str(T &&t, Ts &&... ts) {
   std::ostringstream os;
-
-  os << std::forward<T>(t);
-  (void) std::initializer_list<int>{0, (void(os << std::forward<Ts>(ts)), 0)...};
-
+  to_stream(os, std::forward<T>(t), std::forward<Ts>(ts)...);
   return os.str();
 }
 

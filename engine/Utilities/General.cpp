@@ -2,7 +2,7 @@
 // Created by marcin on 10/21/19.
 //
 
-#import "General.hpp"
+#include "General.hpp"
 
 sf::Uint64 engine::gen::next_uid() {
   static sf::Uint64 uid{1u};

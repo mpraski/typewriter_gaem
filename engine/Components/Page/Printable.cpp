@@ -13,7 +13,7 @@ engine::Printable::Printable(
     mNeedsUpdate{false},
     mMaxWidth{System::instance().effectivePageWidth()},
     mX{},
-    mY{},
+    mY{static_cast<float>(System::instance().mFontSize)},
     mCurrentCharacter{},
     mContents{std::move(contents)},
     mActiveEffects{},
@@ -160,6 +160,7 @@ void engine::Printable::preprocess() {
   }
 
   mBounds = sf::FloatRect{sf::Vector2f{}, sf::Vector2f{mMaxWidth, textHeight}};
+  mActiveEffects.clear();
 }
 
 float engine::Printable::measureText(size_t begin, size_t end) {
@@ -219,9 +220,9 @@ engine::Printable::EffectIt engine::Printable::findEffect(TextEffect::Kind kind)
 float engine::Printable::displacementSpacing(engine::Printable::Displacement d, float width) const {
   switch (d) {
     case Displacement::Center:
-      return mMaxWidth / 2.f - System::instance().mMarginHorizontal * 1.5f - width / 2.f;
+      return mMaxWidth / 2.f - width / 2.f;
     case Displacement::Right:
-      return mMaxWidth - 2.5f * System::instance().mMarginHorizontal - width;
+      return mMaxWidth - width;
     default:
       throw std::runtime_error("Wrong displacement value");
   }
@@ -230,7 +231,6 @@ float engine::Printable::displacementSpacing(engine::Printable::Displacement d, 
 void engine::Printable::applyTextEffects(size_t idx) {
   loadEffects(idx);
 
-  mModifiers.mTypingDelayFactor = static_cast<float>(System::instance().mTypingDelay);
   mModifiers.mFontSize = System::instance().mFontSize;
 
   for (const auto &e : mActiveEffects) {
@@ -251,7 +251,7 @@ void engine::Printable::applyTextEffects(size_t idx) {
         mModifiers.mUppercase = true;
         break;
       case TextEffect::Kind::DELAY:
-        mModifiers.mTypingDelayFactor = static_cast<float>(System::instance().mTypingDelay) * e.mDelayFactor;
+        mModifiers.mTypingDelayFactor = e.mDelayFactor;
         break;
       case TextEffect::Kind::SPACING:
         mModifiers.mLetterSpacingFactor = e.mLetterSpacingFactor;
@@ -288,6 +288,7 @@ void engine::Printable::removeTextEffects(size_t idx) {
   mModifiers.mDisplacement = Displacement::None;
   mModifiers.mItalicShear = 0.f;
   mModifiers.mLetterSpacingFactor = 1.f;
+  mModifiers.mTypingDelayFactor = 1.f;
   mModifiers.mTextColor = sf::Color::White;
 }
 
@@ -319,7 +320,8 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
       }
       return;
     case State::Printing:
-      if (!entity.hasElapsed(sf::milliseconds(System::instance().mTypingDelay))) {
+      if (!entity.hasElapsed(
+          sf::milliseconds(static_cast<float>(System::instance().mTypingDelay) * mModifiers.mTypingDelayFactor))) {
         return;
       }
   }
@@ -331,11 +333,6 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
 
   auto prevChar{sf::Utf32::decodeWide(mContents[mCurrentCharacter ? mCurrentCharacter - 1 : 0])};
   auto currChar{sf::Utf32::decodeWide(mContents[mCurrentCharacter])};
-
-  float minX = 0.f;
-  float minY = 0.f;
-  float maxX = 0.f;
-  float maxY = 0.f;
 
   // Skip to avoid glitches
   if (currChar == L'\r')
@@ -350,7 +347,7 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
     if (mModifiers.mDisplacementModeEnd != mCurrentCharacter - 1) {
       mY += System::instance().mLineSpacing;
     }
-    mX = System::instance().mMarginHorizontal + spacing;
+    mX = spacing;
     applyTextEffects(mCurrentCharacter);
     mModifiers.mDisplacementModeEndPrev = mModifiers.mDisplacementModeEnd;
   }
@@ -358,13 +355,10 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
   if (mModifiers.mDisplacementModeEnd && mCurrentCharacter == mModifiers.mDisplacementModeEnd) {
     mModifiers.mDisplacementModeEnd = 0;
     mY += System::instance().mLineSpacing;
-    mX = System::instance().mMarginHorizontal;
+    mX = 0.f;
   }
 
   mX += System::instance().mFont->getKerning(prevChar, currChar, mModifiers.mFontSize);
-
-  minX = std::min(minX, mX);
-  minY = std::min(minY, mY);
 
   // Handle special characters
   if ((currChar == L' ') || (currChar == L'\n') || (currChar == L'\t')) {
@@ -381,9 +375,6 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
       default:
         break;
     }
-
-    maxX = std::max(maxX, mX);
-    maxY = std::max(maxY, mY);
   } else {
     const auto &glyph{System::instance().mFont->getGlyph(currChar, mModifiers.mFontSize, mModifiers.mBold)};
 
@@ -424,23 +415,10 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
       );
     }
 
-    float left = glyph.bounds.left;
-    float top = glyph.bounds.top;
-    float right = glyph.bounds.left + glyph.bounds.width;
-    float bottom = glyph.bounds.top + glyph.bounds.height;
-
-    minX = std::min(minX, mX + left - mModifiers.mItalicShear * bottom);
-    maxX = std::max(maxX, mX + right - mModifiers.mItalicShear * top);
-    minY = std::min(minY, mY + top);
-    maxY = std::max(maxY, mY + bottom);
-
     mX += advance;
 
     AudioSystem::instance().playTypewriterClick();
   }
-
-  mBounds.width = maxX - minX;
-  mBounds.height = maxY - minY;
 
   mTexture = &System::instance().mFont->getTexture(mModifiers.mFontSize);
 
@@ -453,7 +431,7 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
 void engine::Printable::redraw() {
   mVertices.clear();
 
-  mX = System::instance().mMarginHorizontal;
+  mX = 0.f;
   mY = System::instance().mMarginVertical + static_cast<float>(mModifiers.mFontSize);
 
   sf::Uint32 currChar, prevChar{sf::Utf32::decodeWide(mContents[0])};
@@ -473,7 +451,7 @@ void engine::Printable::redraw() {
       if (mModifiers.mDisplacementModeEnd != i - 1) {
         mY += System::instance().mLineSpacing;
       }
-      mX = System::instance().mMarginHorizontal + spacing;
+      mX = spacing;
       applyTextEffects(i);
       mModifiers.mDisplacementModeEndPrev = mModifiers.mDisplacementModeEnd;
     }
@@ -481,7 +459,7 @@ void engine::Printable::redraw() {
     if (mModifiers.mDisplacementModeEnd && mCurrentCharacter == mModifiers.mDisplacementModeEnd) {
       mModifiers.mDisplacementModeEnd = 0;
       mY += System::instance().mLineSpacing;
-      mX = System::instance().mMarginHorizontal;
+      mX = 0.f;
     }
 
     mX += System::instance().mFont->getKerning(prevChar, currChar, mModifiers.mFontSize);
@@ -496,9 +474,7 @@ void engine::Printable::redraw() {
           break;
         case L'\n':
           mY += System::instance().mLineSpacing;
-          mX = System::instance().mMarginHorizontal;
-          break;
-        default:
+          mX = 0.f;
           break;
       }
     } else {
@@ -553,7 +529,7 @@ void engine::Printable::redraw() {
 
 void engine::Printable::newLine() {
   mY += System::instance().mLineSpacing;
-  mX = System::instance().mMarginHorizontal;
+  mX = 0.f;
 
   notifyChannel("new_line");
 }

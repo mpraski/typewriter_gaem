@@ -21,6 +21,7 @@
 #include "Utilities/NonMovable.h"
 #include "EventBus/EventBus.hpp"
 #include "EventBus/SynchronousListeners.h"
+#include "Utilities/Logger.hpp"
 
 namespace fs = boost::filesystem;
 namespace pt = boost::property_tree;
@@ -71,6 +72,11 @@ public:
 
     static auto &bus() {
       static EventBus<SynchronousListeners> instance;
+      return instance;
+    }
+
+    static auto &logger() {
+      static Logger instance;
       return instance;
     }
 

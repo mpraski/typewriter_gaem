@@ -40,12 +40,13 @@ void engine::PageController::onStart(engine::Entity &entity) {
   listen("printable_end", [&, this](const auto &msg) {
     if (std::next(mCurrentPrintable) != std::end(mPrintableIDs)) {
       mCurrentPrintable = std::next(mCurrentPrintable);
-      notifyChannel("printable_selection", *mCurrentPrintable);
+      notifyChannel<sf::Uint64>("printable_selection", *mCurrentPrintable);
     }
   });
 
   listen<sf::Keyboard::Key>(Constants::KeyboardChannel, getKeyboardListener());
 
+  System::logger().log("adding printables");
   addContents(entity, mDecisionNode.getContents());
 
   notifyChannel("printable_selection", mPrintableIDs[0]);
@@ -62,7 +63,7 @@ bool engine::PageController::shouldScroll() const {
 std::unique_ptr<engine::Printable> engine::PageController::fromTemplate(const engine::PrintableTemplate &tpl) {
   switch (tpl.kind) {
     case PrintableTemplate::Kind::Paragraph:
-      return std::make_unique<Paragraph>(tpl.text1, tpl.effects, true);
+      return std::make_unique<Paragraph>(tpl.text1, tpl.effects, false);
     case PrintableTemplate::Kind::Dialog:
       return std::make_unique<Dialog>(tpl.text1, tpl.text2);
   }
