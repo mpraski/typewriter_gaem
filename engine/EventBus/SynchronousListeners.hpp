@@ -2,8 +2,8 @@
 // Created by Marcin Praski on 22.10.19.
 //
 
-#ifndef TYPEWRITER_GAEM_SYNCHRONOUSLISTENERS_H
-#define TYPEWRITER_GAEM_SYNCHRONOUSLISTENERS_H
+#ifndef TYPEWRITER_GAEM_SYNCHRONOUSLISTENERS_HPP
+#define TYPEWRITER_GAEM_SYNCHRONOUSLISTENERS_HPP
 
 #include <vector>
 #include <functional>
@@ -41,4 +41,4 @@ private:
     std::vector<std::pair<callback_id_t, callback_t>> mCallbacks;
 };
 }
-#endif //TYPEWRITER_GAEM_SYNCHRONOUSLISTENERS_H
+#endif //TYPEWRITER_GAEM_SYNCHRONOUSLISTENERS_HPP

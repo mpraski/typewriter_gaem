@@ -20,7 +20,7 @@
 #include "Utilities/NonCopyable.h"
 #include "Utilities/NonMovable.h"
 #include "EventBus/EventBus.hpp"
-#include "EventBus/SynchronousListeners.h"
+#include "EventBus/SynchronousListeners.hpp"
 #include "EventBus/QueuedListeners.hpp"
 #include "Utilities/Logger.hpp"
 

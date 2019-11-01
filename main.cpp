@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include "engine/Engine.hpp"
-#include "engine/Utilities/function.h"
 
 int main() {
   engine::DecisionNode sampleStory{
@@ -53,15 +52,11 @@ int main() {
   rootEntity->addComponent(std::move(keyboardInput));
   rootEntity->addComponent(std::move(mouseInput));
 
-  auto lam{[](int s) { return s; }};
-  static_assert(std::is_same_v<engine::lambda_detail::lambda_type<decltype(lam)>::arg<0>::type, int>);
-
   try {
     engine::Game game{std::move(rootEntity)};
-
     game.run();
   } catch (std::exception &e) {
-    throw std::runtime_error(e.what());
+    engine::System::logger().log("That's a penis! ", e.what());
   }
 
   return 0;
