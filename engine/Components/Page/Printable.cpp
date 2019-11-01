@@ -3,6 +3,7 @@
 //
 
 #include "Printable.hpp"
+#include "../Translations/TranslateVertical.hpp"
 #include "../../Entity.hpp"
 
 engine::Printable::Printable(
@@ -299,11 +300,23 @@ void engine::Printable::onStart(engine::Entity &entity) {
     }
   });
 
-  listen("page_scroll_begin", [this](const auto &msg) {
+  listen("page_scroll_begin", [&, this](const auto &msg) {
     mState = State::Scrolling;
+    entity.addComponent(
+        std::make_unique<TranslateVertical>(
+            TranslateVertical::from(0.f)
+                .to(-System::instance().mLineSpacing)
+                .during(60)
+                .via(tweeny::easing::quadraticInOut)
+                .onFinish([this]() {
+                  notifyChannel(getChannel());
+                })
+        ), this
+    );
   });
 
-  listen("page_scroll_end", [this](const auto &msg) {
+  listen(getChannel(), [this](const auto &msg) {
+    System::logger().log("rollback");
     mState.rollback();
   });
 }
@@ -314,10 +327,7 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
     case State::Pending:
       return;
     case State::Complete:
-      if (mNeedsUpdate) {
-        redraw();
-        mNeedsUpdate = false;
-      }
+      redraw();
       return;
     case State::Printing:
       if (!entity.hasElapsed(
@@ -430,9 +440,10 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
 
 void engine::Printable::redraw() {
   mVertices.clear();
+  mActiveEffects.clear();
 
   mX = 0.f;
-  mY = System::instance().mMarginVertical + static_cast<float>(mModifiers.mFontSize);
+  mY = static_cast<float>(System::instance().mFontSize);
 
   sf::Uint32 currChar, prevChar{sf::Utf32::decodeWide(mContents[0])};
   for (size_t i = 0; i < mContents.length(); ++i) {

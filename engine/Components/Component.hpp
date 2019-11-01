@@ -62,22 +62,19 @@ protected:
       return target;
     }
 
-    template<class E = std::true_type, class F>
+    template<typename E = std::true_type, typename F>
     void listen(const std::string &channel, F &&cb) const {
       System::bus().listen<E>(channel, gen::to_uintptr(this), std::forward<F>(cb));
     }
 
-    template<class E>
+    template<typename E>
     void notify(E &&event) const {
       System::bus().notify(std::forward<E>(event));
     }
 
-    template<class E = std::true_type>
-    void notifyChannel(const std::string &channel, const E &event = gen::default_object<E>()) const {
-      System::bus().notify(channel, event);
-    }
+    void notifyChannel(const std::string &channel) const;
 
-    template<class E>
+    template<typename E>
     void notifyChannel(const std::string &channel, E &&event) const {
       System::bus().notify(channel, std::forward<E>(event));
     }

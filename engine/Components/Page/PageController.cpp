@@ -5,12 +5,13 @@
 #include "PageController.hpp"
 #include "../../Entity.hpp"
 #include "../../Engine.hpp"
-#include <iostream>
 
 engine::PageController::PageController(DecisionNode n)
     : Component{},
       mNextY{},
+      mCurrentY{},
       mPrintableIDs{},
+      mCurrentPrintable{},
       mDecisionNode{std::move(n)} {
   assert(!mDecisionNode.getContents().empty());
 }
@@ -23,33 +24,23 @@ void engine::PageController::onStart(engine::Entity &entity) {
   listen("new_line", [&, this](const auto &msg) {
     if (shouldScroll()) {
       notifyChannel("page_scroll_begin");
-      entity.addComponent(
-          std::make_unique<TranslateVertical>(
-              TranslateVertical::from(0.f)
-                  .to(-System::instance().mLineSpacing)
-                  .during(60)
-                  .via(tweeny::easing::quadraticInOut)
-                  .onFinish([this]() {
-                    notifyChannel("page_scroll_end");
-                  })
-          )
-      );
     }
   });
 
   listen("printable_end", [&, this](const auto &msg) {
     if (std::next(mCurrentPrintable) != std::end(mPrintableIDs)) {
       mCurrentPrintable = std::next(mCurrentPrintable);
-      notifyChannel<sf::Uint64>("printable_selection", *mCurrentPrintable);
+      mCurrentY += entity.getComponent<Printable>(*mCurrentPrintable)->localBounds().height;
+      notifyChannel("printable_selection", *mCurrentPrintable);
     }
   });
 
-  listen<sf::Keyboard::Key>(Constants::KeyboardChannel, getKeyboardListener());
-
-  System::logger().log("adding printables");
   addContents(entity, mDecisionNode.getContents());
 
-  notifyChannel("printable_selection", mPrintableIDs[0]);
+  entity.nextTick([this]() {
+    mCurrentPrintable = std::begin(mPrintableIDs);
+    notifyChannel("printable_selection", *mCurrentPrintable);
+  });
 }
 
 void engine::PageController::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
@@ -57,7 +48,7 @@ void engine::PageController::onEntityUpdate(engine::Entity &entity, sf::Time dt)
 }
 
 bool engine::PageController::shouldScroll() const {
-  return mNextY >= System::instance().effectivePageHeight();
+  return mCurrentY >= System::instance().effectivePageHeight();
 }
 
 std::unique_ptr<engine::Printable> engine::PageController::fromTemplate(const engine::PrintableTemplate &tpl) {
@@ -78,8 +69,4 @@ void engine::PageController::addContents(Entity &entity, const std::vector<Print
 
     entity.addComponent(std::move(printable));
   }
-}
-
-void engine::PageController::onKey(sf::Keyboard::Key key) {
-  std::cout << "key press: " << key << std::endl;
 }

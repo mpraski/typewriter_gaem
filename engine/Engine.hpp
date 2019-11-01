@@ -20,6 +20,8 @@
 #include "Components/Page/PageController.hpp"
 #include "Components/Page/Paragraph.hpp"
 #include "Components/Page/Printable.hpp"
+#include "Components/KeyboardInput.hpp"
+#include "Components/MouseInput.hpp"
 #include "EventBus/EventBus.hpp"
 #include "EventBus/Listeners.hpp"
 #include "EventBus/QueuedListeners.hpp"

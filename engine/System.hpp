@@ -21,6 +21,7 @@
 #include "Utilities/NonMovable.h"
 #include "EventBus/EventBus.hpp"
 #include "EventBus/SynchronousListeners.h"
+#include "EventBus/QueuedListeners.hpp"
 #include "Utilities/Logger.hpp"
 
 namespace fs = boost::filesystem;

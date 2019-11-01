@@ -8,6 +8,6 @@
     "margin_vertical": 20.0,
     "letter_spacing_factor": 1.0,
     "line_spacing_factor": 1.0,
-    "typing_delay": 100
+    "typing_delay": 50
   }
 }

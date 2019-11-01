@@ -11,6 +11,8 @@ engine::Entity::Entity()
       mParent{},
       mChildren{},
       mComponents{},
+      mQueuedComponents{},
+      mDeferred{},
       mMeshes{},
       mComponentCache{},
       mClock{},
@@ -109,6 +111,24 @@ void engine::Entity::updateSelf(sf::Time dt) {
       ++it;
     }
   }
+
+  while (!mQueuedComponents.empty()) {
+    auto comp{std::move(mQueuedComponents.front())};
+    mQueuedComponents.pop();
+
+    comp->onStart(*this);
+#ifdef DEBUG
+    auto &idx{mComponentCache.get<IndexByName>()};
+      if (idx.find(comp->getName()) != std::end(idx)) {
+        System::logger().log("duplicate component name: ", comp->getName());
+      }
+#endif
+    mComponentCache.get<IndexByUID>().insert(comp.get());
+    mComponents.push_back(std::move(comp));
+  }
+
+  for (const auto &d : mDeferred) d();
+  mDeferred.clear();
 
   if (mComponents.empty()) {
     destroy();

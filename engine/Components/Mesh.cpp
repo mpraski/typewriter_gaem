@@ -29,9 +29,11 @@ engine::Component::Kind engine::Mesh::kind() const {
 }
 
 void engine::Mesh::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+  states.transform *= getTransform();
+
 #ifdef DEBUG_BOUNDS
   mDebugBoundsVertices.clear();
-  gen::addRect(mDebugBoundsVertices, globalBounds());
+  gen::addRect(mDebugBoundsVertices, localBounds());
 #endif
 
   if (mShader) {

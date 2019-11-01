@@ -28,6 +28,7 @@ class Entity final : public Identifiable,
     };
 public:
     using Ptr = std::unique_ptr<Entity>;
+    using Deferred = std::function<void()>;
 
     Entity();
 
@@ -41,6 +42,11 @@ public:
 
     Ptr removeChild(const Entity &entity);
 
+    template<typename Fun>
+    void nextTick(Fun &&fun) {
+      mDeferred.push_back(std::forward<Fun>(fun));
+    }
+
     template<typename T, typename U = Component>
     void addComponent(std::unique_ptr<T> component, U *targetComponent = nullptr) {
       if constexpr(std::is_convertible_v<T *, Mesh *>) {
@@ -51,15 +57,7 @@ public:
         c->mTargetComponent = targetComponent;
         c->mTargetComponent->addDependentComponent(c->getUID());
       }
-#ifdef DEBUG
-      auto &idx{mComponentCache.get<IndexByName>()};
-      if (idx.find(c->getName()) != std::end(idx)) {
-        // log message about duplicated named component
-      }
-#endif
-      c->onStart(*this);
-      mComponentCache.get<IndexByUID>().insert(c.get());
-      mComponents.push_back(std::move(c));
+      mQueuedComponents.push(std::move(c));
     }
 
     template<typename T = Component>
@@ -136,6 +134,8 @@ private:
 
     std::vector<Ptr> mChildren;
     std::vector<ComponentPtr> mComponents;
+    std::queue<ComponentPtr> mQueuedComponents;
+    std::vector<Deferred> mDeferred;
     std::vector<Mesh *> mMeshes;
 
     boost::multi_index_container<

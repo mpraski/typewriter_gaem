@@ -54,5 +54,5 @@ void engine::Dialog::onHoverEnd() {
 }
 
 void engine::Dialog::onClick() {
-
+  notifyChannel("dialog_selection", getUID());
 }

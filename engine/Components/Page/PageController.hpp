@@ -12,10 +12,9 @@
 #include "Dialog.hpp"
 #include "../../System.hpp"
 #include "../Translations/TranslateVertical.hpp"
-#include "../KeyboardInput.hpp"
 
 namespace engine {
-class PageController final : public Component, public KeyboardInput::Helper {
+class PageController final : public Component {
 public:
     explicit PageController(DecisionNode n);
 
@@ -24,9 +23,6 @@ public:
     void onStart(Entity &entity) final;
 
     void onEntityUpdate(Entity &entity, sf::Time dt) final;
-
-protected:
-    void onKey(sf::Keyboard::Key key) override;
 
 private:
     bool shouldScroll() const;
@@ -37,8 +33,9 @@ private:
 
 private:
     float mNextY;
+    float mCurrentY;
     std::vector<sf::Uint64> mPrintableIDs;
-    std::vector<sf::Uint64>::const_iterator mCurrentPrintable;
+    std::vector<sf::Uint64>::iterator mCurrentPrintable;
     DecisionNode mDecisionNode;
 };
 }

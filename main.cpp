@@ -24,16 +24,34 @@ int main() {
               L"Conway",
               L"is this a KR0 ripoff?"
           },
+          engine::PrintableTemplate{
+              L"Conway",
+              L"is this a KR0 ripoff?"
+          },
+          engine::PrintableTemplate{
+              L"Conway",
+              L"is this a KR0 ripoff?"
+          },
+          engine::PrintableTemplate{
+              L"Conway",
+              L"is this a KR0 ripoff?"
+          },
+          engine::PrintableTemplate{
+              L"Conway",
+              L"is this a KR0 ripoff?"
+          },
       },
       {}
   };
 
   auto pageController{std::make_unique<engine::PageController>(sampleStory)};
   auto keyboardInput{std::make_unique<engine::KeyboardInput>(engine::Constants::KeyboardChannel)};
+  auto mouseInput{std::make_unique<engine::MouseInput>(engine::Constants::MouseChannel)};
   auto rootEntity{std::make_unique<engine::Entity>()};
 
   rootEntity->addComponent(std::move(pageController));
   rootEntity->addComponent(std::move(keyboardInput));
+  rootEntity->addComponent(std::move(mouseInput));
 
   auto lam{[](int s) { return s; }};
   static_assert(std::is_same_v<engine::lambda_detail::lambda_type<decltype(lam)>::arg<0>::type, int>);
