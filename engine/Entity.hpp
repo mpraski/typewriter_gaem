@@ -36,14 +36,12 @@ public:
 
     void update(sf::Time dt);
 
-    void destroy();
-
     void addChild(Ptr ptr);
 
     Ptr removeChild(const Entity &entity);
 
     template<typename Fun>
-    void nextTick(Fun &&fun) {
+    void defer(Fun &&fun) {
       mDeferred.push_back(std::forward<Fun>(fun));
     }
 
@@ -114,7 +112,7 @@ public:
 
     bool destroyed() const noexcept;
 
-    const std::string &getChannel() const;
+    const std::string &getChannel() const noexcept;
 
 private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
@@ -122,6 +120,10 @@ private:
     void updateChildren(sf::Time dt);
 
     void drawChildren(sf::RenderTarget &target, sf::RenderStates states) const;
+
+    inline void addQueuedComponents();
+
+    inline void callDeferred();
 
     virtual void updateSelf(sf::Time dt);
 

@@ -52,7 +52,7 @@ if (BOOST_FOUND)
     message(STATUS "Boost_LIBRARIES: ${Boost_LIBRARIES}")
     message(STATUS "---------------------")
 
-    target_include_directories(typewriter_gaem PRIVATE ${Boost_INCLUDE_DIRS})
+    include_directories(${Boost_INCLUDE_DIRS})
     target_link_libraries(typewriter_gaem ${Boost_LIBRARIES})
 
     # multithreaded boost linking on MacOS fuckery fix

@@ -37,7 +37,7 @@ void engine::PageController::onStart(engine::Entity &entity) {
 
   addContents(entity, mDecisionNode.getContents());
 
-  entity.nextTick([this]() {
+  entity.defer([this]() {
     mCurrentPrintable = std::begin(mPrintableIDs);
     notifyChannel("printable_selection", *mCurrentPrintable);
   });

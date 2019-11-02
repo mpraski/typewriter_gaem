@@ -43,10 +43,10 @@ int main() {
       {}
   };
 
+  auto rootEntity{std::make_unique<engine::Entity>()};
   auto pageController{std::make_unique<engine::PageController>(sampleStory)};
   auto keyboardInput{std::make_unique<engine::KeyboardInput>(engine::Constants::KeyboardChannel)};
   auto mouseInput{std::make_unique<engine::MouseInput>(engine::Constants::MouseChannel)};
-  auto rootEntity{std::make_unique<engine::Entity>()};
 
   rootEntity->addComponent(std::move(pageController));
   rootEntity->addComponent(std::move(keyboardInput));

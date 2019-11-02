@@ -21,7 +21,10 @@ engine::Entity::Entity()
 }
 
 engine::Entity::~Entity() {
-  destroy();
+  for (auto &c : mComponents) {
+    c->markDestroyed();
+  }
+  mDestroyed = true;
 }
 
 void engine::Entity::addChild(Ptr entity) {
@@ -73,13 +76,6 @@ void engine::Entity::update(sf::Time dt) {
   updateChildren(dt);
 }
 
-void engine::Entity::destroy() {
-  for (auto &c : mComponents) {
-    c->markDestroyed();
-  }
-  mDestroyed = true;
-}
-
 void engine::Entity::updateSelf(sf::Time dt) {
   for (auto it{std::begin(mComponents)}; it != std::end(mComponents);) {
     if ((*it)->destroyed()) {
@@ -112,27 +108,11 @@ void engine::Entity::updateSelf(sf::Time dt) {
     }
   }
 
-  while (!mQueuedComponents.empty()) {
-    auto comp{std::move(mQueuedComponents.front())};
-    mQueuedComponents.pop();
+  addQueuedComponents();
 
-    comp->onStart(*this);
-#ifdef DEBUG
-    auto &idx{mComponentCache.get<IndexByName>()};
-      if (idx.find(comp->getName()) != std::end(idx)) {
-        System::logger().log("duplicate component name: ", comp->getName());
-      }
-#endif
-    mComponentCache.get<IndexByUID>().insert(comp.get());
-    mComponents.push_back(std::move(comp));
-  }
+  callDeferred();
 
-  for (const auto &d : mDeferred) d();
-  mDeferred.clear();
-
-  if (mComponents.empty()) {
-    destroy();
-  }
+  if (mComponents.empty()) mDestroyed = true;
 }
 
 void engine::Entity::drawSelf(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -168,6 +148,30 @@ void engine::Entity::draw(sf::RenderTarget &target, sf::RenderStates states) con
   mSinceLastUpdate += elapsed;
 }
 
-const std::string &engine::Entity::getChannel() const {
+const std::string &engine::Entity::getChannel() const noexcept {
   return mChannel;
+}
+
+void engine::Entity::addQueuedComponents() {
+  while (!mQueuedComponents.empty()) {
+    auto comp{std::move(mQueuedComponents.front())};
+    mQueuedComponents.pop();
+
+    comp->onStart(*this);
+#ifdef DEBUG
+    auto &idx{mComponentCache.get<IndexByName>()};
+      if (idx.find(comp->getName()) != std::end(idx)) {
+        System::logger().log("duplicate component name: ", comp->getName());
+      }
+#endif
+    mComponentCache.get<IndexByUID>().insert(comp.get());
+    mComponents.push_back(std::move(comp));
+  }
+}
+
+void engine::Entity::callDeferred() {
+  if (!mDeferred.empty()) {
+    for (const auto &d : mDeferred) d();
+    mDeferred.clear();
+  }
 }

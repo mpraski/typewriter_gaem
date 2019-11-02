@@ -20,21 +20,21 @@ public:
       return audioSystem;
     }
 
-    void playTypewriterClick() const;
+    void playRandom(const std::string &soundCategory) const;
 
-    void playTypewriterSpace() const;
+    void play(const std::string &soundCategory, const std::string &soundName) const;
+
+    void play(const std::string &soundName) const;
 
 private:
     AudioSystem();
 
-    void playCached(const std::string &key, const sf::SoundBuffer &buf) const;
-
 private:
-    const System::ResourcePack<sf::SoundBuffer> &mTypewriterClicks;
-    mutable System::ResourcePack<sf::Sound> mSoundCache;
+    mutable std::unordered_map<size_t, sf::Sound> mSoundCache;
     std::default_random_engine mRandEngine;
     std::uniform_int_distribution<unsigned> mRandDist;
     std::function<unsigned()> mRandFun;
+    boost::hash<std::string> mHash;
 };
 }
 

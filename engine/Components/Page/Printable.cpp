@@ -319,6 +319,8 @@ void engine::Printable::onStart(engine::Entity &entity) {
     System::logger().log("rollback");
     mState.rollback();
   });
+
+  mTexture = &System::instance().mFont->getTexture(mModifiers.mFontSize);
 }
 
 void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
@@ -427,10 +429,8 @@ void engine::Printable::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
 
     mX += advance;
 
-    AudioSystem::instance().playTypewriterClick();
+    AudioSystem::instance().playRandom("typewriter_clicks");
   }
-
-  mTexture = &System::instance().mFont->getTexture(mModifiers.mFontSize);
 
   if (++mCurrentCharacter == mContents.length()) {
     mState = State::Complete;
@@ -534,8 +534,6 @@ void engine::Printable::redraw() {
     prevChar = currChar;
     removeTextEffects(i);
   }
-
-  mTexture = &System::instance().mFont->getTexture(mModifiers.mFontSize);
 }
 
 void engine::Printable::newLine() {
