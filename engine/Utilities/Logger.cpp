@@ -4,13 +4,16 @@
 
 #include "Logger.hpp"
 
-engine::Logger::Logger() : core{logging::core::get()} {
-  addStreamSink();
+engine::Logger::Logger() : mLogger{} {
+  std::call_once(mSetupFlag, []() {
+    auto core{logging::core::get()};
+    core->add_global_attribute("LineID", logging::attributes::counter<unsigned int>(1));
+    core->add_global_attribute("TimeStamp", logging::attributes::local_clock());
+    addStreamSink();
 #ifdef DEBUG
-  addFileSink();
+    addFileSink();
 #endif
-  core->add_global_attribute("LineID", logging::attributes::counter<unsigned int>(1));
-  core->add_global_attribute("TimeStamp", logging::attributes::local_clock());
+  });
 }
 
 void engine::Logger::addStreamSink() {
@@ -25,7 +28,15 @@ void engine::Logger::addStreamSink() {
   // The backend requires synchronization in the frontend.
   typedef sinks::synchronous_sink<sinks::text_ostream_backend> sink_t;
   boost::shared_ptr<sink_t> sink(new sink_t(backend));
-  core->add_sink(sink);
+  sink->set_formatter(
+      expr::stream
+          << expr::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y.%m.%d-%H:%M:%S-UTC")
+          << " ["
+          << logging::trivial::severity
+          << "]: "
+          << expr::smessage
+  );
+  logging::core::get()->add_sink(sink);
 }
 
 void engine::Logger::addFileSink() {
@@ -42,5 +53,5 @@ void engine::Logger::addFileSink() {
   typedef sinks::synchronous_sink<sinks::text_file_backend> sink_t;
   boost::shared_ptr<sink_t> sink(new sink_t(backend));
 
-  core->add_sink(sink);
+  logging::core::get()->add_sink(sink);
 }

@@ -316,7 +316,7 @@ void engine::Printable::onStart(engine::Entity &entity) {
   });
 
   listen(getChannel(), [this](const auto &msg) {
-    System::logger().log("rollback");
+    System::logger().info("rollback");
     mState.rollback();
   });
 

@@ -56,7 +56,7 @@ int main() {
     engine::Game game{std::move(rootEntity)};
     game.run();
   } catch (std::exception &e) {
-    engine::System::logger().log("That's a penis! ", e.what());
+    engine::System::logger().error("That's a penis! ", e.what());
   }
 
   return 0;

@@ -41,6 +41,8 @@ void engine::PageController::onStart(engine::Entity &entity) {
     mCurrentPrintable = std::begin(mPrintableIDs);
     notifyChannel("printable_selection", *mCurrentPrintable);
   });
+
+  System::logger().info("stated printable controller");
 }
 
 void engine::PageController::onEntityUpdate(engine::Entity &entity, sf::Time dt) {
