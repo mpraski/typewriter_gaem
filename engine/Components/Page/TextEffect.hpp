@@ -13,18 +13,18 @@ namespace engine {
 class TextEffect {
 public:
     enum class Kind {
-        BOLD,
-        ITALIC,
-        UPPERCASE,
-        UNDERLINE,
-        STRIKE_THROUGH,
-        DELAY,
-        SPACING,
-        COLOR,
-        TEXTURE,
-        CENTER,
-        RIGHT,
-        FONT_SIZE
+        Bold,
+        Italic,
+        Uppercase,
+        Underline,
+        StrikeThrough,
+        Delay,
+        Spacing,
+        Color,
+        Texture,
+        Center,
+        Right,
+        FontSize
     };
 
     TextEffect(
@@ -64,9 +64,9 @@ public:
     float mFontSizeFactor;
 
     const constexpr static enum TextEffect::Kind STATIC_EFFECTS[] = {
-        TextEffect::Kind::BOLD,
-        TextEffect::Kind::ITALIC,
-        TextEffect::Kind::UPPERCASE
+        TextEffect::Kind::Bold,
+        TextEffect::Kind::Italic,
+        TextEffect::Kind::Uppercase
     };
 };
 }

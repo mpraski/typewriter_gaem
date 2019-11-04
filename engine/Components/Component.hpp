@@ -34,8 +34,6 @@ public:
 
     bool destroyed() const noexcept;
 
-    const std::string &getName() const noexcept;
-
     void addDependentComponent(sf::Uint64 id);
 
     const std::vector<sf::Uint64> &getDependentComponents() const noexcept;
@@ -84,7 +82,6 @@ private:
 
     bool mDestroyed;
     Component *mTargetComponent;
-    std::string mName;
     std::string mChannel;
     std::vector<sf::Uint64> mDependentComponents;
 };

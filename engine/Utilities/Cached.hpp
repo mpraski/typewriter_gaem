@@ -21,21 +21,21 @@ public:
         : mCurrent{initial},
           mPrevious{initial} {}
 
-    Cached(const Cached &m)
+    constexpr Cached(const Cached &m)
         : mCurrent{m.mCurrent},
           mPrevious{m.mPrevious} {}
 
-    Cached(Cached &&m) noexcept
+    constexpr Cached(Cached &&m) noexcept
         : mCurrent{std::move(m.mCurrent)},
           mPrevious{std::move(m.mPrevious)} {}
 
-    Cached &operator=(Cached &&m) noexcept {
+    constexpr Cached &operator=(Cached &&m) noexcept {
       mCurrent = std::move(m.mCurrent);
       mPrevious = std::move(m.mPrevious);
       return *this;
     }
 
-    Cached &operator=(const Cached &m) {
+    constexpr Cached &operator=(const Cached &m) {
       mCurrent = m.mCurrent;
       mPrevious = m.mPrevious;
       return *this;

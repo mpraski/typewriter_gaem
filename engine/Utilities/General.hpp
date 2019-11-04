@@ -33,11 +33,6 @@ auto str(T &&t, Ts &&... ts) {
   return os.str();
 }
 
-template<class Base, class T>
-bool instanceof(const T *ptr) {
-  return dynamic_cast<const Base *>(ptr) != nullptr;
-}
-
 template<typename T>
 const decltype(T{}) &default_object() {
   static T x{};
@@ -49,16 +44,17 @@ template<
     typename K = typename T::key_type,
     typename E = typename T::mapped_type
 >
-auto find_default(T &map, const K &key, const E &e = gen::default_object<E>()) {
+constexpr auto find_default(T &map, const K &key, const E &e = gen::default_object<E>()) {
   if (auto it{map.find(key)}; it != std::end(map)) {
     return it;
   }
   auto[it, ok]{map.insert(std::make_pair(key, e))};
+  assert(ok);
   return it;
 }
 
 template<class T, class F>
-void remove_if(T &ts, F &&f) {
+constexpr void remove_if(T &ts, F &&f) {
   ts.erase(
       std::remove_if(
           std::begin(ts),
@@ -70,7 +66,7 @@ void remove_if(T &ts, F &&f) {
 }
 
 template<class T, class F>
-auto find_if(const T &ts, F &&f) {
+constexpr auto find_if(const T &ts, F &&f) {
   return std::find_if(
       std::cbegin(ts),
       std::cend(ts),
@@ -79,7 +75,7 @@ auto find_if(const T &ts, F &&f) {
 }
 
 template<class T, class F>
-auto find_if(T &ts, F &&f) {
+constexpr auto find_if(T &ts, F &&f) {
   return std::find_if(
       std::begin(ts),
       std::end(ts),
@@ -88,7 +84,7 @@ auto find_if(T &ts, F &&f) {
 }
 
 template<class T, class F>
-auto find(const T &ts, F &&f) {
+constexpr auto find(const T &ts, F &&f) {
   return std::find(
       std::cbegin(ts),
       std::cend(ts),
@@ -97,7 +93,7 @@ auto find(const T &ts, F &&f) {
 }
 
 template<class T, class F>
-auto find(T &ts, F &&f) {
+constexpr auto find(T &ts, F &&f) {
   return std::find(
       std::begin(ts),
       std::end(ts),
@@ -106,7 +102,7 @@ auto find(T &ts, F &&f) {
 }
 
 template<class T, class F>
-auto for_each(T &ts, F &&f) {
+constexpr auto for_each(T &ts, F &&f) {
   return std::for_each(
       std::begin(ts),
       std::end(ts),
@@ -114,27 +110,13 @@ auto for_each(T &ts, F &&f) {
   );
 }
 
-template<typename It>
-void split(const std::string &s, char delim, It result) {
-  std::stringstream ss(s);
-  std::string item;
+template<typename E, typename It>
+void split(const std::basic_string<E> &s, E delim, It result) {
+  std::basic_stringstream<E> ss(s);
+  std::basic_string<E> item;
   while (std::getline(ss, item, delim)) {
     *(result++) = item;
   }
-}
-
-template<typename It>
-void wsplit(const std::wstring &s, wchar_t delim, It result) {
-  std::wstringstream wss(s);
-  std::wstring item;
-  while (std::getline(wss, item, delim)) {
-    *(result++) = item;
-  }
-}
-
-template<class T>
-constexpr auto last(const T &t) {
-  return std::prev(std::cend(t));
 }
 
 template<class T>
@@ -165,7 +147,7 @@ constexpr auto type_id() noexcept {
 }
 
 template<class T>
-constexpr auto to_uintptr(const T *t) {
+constexpr auto to_uintptr(const T *t) noexcept {
   return reinterpret_cast<std::uintptr_t>(t);
 }
 
@@ -189,10 +171,8 @@ template<
 >
 constexpr void if_else(Pred &&p, Fun &&f) {
   if constexpr (First < Last) {
-    using UE = typename std::underlying_type<E>::type;
-    auto key{static_cast<E>(std::integral_constant<UE, First>()())};
-    if (p(key)) {
-      f(key);
+    if (p(static_cast<E>(First))) {
+      f(static_cast<E>(First));
     } else {
       if_else<E, First + 1, Last>(std::forward<Pred>(p), std::forward<Fun>(f));
     }

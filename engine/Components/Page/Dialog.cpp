@@ -13,16 +13,16 @@ engine::Dialog::Dialog(
     mEffectsOnHover{
         {0,
             {
-                TextEffect{TextEffect::Kind::BOLD, 0, person.length() - 1},
-                TextEffect{TextEffect::Kind::COLOR, 0, mContents.length() - 1}.withColor(sf::Color::Cyan)
+                TextEffect{TextEffect::Kind::Bold, 0, person.length() - 1},
+                TextEffect{TextEffect::Kind::Color, 0, mContents.length() - 1}.withColor(sf::Color::Cyan)
             }
         }
     },
     mEffectsOffHover{
         {0,
             {
-                TextEffect{TextEffect::Kind::BOLD, 0, person.length() - 1},
-                TextEffect{TextEffect::Kind::COLOR, 0, mContents.length() - 1}.withColor(sf::Color::Yellow)
+                TextEffect{TextEffect::Kind::Bold, 0, person.length() - 1},
+                TextEffect{TextEffect::Kind::Color, 0, mContents.length() - 1}.withColor(sf::Color::Yellow)
             }
         }
     } {

@@ -204,9 +204,9 @@ float engine::Printable::measureText(size_t begin, size_t end) {
 engine::Printable::EffectIt engine::Printable::findDisplacementEffect(engine::Printable::Displacement d) const {
   switch (d) {
     case Displacement::Center:
-      return findEffect(TextEffect::Kind::CENTER);
+      return findEffect(TextEffect::Kind::Center);
     case Displacement::Right:
-      return findEffect(TextEffect::Kind::RIGHT);
+      return findEffect(TextEffect::Kind::Right);
     default:
       throw std::runtime_error("Wrong displacement value");
   }
@@ -236,40 +236,40 @@ void engine::Printable::applyTextEffects(size_t idx) {
 
   for (const auto &e : mActiveEffects) {
     switch (e.mKind) {
-      case TextEffect::Kind::BOLD:
+      case TextEffect::Kind::Bold:
         mModifiers.mBold = true;
         break;
-      case TextEffect::Kind::ITALIC:
+      case TextEffect::Kind::Italic:
         mModifiers.mItalicShear = 0.209f;
         break;
-      case TextEffect::Kind::UNDERLINE:
+      case TextEffect::Kind::Underline:
         mModifiers.mUnderlined = true;
         break;
-      case TextEffect::Kind::STRIKE_THROUGH:
+      case TextEffect::Kind::StrikeThrough:
         mModifiers.mStrikeThrough = true;
         break;
-      case TextEffect::Kind::UPPERCASE:
+      case TextEffect::Kind::Uppercase:
         mModifiers.mUppercase = true;
         break;
-      case TextEffect::Kind::DELAY:
+      case TextEffect::Kind::Delay:
         mModifiers.mTypingDelayFactor = e.mDelayFactor;
         break;
-      case TextEffect::Kind::SPACING:
+      case TextEffect::Kind::Spacing:
         mModifiers.mLetterSpacingFactor = e.mLetterSpacingFactor;
         break;
-      case TextEffect::Kind::COLOR:
+      case TextEffect::Kind::Color:
         mModifiers.mTextColor = e.mColor;
         break;
-      case TextEffect::Kind::TEXTURE:
+      case TextEffect::Kind::Texture:
         //text_texture = &mSystem->get_textures(e.mTexture, "text");
         break;
-      case TextEffect::Kind::CENTER:
+      case TextEffect::Kind::Center:
         mModifiers.mDisplacement = Displacement::Center;
         break;
-      case TextEffect::Kind::RIGHT:
+      case TextEffect::Kind::Right:
         mModifiers.mDisplacement = Displacement::Right;
         break;
-      case TextEffect::Kind::FONT_SIZE:
+      case TextEffect::Kind::FontSize:
         //font_size = std::lround(static_cast<float>(mSystem->font_size) * e.mFontSizeFactor);
         //fsize(current_printable) = font_size;
         break;

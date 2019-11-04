@@ -22,7 +22,7 @@ namespace engine {
 class Entity final : public Identifiable,
                      public sf::Drawable,
                      public sf::Transformable {
-    struct IndexByName {
+    struct IndexByChannel {
     };
     struct IndexByUID {
     };
@@ -59,10 +59,10 @@ public:
     }
 
     template<typename T = Component>
-    T *getComponent(const std::string &name) {
-      if (name.empty()) return nullptr;
-      auto &idx{mComponentCache.get<IndexByName>()};
-      auto comp{idx.find(name)};
+    T *getComponent(const std::string &channel) {
+      if (channel.empty()) return nullptr;
+      auto &idx{mComponentCache.get<IndexByChannel>()};
+      auto comp{idx.find(channel)};
       if (comp == std::end(idx)) return nullptr;
       return dynamic_cast<T *>(*comp);
     }
@@ -144,8 +144,8 @@ private:
         Component *,
         indexed_by<
             hashed_unique<
-                tag<IndexByName>,
-                const_mem_fun<Component, const std::string &, &Component::getName>
+                tag<IndexByChannel>,
+                const_mem_fun<Component, const std::string &, &Component::getChannel>
             >,
             hashed_unique<
                 tag<IndexByUID>,

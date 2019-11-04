@@ -159,12 +159,12 @@ void engine::Entity::addQueuedComponents() {
 
     comp->onStart(*this);
 #ifdef DEBUG
-    auto &idx{mComponentCache.get<IndexByName>()};
-      if (idx.find(comp->getName()) != std::end(idx)) {
-        System::logger().log("duplicate component name: ", comp->getName());
+    auto &idx{mComponentCache.get<IndexByChannel>()};
+      if (idx.find(comp->getChannel()) != std::end(idx)) {
+        System::logger().log("duplicate component channel: ", comp->getChannel());
       }
 #endif
-    mComponentCache.get<IndexByUID>().insert(comp.get());
+    mComponentCache.insert(comp.get());
     mComponents.push_back(std::move(comp));
   }
 }

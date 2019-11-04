@@ -8,8 +8,7 @@ engine::Component::Component()
     : Identifiable{},
       mDestroyed{},
       mTargetComponent{},
-      mName{gen::str("comp-", getUID())},
-      mChannel{mName},
+      mChannel{gen::str("comp-", getUID())},
       mDependentComponents{} {
 
 }
@@ -18,8 +17,7 @@ engine::Component::Component(std::string name)
     : Identifiable{},
       mDestroyed{},
       mTargetComponent{},
-      mName{std::move(name)},
-      mChannel{mName},
+      mChannel{std::move(name)},
       mDependentComponents{} {
 
 }
@@ -35,10 +33,6 @@ void engine::Component::onStart(Entity &entity) {
 
 bool engine::Component::destroyed() const noexcept {
   return mDestroyed;
-}
-
-const std::string &engine::Component::getName() const noexcept {
-  return mName;
 }
 
 const std::string &engine::Component::getChannel() const noexcept {
