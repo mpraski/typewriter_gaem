@@ -40,11 +40,13 @@ public:
 
     float getFrameRate() const;
 
-    void lopp(bool looped);
+    void loop(bool looped);
 
     bool looped() const;
 
     void setAnimation(const std::string &name);
+
+    void setFrame(sf::Uint8 frame);
 
     void play(sf::Uint8 start = 0, sf::Uint8 end = 0, sf::Uint8 offset = 0);
 
@@ -57,10 +59,12 @@ private:
     std::unordered_map<std::string, Animation> mAnimations;
 
     const sf::Texture *mNormalMap;
-    sf::Sprite m_sprite;
+    sf::Sprite mSprite;
     sf::IntRect mSubRect;
     sf::Vector2u mTextureSize;
     sf::Vector2u mFrameSize;
+    sf::Time mElapsedTime;
+
 
     sf::Uint8 mFrameCount;
     sf::Uint8 mCurrentFrame;
