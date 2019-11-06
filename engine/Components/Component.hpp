@@ -66,14 +66,12 @@ protected:
     }
 
     template<typename E>
-    void notify(E &&event) const {
+    void notify(E &&event = std::integral_constant<bool, true>()) const {
       System::bus().notify(std::forward<E>(event));
     }
 
-    void notifyChannel(const std::string &channel) const;
-
-    template<typename E>
-    void notifyChannel(const std::string &channel, E &&event) const {
+    template<typename E = std::true_type>
+    void notifyChannel(const std::string &channel, E &&event = std::integral_constant<bool, true>()) const {
       System::bus().notify(channel, std::forward<E>(event));
     }
 

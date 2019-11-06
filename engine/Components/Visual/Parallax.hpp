@@ -7,6 +7,7 @@
 
 #include "../Component.hpp"
 #include "../PlayerController.hpp"
+#include "../../Constants.hpp"
 
 namespace engine {
 class Parallax : public Component {

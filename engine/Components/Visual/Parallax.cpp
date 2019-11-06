@@ -3,14 +3,14 @@
 //
 
 #include "Parallax.hpp"
-#include "../../Engine.hpp"
+#include "../../Entity.hpp"
 
 engine::Component::Kind engine::Parallax::kind() const {
   return Component::Kind::Script;
 }
 
 void engine::Parallax::onStart(engine::Entity &entity) {
-  listen<PlayerController::Move>(Constants::PlayerChannel, [&, this](const auto &msg) {
+  listen<PlayerController::Move>(Constants::PlayerChannel, [&entity, this](const auto &msg) {
     notifyChannel(entity.getChannel(), Scroll{msg.x * mModifier, msg.y * mModifier});
   });
 }

@@ -66,8 +66,7 @@ public:
         mFlattenedListeners.push_back(it->pointer.get());
       }
 
-      auto *typed_listeners{static_cast<ListenersImp<E> *>(it->pointer.get())};
-      typed_listeners->add(cbid, std::forward<F>(cb));
+      static_cast<ListenersImp<E> *>(it->pointer.get())->add(cbid, std::forward<F>(cb));
     }
 
     template<class E>
@@ -89,7 +88,7 @@ public:
     }
 
     void unlisten_all(callback_id_t cbid) {
-      for (auto &ptr : mFlattenedListeners) {
+      for (auto *ptr : mFlattenedListeners) {
         ptr->remove(cbid);
       }
     }
@@ -108,13 +107,12 @@ public:
 
       auto it{mCallbacks.find(boost::make_tuple(channel, gen::type_id<CE>()))};
       if (it != std::end(mCallbacks)) {
-        auto *typed_listeners{static_cast<ListenersImp<CE> *>(it->pointer.get())};
-        typed_listeners->notify(std::forward<E>(event));
+        static_cast<ListenersImp<CE> *>(it->pointer.get())->notify(std::forward<E>(event));
       }
     }
 
     void deliver() {
-      for (auto &ptr : mFlattenedListeners) {
+      for (auto *ptr : mFlattenedListeners) {
         ptr->deliver();
       }
     }

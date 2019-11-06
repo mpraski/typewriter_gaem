@@ -50,7 +50,3 @@ void engine::Component::addDependentComponent(sf::Uint64 id) {
 const std::vector<sf::Uint64> &engine::Component::getDependentComponents() const noexcept {
   return mDependentComponents;
 }
-
-void engine::Component::notifyChannel(const std::string &channel) const {
-  System::bus().notify<std::true_type>(channel, std::integral_constant<bool, true>());
-}
